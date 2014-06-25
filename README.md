@@ -1,4 +1,4 @@
 android-tao-util
 ================
 
-Android app configurator, extended logger, net checker
+Android App Configurator, easy Log with detailed information, Net checker
