@@ -38,13 +38,17 @@ import android.net.ConnectivityManager;
  */
 public class NetChecker {
 
-	public static final int		TIMEOUT_DEFAULT	= 5000;
-	public static int				timeout				= TIMEOUT_DEFAULT;
+	/**
+	 * Default timeout for check connection
+	 */
+	public static final int		DEFAULT_TIMEOUT	= 4000;
+
+	private static int			timeout				= DEFAULT_TIMEOUT;
 	private static long			beginTime;
 	private static NetStatus	result;
 
 	/**
-	 * Check a web site status.
+	 * Check a web site status with {@link ua.at.tsvetkov.netchecker.DEFAULT_TIMEOUT DEFAULT_TIMEOUT }
 	 * 
 	 * @param context current Context
 	 * @param urlStr web site URL
@@ -112,6 +116,24 @@ public class NetChecker {
 			}
 		}
 		return result;
+	}
+
+	/**
+	 * Get default timeout
+	 * 
+	 * @return
+	 */
+	public static int getTimeout() {
+		return timeout;
+	}
+
+	/**
+	 * Set default timeout for check connection
+	 * 
+	 * @param timeout
+	 */
+	public static void setTimeout(int timeout) {
+		NetChecker.timeout = timeout;
 	}
 
 	private static boolean isOnline(Context context) {

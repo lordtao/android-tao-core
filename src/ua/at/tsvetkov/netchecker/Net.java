@@ -104,9 +104,9 @@ public class Net {
 	 * @return is site accessible
 	 */
 	public static boolean isAccessible(String urlStr, int timeout) {
-		NetChecker.timeout = timeout;
+		NetChecker.setTimeout(timeout);
 		boolean result = isAccessible(urlStr);
-		NetChecker.timeout = NetChecker.TIMEOUT_DEFAULT;
+		NetChecker.setTimeout(NetChecker.DEFAULT_TIMEOUT);
 		return result;
 	}
 
@@ -119,9 +119,9 @@ public class Net {
 	 * @return is site accessible
 	 */
 	public static boolean isAccessible(Activity activity, String urlStr, int timeout) {
-		NetChecker.timeout = timeout;
+		NetChecker.setTimeout(timeout);
 		boolean result = isAccessible(activity, urlStr);
-		NetChecker.timeout = NetChecker.TIMEOUT_DEFAULT;
+		NetChecker.setTimeout(NetChecker.DEFAULT_TIMEOUT);
 		return result;
 	}
 
