@@ -221,6 +221,23 @@ public class AppConfig {
 	}
 
 	/**
+	 * Default working dir with subdir and File.separatorChar at the end of string
+	 * 
+	 * @return
+	 */
+	public static String getDir(String subdir) {
+	   if (subdir.charAt(subdir.length() - 1) != File.separatorChar) {
+	      subdir = subdir + File.separatorChar;
+	   }
+	      
+	   if (subdir.charAt(0) == File.separatorChar) {	      
+	      return workingDirectory + subdir;
+	   } else {
+	      return workingDirectory + File.separatorChar + subdir;
+	   }
+	}
+
+	/**
 	 * Switch to the custom working directory
 	 * 
 	 * @param newDir
