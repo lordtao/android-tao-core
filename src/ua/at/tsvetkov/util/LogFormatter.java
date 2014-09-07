@@ -24,6 +24,7 @@
 package ua.at.tsvetkov.util;
 
 import java.lang.reflect.Field;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -36,6 +37,8 @@ public class LogFormatter {
    private static final char   PREFIX    = '|';
    private static final String NL        = "\n";
    private static final String HALF_LINE = "---------------------";
+   private static final String MAP_LINE  = "-------------------------- Map ---------------------------" + NL;
+   private static final String LIST_LINE = "-------------------------- List --------------------------" + NL;
    private static final String LINE      = "----------------------------------------------------------" + NL;
 
    /**
@@ -52,9 +55,25 @@ public class LogFormatter {
       }
       StringBuilder sb = new StringBuilder();
       String fomatString = "%-" + max + "s = %s";
-      sb.append(HALF_LINE + " Map " + HALF_LINE + NL);
+      sb.append(MAP_LINE);
       for (Map.Entry<?, ?> item : map.entrySet()) {
          sb.append(String.format(fomatString, item.getKey(), item.getValue()));
+         sb.append(NL);
+      }
+      sb.append(LINE);
+      return sb.toString();
+   }
+
+   /**
+    * Return String representation of list. Each item in new line.
+    * 
+    * @param map
+    */
+   public static String toLines(List<?> list) {
+      StringBuilder sb = new StringBuilder();
+      sb.append(LIST_LINE);
+      for (Object item : list) {
+         sb.append(item.toString());
          sb.append(NL);
       }
       sb.append(LINE);
