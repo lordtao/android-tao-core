@@ -5,12 +5,13 @@ package ua.at.tsvetkov.ui;
 
 import ua.at.tsvetkov.util.Converter;
 import android.annotation.SuppressLint;
-import android.app.Activity;
+import android.content.Context;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.os.Build;
 import android.util.DisplayMetrics;
 import android.view.Display;
+import android.view.WindowManager;
 
 /**
  * @author Alexandr Tsvetkov 2014
@@ -20,17 +21,18 @@ public class Screen {
    /**
     * Gets the size of the display, in pixels.
     * 
-    * @param activity
+    * @param context
     * @return
     */
    @SuppressLint("NewApi")
    @SuppressWarnings("deprecation")
-   public static Point getSizeInPixels(Activity activity) {
+   public static Point getSizeInPixels(Context context) {
       Point size = new Point();
+      WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+      Display display = wm.getDefaultDisplay();
       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-         activity.getWindowManager().getDefaultDisplay().getSize(size);
+         display.getSize(size);
       } else {
-         Display display = activity.getWindowManager().getDefaultDisplay();
          size.x = display.getWidth();
          size.y = display.getHeight();
       }
@@ -40,12 +42,14 @@ public class Screen {
    /**
     * Gets the physical size of the display, in inch
     * 
-    * @param activity
+    * @param context
     * @return
     */
-   public static PointF getSizeInInch(Activity activity) {
+   public static PointF getSizeInInch(Context context) {
       DisplayMetrics dm = new DisplayMetrics();
-      activity.getWindowManager().getDefaultDisplay().getMetrics(dm);
+      WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+      Display display = wm.getDefaultDisplay();
+      display.getMetrics(dm);
       PointF size = new PointF();
       size.x = dm.widthPixels / dm.xdpi;
       size.y = dm.heightPixels / dm.ydpi;
@@ -55,11 +59,11 @@ public class Screen {
    /**
     * Gets the physical size of the display, in mm
     * 
-    * @param activity
+    * @param context
     * @return
     */
-   public static PointF getSizeInMm(Activity activity) {
-      PointF size = getSizeInInch(activity);
+   public static PointF getSizeInMm(Context context) {
+      PointF size = getSizeInInch(context);
       size.x = Converter.inchToMm(size.x);
       size.y = Converter.inchToMm(size.y);
       return size;
@@ -68,49 +72,103 @@ public class Screen {
    /**
     * Return pixels count from physical X dimension in inch
     * 
-    * @param activity
+    * @param context
     * @param inch
     * @return
     */
-   public static float inchToPixelsX(Activity activity, float inch) {
+   public static float inchToPixelsX(Context context, float inch) {
       DisplayMetrics dm = new DisplayMetrics();
-      activity.getWindowManager().getDefaultDisplay().getMetrics(dm);
+      WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+      Display display = wm.getDefaultDisplay();
+      display.getMetrics(dm);
       return inch * dm.xdpi;
    }
 
    /**
     * Return pixels count from physical Y dimension in inch
     * 
-    * @param activity
+    * @param context
     * @param inch
     * @return
     */
-   public static float inchToPixelsY(Activity activity, float inch) {
+   public static float inchToPixelsY(Context context, float inch) {
       DisplayMetrics dm = new DisplayMetrics();
-      activity.getWindowManager().getDefaultDisplay().getMetrics(dm);
+      WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+      Display display = wm.getDefaultDisplay();
+      display.getMetrics(dm);
       return inch * dm.ydpi;
    }
 
    /**
     * Converts a size in mm in the pixel count in the X dimension.
     * 
-    * @param activity
+    * @param context
     * @param mm
     * @return
     */
-   public static float mmToPixelsX(Activity activity, float mm) {
-      return inchToPixelsX(activity, Converter.mmToInch(mm));
+   public static float mmToPixelsX(Context context, float mm) {
+      return inchToPixelsX(context, Converter.mmToInch(mm));
    }
 
    /**
     * Converts a size in mm in the pixel count in the Y dimension.
     * 
-    * @param activity
+    * @param context
     * @param mm
     * @return
     */
-   public static float mmToPixelsY(Activity activity, float mm) {
-      return inchToPixelsY(activity, Converter.mmToInch(mm));
+   public static float mmToPixelsY(Context context, float mm) {
+      return inchToPixelsY(context, Converter.mmToInch(mm));
+   }
+
+   /**
+    * Return size in inch from X axis pixels count
+    * 
+    * @param context
+    * @param px
+    * @return
+    */
+   public static float pixelXtoInch(Context context, float pixelsX) {
+      DisplayMetrics dm = new DisplayMetrics();
+      WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+      Display display = wm.getDefaultDisplay();
+      display.getMetrics(dm);
+      return pixelsX / dm.xdpi;
+   }
+
+   /**
+    * Return size in inch from Y axis pixels count
+    * @param context
+    * @param px
+    * @return
+    */
+   public static float pixelYtoInch(Context context, float pixelsY) {
+      DisplayMetrics dm = new DisplayMetrics();
+      WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+      Display display = wm.getDefaultDisplay();
+      display.getMetrics(dm);
+      return pixelsY / dm.ydpi;
+   }
+
+   /**
+    * Return size in mm from X axis pixels count
+    * 
+    * @param context
+    * @param px
+    * @return
+    */
+   public static float pixelXtoMm(Context context, float pixelsX) {
+      return Converter.inchToMm(pixelXtoInch(context, pixelsX));
+   }
+
+   /**
+    * Return size in mm from Y axis pixels count
+    * @param context
+    * @param px
+    * @return
+    */
+   public static float pixelYtoMm(Context context, float pixelsY) {
+      return Converter.inchToMm(pixelYtoInch(context, pixelsY));
    }
 
 }
