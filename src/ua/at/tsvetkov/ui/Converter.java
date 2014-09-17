@@ -1,4 +1,4 @@
-package ua.at.tsvetkov.util;
+package ua.at.tsvetkov.ui;
 
 public class Converter {
 

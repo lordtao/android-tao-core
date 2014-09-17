@@ -3,7 +3,6 @@
  */
 package ua.at.tsvetkov.ui;
 
-import ua.at.tsvetkov.util.Converter;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Point;
@@ -17,6 +16,34 @@ import android.view.WindowManager;
  * @author Alexandr Tsvetkov 2014
  */
 public class Screen {
+
+   /**
+    * The exact physical pixels per inch of the screen in the X dimension.
+    * 
+    * @param context
+    * @return
+    */
+   public static float getXdpi(Context context) {
+      DisplayMetrics dm = new DisplayMetrics();
+      WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+      Display display = wm.getDefaultDisplay();
+      display.getMetrics(dm);
+      return dm.xdpi;
+   }
+
+   /**
+    * The exact physical pixels per inch of the screen in the Y dimension.
+    * 
+    * @param context
+    * @return
+    */
+   public static float getYdpi(Context context) {
+      DisplayMetrics dm = new DisplayMetrics();
+      WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+      Display display = wm.getDefaultDisplay();
+      display.getMetrics(dm);
+      return dm.ydpi;
+   }
 
    /**
     * Gets the size of the display, in pixels.
@@ -77,11 +104,7 @@ public class Screen {
     * @return
     */
    public static float inchToPixelsX(Context context, float inch) {
-      DisplayMetrics dm = new DisplayMetrics();
-      WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-      Display display = wm.getDefaultDisplay();
-      display.getMetrics(dm);
-      return inch * dm.xdpi;
+      return inch * getXdpi(context);
    }
 
    /**
@@ -92,11 +115,8 @@ public class Screen {
     * @return
     */
    public static float inchToPixelsY(Context context, float inch) {
-      DisplayMetrics dm = new DisplayMetrics();
-      WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-      Display display = wm.getDefaultDisplay();
-      display.getMetrics(dm);
-      return inch * dm.ydpi;
+
+      return inch * getYdpi(context);
    }
 
    /**
@@ -129,25 +149,18 @@ public class Screen {
     * @return
     */
    public static float pixelXtoInch(Context context, float pixelsX) {
-      DisplayMetrics dm = new DisplayMetrics();
-      WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-      Display display = wm.getDefaultDisplay();
-      display.getMetrics(dm);
-      return pixelsX / dm.xdpi;
+      return pixelsX / getXdpi(context);
    }
 
    /**
     * Return size in inch from Y axis pixels count
+    * 
     * @param context
     * @param px
     * @return
     */
    public static float pixelYtoInch(Context context, float pixelsY) {
-      DisplayMetrics dm = new DisplayMetrics();
-      WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-      Display display = wm.getDefaultDisplay();
-      display.getMetrics(dm);
-      return pixelsY / dm.ydpi;
+      return pixelsY / getYdpi(context);
    }
 
    /**
@@ -163,6 +176,7 @@ public class Screen {
 
    /**
     * Return size in mm from Y axis pixels count
+    * 
     * @param context
     * @param px
     * @return
