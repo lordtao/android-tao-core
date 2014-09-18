@@ -65,6 +65,7 @@ public class AppConfig {
    public static final String       APP_VERSION_CODE        = "APP_VERSION_CODE";
    public static final String       APP_WORKING_DIRECTORY   = "APP_WORKING_DIRECTORY";
    public static final String       IMEI                    = "IMEI";
+   public static final String       CACHE                   = "cache/";
 
    public static final String       NEW_VERSION             = "NEW_VERSION";
    public static final String       NEW_INSTALL             = "NEW_INSTALL";
@@ -218,6 +219,26 @@ public class AppConfig {
     */
    public static String getDir() {
       return workingDirectory;
+   }
+
+   /**
+    * Default cache dir with File.separatorChar at the end of string. If cache dir is not present then will be create.
+    * 
+    * @return
+    */
+   public static String getCacheDir() {
+      createDir(workingDirectory + CACHE);
+      return workingDirectory + CACHE;
+   }
+
+   /**
+    * Return full path to cashe file from given file name.
+    * 
+    * @param fileName
+    * @return
+    */
+   public static String getCacheFileName(String fileName) {
+      return getCacheDir() + fileName;
    }
 
    /**
