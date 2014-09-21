@@ -222,13 +222,19 @@ public class AppConfig {
    }
 
    /**
-    * Default cache dir with File.separatorChar at the end of string. If cache dir is not present then will be create.
+    * Return default cache dir with File.separatorChar at the end of string. If cache dir is not present then will be create.
     * 
     * @return
     */
    public static String getCacheDir() {
-      createDir(workingDirectory + CACHE);
-      return workingDirectory + CACHE;
+      return getDir(CACHE);
+   }
+
+   /**
+    * Create cache dir in app package default directory
+    */
+   public static void createCacheDir() {
+      createDir(CACHE);
    }
 
    /**
@@ -250,7 +256,6 @@ public class AppConfig {
       if (subdir.charAt(subdir.length() - 1) != File.separatorChar) {
          subdir = subdir + File.separatorChar;
       }
-
       if (subdir.charAt(0) == File.separatorChar) {
          return workingDirectory + subdir;
       } else {
