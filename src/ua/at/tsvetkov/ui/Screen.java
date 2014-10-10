@@ -95,6 +95,34 @@ public class Screen {
       size.y = Converter.inchToMm(size.y);
       return size;
    }
+   
+   /**
+    * Get biggest screen dimension - width or height in mm. 
+    * @param context
+    * @return
+    */
+   public static float getBiggestSizeInMm(Context context) {
+      PointF size = getSizeInMm(context);
+      if (size.x > size.y) {
+         return size.x;
+      } else {
+         return size.y;
+      }
+   }
+
+   /**
+    * Get biggest screen dimension - width or height in inch. 
+    * @param context
+    * @return
+    */
+   public static float getBiggestSizeInInch(Context context) {
+      PointF size = getSizeInInch(context);
+      if (size.x > size.y) {
+         return size.x;
+      } else {
+         return size.y;
+      }
+   }
 
    /**
     * Return pixels count from physical X dimension in inch
