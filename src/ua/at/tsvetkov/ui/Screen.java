@@ -97,6 +97,20 @@ public class Screen {
    }
    
    /**
+    * Get biggest screen dimension - width or height in pixels. 
+    * @param context
+    * @return
+    */
+   public static int getBiggestSizeInPixels(Context context) {
+      Point size = getSizeInPixels(context);
+      if (size.x > size.y) {
+         return size.x;
+      } else {
+         return size.y;
+      }
+   }
+
+   /**
     * Get biggest screen dimension - width or height in mm. 
     * @param context
     * @return
