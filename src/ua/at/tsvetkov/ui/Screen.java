@@ -46,6 +46,26 @@ public class Screen {
    }
 
    /**
+    * Return width of screen
+    * 
+    * @param context
+    * @return width
+    */
+   public static float getWidth(Context context) {
+      return getSizeInPixels(context).x;
+   }
+
+   /**
+    * Return height of screen
+    * 
+    * @param context
+    * @return height
+    */
+   public static float getHeight(Context context) {
+      return getSizeInPixels(context).y;
+   }
+
+   /**
     * Gets the size of the display, in pixels.
     * 
     * @param context
@@ -95,9 +115,10 @@ public class Screen {
       size.y = Converter.inchToMm(size.y);
       return size;
    }
-   
+
    /**
-    * Get biggest screen dimension - width or height in pixels. 
+    * Get biggest screen dimension - width or height in pixels.
+    * 
     * @param context
     * @return
     */
@@ -111,7 +132,8 @@ public class Screen {
    }
 
    /**
-    * Get biggest screen dimension - width or height in mm. 
+    * Get biggest screen dimension - width or height in mm.
+    * 
     * @param context
     * @return
     */
@@ -125,7 +147,8 @@ public class Screen {
    }
 
    /**
-    * Get biggest screen dimension - width or height in inch. 
+    * Get biggest screen dimension - width or height in inch.
+    * 
     * @param context
     * @return
     */
