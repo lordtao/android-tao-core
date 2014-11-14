@@ -264,6 +264,34 @@ public class AppConfig {
    }
 
    /**
+    * Return full path to file from given file name in work dir.
+    * 
+    * @param fileName
+    * @return
+    */
+   public static String getFileName(String fileName) {
+      return getFileName(null, fileName);
+
+   }
+
+   /**
+    * Return full path to file from given file name in work dir.
+    * 
+    * @param subdir subdir in work dir, possible to be empty or null.
+    * @param fileName
+    * @return
+    */
+   public static String getFileName(String subdir, String fileName) {
+      String dir = null;
+      if (subdir != null && subdir.length() > 0) {
+         dir = getDir(subdir);
+      } else {
+         dir = getDir();
+      }
+      return dir + fileName;
+   }
+
+   /**
     * Switch to the custom working directory
     * 
     * @param newDir

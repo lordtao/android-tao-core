@@ -138,6 +138,43 @@ public class LogFormatter {
       return sb.toString();
    }
 
+   /**
+    * Return readable bytes like 0F CD AD.... Each countPerLine bytes will print in new line
+    * 
+    * @param data
+    * @param countPerLine count byte per line
+    * @return
+    */
+   public static void printBytesToReadableString(byte[] data, int countPerLine) {
+      StringBuilder sb = new StringBuilder(countPerLine * 3);
+      int count = 0;
+      for (int i = 0; i < data.length; i++) {
+         count++;
+         sb.append(String.format("%X ", data[i]));
+         if (count >= countPerLine) {
+            count = 0;
+            sb.trimToSize();
+            Log.v(sb.toString());
+            sb = new StringBuilder(countPerLine * 3);
+         }
+      }
+   }
+
+   /**
+    * Return readable bytes like 0F CD AD....
+    * 
+    * @param data
+    * @return
+    */
+   public static String bytesToReadableString(byte[] data) {
+      StringBuilder sb = new StringBuilder(data.length * 3);
+      for (int i = 0; i < data.length; i++) {
+         sb.append(String.format("%X ", data[i]));
+      }
+      sb.trimToSize();
+      return sb.toString();
+   }
+
    private static Field getField(Class<?> clazz, String fieldName) throws NoSuchFieldException {
       try {
          return clazz.getDeclaredField(fieldName);

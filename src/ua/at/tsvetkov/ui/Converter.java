@@ -115,4 +115,8 @@ public class Converter {
       return mm * MM_IN_TWIP;
    }
 
+   public static float dpToPixels(float dp, float dpi) {
+      return dp * (dpi / 160);
+   }
+
 }

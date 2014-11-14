@@ -250,4 +250,26 @@ public class Screen {
       return Converter.inchToMm(pixelYtoInch(context, pixelsY));
    }
 
+   /**
+    * Convert size in dp to pixels on axis X
+    * 
+    * @param context
+    * @param px
+    * @return
+    */
+   public static float xdpToPixels(Context context, float dpX) {
+      return Converter.dpToPixels(dpX, getXdpi(context));
+   }
+
+   /**
+    * Convert size in dp to pixels on axis X
+    * 
+    * @param context
+    * @param px
+    * @return
+    */
+   public static float ydpToPixels(Context context, float dpY) {
+      return Converter.dpToPixels(dpY, getYdpi(context));
+   }
+
 }
