@@ -38,110 +38,110 @@ import android.net.ConnectivityManager;
  */
 public class NetChecker {
 
-	/**
-	 * Default timeout for check connection
-	 */
-	public static final int		DEFAULT_TIMEOUT	= 4000;
+   /**
+    * Default timeout for check connection
+    */
+   public static final int  DEFAULT_TIMEOUT = 4000;
 
-	private static int			timeout				= DEFAULT_TIMEOUT;
-	private static long			beginTime;
-	private static NetStatus	result;
+   private static int       timeout         = DEFAULT_TIMEOUT;
+   private static long      beginTime;
+   private static NetStatus result;
 
-	/**
-	 * Check a web site status with {@link ua.at.tsvetkov.netchecker.DEFAULT_TIMEOUT DEFAULT_TIMEOUT }
-	 * 
-	 * @param context current Context
-	 * @param urlStr web site URL
-	 * @return {@link NetStatus}
-	 */
-	public static NetStatus checkNet(Context context, final String urlStr) {
-		if (isOnline(context) == false) {
-			return NetStatus.CONNECTION_MISSING;
-		}
-		beginTime = System.currentTimeMillis();
-		result = null;
-		new Thread(new Runnable() {
+   /**
+    * Check a web site status with {@link ua.at.tsvetkov.netchecker.DEFAULT_TIMEOUT DEFAULT_TIMEOUT }
+    * 
+    * @param context current Context
+    * @param urlStr web site URL
+    * @return {@link NetStatus}
+    */
+   public static NetStatus checkNet(Context context, final String urlStr) {
+      if (isOnline(context) == false) {
+         return NetStatus.CONNECTION_MISSING;
+      }
+      beginTime = System.currentTimeMillis();
+      result = null;
+      new Thread(new Runnable() {
 
-			@Override
-			public void run() {
-				while (true) {
-					try {
-						Thread.sleep(100);
-					} catch (InterruptedException e) {
-						Log.w("Interrupted!");
-					}
-					long timeReplay = System.currentTimeMillis() - beginTime;
-					if (result != null) {
-						Log.v("Checked Server response time " + timeReplay + " ms. [" + urlStr + " ]");
-						break;
-					} else if (timeReplay > timeout) {
-						result = NetStatus.NO_NET;
-						Log.w("Timeout! Server [ " + urlStr + " ] response time exceeds " + timeReplay + "ms.");
-						break;
-					}
-				}
-			}
+         @Override
+         public void run() {
+            while (true) {
+               try {
+                  Thread.sleep(100);
+               } catch (InterruptedException e) {
+                  Log.w("Interrupted!");
+               }
+               long timeReplay = System.currentTimeMillis() - beginTime;
+               if (result != null) {
+                  Log.v("Checked Server response time " + timeReplay + " ms. [" + urlStr + " ]");
+                  break;
+               } else if (timeReplay > timeout) {
+                  result = NetStatus.NO_NET;
+                  Log.w("Timeout! Server [ " + urlStr + " ] response time exceeds " + timeReplay + "ms.");
+                  break;
+               }
+            }
+         }
 
-		}).start();
-		new Thread(new Runnable() {
+      }, "Check net status").start();
+      new Thread(new Runnable() {
 
-			@Override
-			public void run() {
-				try {
-					URL url = new URL(urlStr);
+         @Override
+         public void run() {
+            try {
+               URL url = new URL(urlStr);
 
-					HttpURLConnection urlc = (HttpURLConnection) url.openConnection();
-					urlc.setConnectTimeout(timeout); // Timeout is in seconds
-					urlc.connect();
-					if (urlc.getResponseCode() == 200) {
-						result = NetStatus.NET_OK;
-					}
-					urlc.disconnect();
-					urlc = null;
-				} catch (MalformedURLException e1) {
-					result = NetStatus.FAULTY_URL;
-				} catch (Exception e) {
-					result = NetStatus.NO_NET;
-				}
-			}
-		}).start();
-		while (true) {
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-				Log.w("Interrupted!");
-			}
-			if (result != null) {
-				break;
-			}
-		}
-		return result;
-	}
+               HttpURLConnection urlc = (HttpURLConnection) url.openConnection();
+               urlc.setConnectTimeout(timeout); // Timeout is in seconds
+               urlc.connect();
+               if (urlc.getResponseCode() == 200) {
+                  result = NetStatus.NET_OK;
+               }
+               urlc.disconnect();
+               urlc = null;
+            } catch (MalformedURLException e1) {
+               result = NetStatus.FAULTY_URL;
+            } catch (Exception e) {
+               result = NetStatus.NO_NET;
+            }
+         }
+      }, "Get net status").start();
+      while (true) {
+         try {
+            Thread.sleep(100);
+         } catch (InterruptedException e) {
+            Log.w("Interrupted!");
+         }
+         if (result != null) {
+            break;
+         }
+      }
+      return result;
+   }
 
-	/**
-	 * Get default timeout
-	 * 
-	 * @return
-	 */
-	public static int getTimeout() {
-		return timeout;
-	}
+   /**
+    * Get default timeout
+    * 
+    * @return
+    */
+   public static int getTimeout() {
+      return timeout;
+   }
 
-	/**
-	 * Set default timeout for check connection
-	 * 
-	 * @param timeout
-	 */
-	public static void setTimeout(int timeout) {
-		NetChecker.timeout = timeout;
-	}
+   /**
+    * Set default timeout for check connection
+    * 
+    * @param timeout
+    */
+   public static void setTimeout(int timeout) {
+      NetChecker.timeout = timeout;
+   }
 
-	private static boolean isOnline(Context context) {
-		if (((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo() == null) {
-			return false;
-		} else {
-			return true;
-		}
-	}
+   private static boolean isOnline(Context context) {
+      if (((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo() == null) {
+         return false;
+      } else {
+         return true;
+      }
+   }
 
 }

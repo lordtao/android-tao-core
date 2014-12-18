@@ -150,7 +150,7 @@ public class LogFormatter {
       int count = 0;
       for (int i = 0; i < data.length; i++) {
          count++;
-         sb.append(String.format("%X ", data[i]));
+         sb.append(String.format("%02X ", data[i]));
          if (count >= countPerLine) {
             count = 0;
             sb.trimToSize();
@@ -169,7 +169,7 @@ public class LogFormatter {
    public static String bytesToReadableString(byte[] data) {
       StringBuilder sb = new StringBuilder(data.length * 3);
       for (int i = 0; i < data.length; i++) {
-         sb.append(String.format("%X ", data[i]));
+         sb.append(String.format("%02X ", data[i]));
       }
       sb.trimToSize();
       return sb.toString();

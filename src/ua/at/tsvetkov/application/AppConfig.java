@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import ua.at.tsvetkov.ui.Screen;
 import ua.at.tsvetkov.util.Log;
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -43,6 +44,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
 import android.content.pm.Signature;
+import android.graphics.PointF;
 import android.os.Build;
 import android.os.Environment;
 import android.os.StrictMode;
@@ -94,6 +96,7 @@ public class AppConfig {
    private static boolean           isFreshInstallation     = false;
    private static boolean           isStrictMode            = false;
    private static boolean           isInitialized           = false;
+   private static Diagonal          diagonal;
 
    /**
     * Init configuration. Use in class extended Application class. Create the working dirs in standard dir "/Android/data/" + application
@@ -156,6 +159,19 @@ public class AppConfig {
       if (appData.versionCode > preferences.getInt(APP_VERSION_CODE, 0)) {
          isNewVersion = true;
       }
+
+      PointF pf = Screen.getSizeInInch(context);
+      double diag = Math.sqrt(pf.x * pf.x + pf.y * pf.y);
+      if (diag < 6) {
+         diagonal = Diagonal.PHONE;
+      } else if (diag >= 6 && diag < 8) {
+         diagonal = Diagonal.TABLET_7;
+      } else if (diag >= 8 && diag < 11) {
+         diagonal = Diagonal.TABLET_10;
+      } else {
+         diagonal = Diagonal.TABLET_BIG;
+      }
+
       editor.putString(APP_NAME, appName);
       editor.putString(APP_VERSION_NAME, String.valueOf(appData.versionName));
       editor.putInt(APP_VERSION_CODE, Integer.valueOf(appData.versionCode));
@@ -188,6 +204,7 @@ public class AppConfig {
       android.util.Log.i("", PREFIX + "First installation:          " + isNewVersion);
       android.util.Log.i("", PREFIX + "Working directory:           " + workingDirectory);
       android.util.Log.i("", PREFIX + "Strict mode:                 " + isStrictMode);
+      android.util.Log.i("", PREFIX + "Diagonal:                    " + diagonal);
       android.util.Log.i("", PREFIX + "Application signature SHA-1: " + getApplicationSignatureKeyHash());
       android.util.Log.i("", LINE_DOUBLE);
       android.util.Log.i("", CURRENT_SETTINGS_STRING);
@@ -195,8 +212,9 @@ public class AppConfig {
       int max = 0;
       for (Map.Entry<String, ?> setting : preferences.getAll().entrySet()) {
          int length = setting.getKey().length();
-         if (max < length)
+         if (max < length) {
             max = length;
+         }
       }
       String fomatString = PREFIX + "%-" + max + "s = %s";
       for (Map.Entry<String, ?> setting : preferences.getAll().entrySet()) {
@@ -210,6 +228,18 @@ public class AppConfig {
          android.util.Log.i("", String.format(fomatString, setting.getKey(), setting.getValue()));
       }
       android.util.Log.i(LINE, LINE_DOUBLE);
+   }
+
+   public static boolean isPhone() {
+      return diagonal == Diagonal.PHONE;
+   }
+
+   public static boolean isTablet() {
+      return diagonal != Diagonal.PHONE;
+   }
+
+   public static Diagonal getDeviceDiagonal() {
+      return diagonal;
    }
 
    /**
@@ -227,7 +257,7 @@ public class AppConfig {
     * @return
     */
    public static String getCacheDir() {
-      return getDir(CACHE);
+      return createDir(CACHE);
    }
 
    /**
@@ -238,7 +268,7 @@ public class AppConfig {
    }
 
    /**
-    * Return full path to cashe file from given file name.
+    * Return full path to cashe file from given file name. If cache dir is not present then will be create.
     * 
     * @param fileName
     * @return
@@ -299,12 +329,13 @@ public class AppConfig {
    public static void setNewDir(String newDir) {
       workingDirectory = newDir;
       File path = new File(workingDirectory);
-      if (!path.exists())
+      if (!path.exists()) {
          if (path.mkdir()) {
             Log.i("Created new working directory: " + workingDirectory);
          } else {
             Log.e("Creating of the working directory is failed.\nPlease check the permission android.permission.WRITE_EXTERNAL_STORAGE.");
          }
+      }
    }
 
    /**
@@ -326,10 +357,11 @@ public class AppConfig {
       File dir = new File(path);
       if (!dir.exists()) {
          boolean result = dir.mkdirs();
-         if (result)
+         if (result) {
             Log.i("++ Created the Directory: " + path);
-         else
+         } else {
             Log.w("-- Creating the Directory is failed: " + path);
+         }
          return "";
       }
       Log.i("-- The Directory already exist: " + path);
@@ -713,8 +745,9 @@ public class AppConfig {
 
    public static boolean checkInstalledPackage(String packageName) {
       for (ResolveInfo info : getAllActivitiesInfo()) {
-         if (info.activityInfo.packageName.equals(packageName))
+         if (info.activityInfo.packageName.equals(packageName)) {
             return true;
+         }
       }
       return false;
    }
@@ -728,8 +761,9 @@ public class AppConfig {
     */
    public static boolean isExistApp(String packageName) {
       for (ResolveInfo info : getAllActivitiesInfo()) {
-         if (info.activityInfo.packageName.equals(packageName))
+         if (info.activityInfo.packageName.equals(packageName)) {
             return true;
+         }
       }
       return false;
    }
@@ -740,10 +774,11 @@ public class AppConfig {
     * @return
     */
    public static Context getContext() {
-      if (isInitializing())
+      if (isInitializing()) {
          return myContext;
-      else
+      } else {
          return null;
+      }
    }
 
    /**
@@ -758,8 +793,9 @@ public class AppConfig {
          String[] children = appDir.list();
          for (String s : children) {
             File f = new File(appDir, s);
-            if (deleteDir(f))
+            if (deleteDir(f)) {
                Log.i(String.format("**************** DELETED -> (%s) *******************", f.getAbsolutePath()));
+            }
          }
       }
    }
@@ -767,8 +803,8 @@ public class AppConfig {
    private static boolean deleteDir(File dir) {
       if (dir != null && dir.isDirectory()) {
          String[] children = dir.list();
-         for (int i = 0; i < children.length; i++) {
-            boolean success = deleteDir(new File(dir, children[i]));
+         for (String element : children) {
+            boolean success = deleteDir(new File(dir, element));
             if (!success) {
                return false;
             }
