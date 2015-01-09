@@ -35,13 +35,13 @@ public class Converter {
     */
    public static final float TWIP_IN_MM   = 1f / MM_IN_TWIP;
    /**
-    * One twip in pt
+    * One pt in twips
     */
-   public static final float TWIP_IN_PT   = 20f;
+   public static final float PT_IN_TWIP   = 20;
    /**
-    * One pt in twip
+    * One twip in pts
     */
-   public static final float PT_IN_TWIP   = 1 / TWIP_IN_PT;
+   public static final float TWIP_IN_PT   = 1 / PT_IN_TWIP;
    /**
     * One inch in pt
     */
