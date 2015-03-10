@@ -67,7 +67,6 @@ public class AppConfig {
    public static final String       APP_VERSION_CODE        = "APP_VERSION_CODE";
    public static final String       APP_WORKING_DIRECTORY   = "APP_WORKING_DIRECTORY";
    public static final String       IMEI                    = "IMEI";
-   public static final String       CACHE                   = "cache/";
 
    public static final String       NEW_VERSION             = "NEW_VERSION";
    public static final String       NEW_INSTALL             = "NEW_INSTALL";
@@ -87,10 +86,11 @@ public class AppConfig {
    private static SharedPreferences preferences;
    private static Editor            editor;
 
-   private static Context           myContext;
    private static String            workingDirectory        = "";
-   private static String            appName                 = "";
    private static String            tmpWorkingDir           = "";
+
+   private static Context           myContext;
+   private static String            appName                 = "";
    private static boolean           isNewApplication        = false;
    private static boolean           isNewVersion            = false;
    private static boolean           isFreshInstallation     = false;
@@ -230,142 +230,40 @@ public class AppConfig {
       android.util.Log.i(LINE, LINE_DOUBLE);
    }
 
+   /**
+    * Checks whether the device is a telephone
+    * 
+    * @return
+    */
    public static boolean isPhone() {
       return diagonal == Diagonal.PHONE;
    }
 
+   /**
+    * Checks whether the device is a tablet
+    * 
+    * @return
+    */
    public static boolean isTablet() {
       return diagonal != Diagonal.PHONE;
    }
 
+   /**
+    * Return device diagonal enum constant
+    * 
+    * @return
+    */
    public static Diagonal getDeviceDiagonal() {
       return diagonal;
    }
 
    /**
-    * Default working dir with File.separatorChar at the end of string
+    * Return current working directory
     * 
     * @return
     */
-   public static String getDir() {
+   public static String getApplicationWorkingDir() {
       return workingDirectory;
-   }
-
-   /**
-    * Return default cache dir with File.separatorChar at the end of string. If cache dir is not present then will be create.
-    * 
-    * @return
-    */
-   public static String getCacheDir() {
-      return createDir(CACHE);
-   }
-
-   /**
-    * Create cache dir in app package default directory
-    */
-   public static void createCacheDir() {
-      createDir(CACHE);
-   }
-
-   /**
-    * Return full path to cashe file from given file name. If cache dir is not present then will be create.
-    * 
-    * @param fileName
-    * @return
-    */
-   public static String getCacheFileName(String fileName) {
-      return getCacheDir() + fileName;
-   }
-
-   /**
-    * Default working dir with subdir and File.separatorChar at the end of string
-    * 
-    * @return
-    */
-   public static String getDir(String subdir) {
-      if (subdir.charAt(subdir.length() - 1) != File.separatorChar) {
-         subdir = subdir + File.separatorChar;
-      }
-      if (subdir.charAt(0) == File.separatorChar) {
-         return workingDirectory + subdir;
-      } else {
-         return workingDirectory + File.separatorChar + subdir;
-      }
-   }
-
-   /**
-    * Return full path to file from given file name in work dir.
-    * 
-    * @param fileName
-    * @return
-    */
-   public static String getFileName(String fileName) {
-      return getFileName(null, fileName);
-
-   }
-
-   /**
-    * Return full path to file from given file name in work dir.
-    * 
-    * @param subdir subdir in work dir, possible to be empty or null.
-    * @param fileName
-    * @return
-    */
-   public static String getFileName(String subdir, String fileName) {
-      String dir = null;
-      if (subdir != null && subdir.length() > 0) {
-         dir = getDir(subdir);
-      } else {
-         dir = getDir();
-      }
-      return dir + fileName;
-   }
-
-   /**
-    * Switch to the custom working directory
-    * 
-    * @param newDir
-    */
-   public static void setNewDir(String newDir) {
-      workingDirectory = newDir;
-      File path = new File(workingDirectory);
-      if (!path.exists()) {
-         if (path.mkdir()) {
-            Log.i("Created new working directory: " + workingDirectory);
-         } else {
-            Log.e("Creating of the working directory is failed.\nPlease check the permission android.permission.WRITE_EXTERNAL_STORAGE.");
-         }
-      }
-   }
-
-   /**
-    * Restore standard working directory
-    */
-   public static void restoreStandardDir() {
-      workingDirectory = tmpWorkingDir;
-      Log.i("Restore the working directory: " + workingDirectory);
-   }
-
-   /**
-    * Create a dirs in the working dir
-    * 
-    * @param subdir
-    * @return full path
-    */
-   public static String createDir(String subdir) {
-      String path = workingDirectory + subdir;
-      File dir = new File(path);
-      if (!dir.exists()) {
-         boolean result = dir.mkdirs();
-         if (result) {
-            Log.i("++ Created the Directory: " + path);
-         } else {
-            Log.w("-- Creating the Directory is failed: " + path);
-         }
-         return "";
-      }
-      Log.i("-- The Directory already exist: " + path);
-      return path;
    }
 
    /**

@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import ua.at.tsvetkov.application.AppConfig;
 import ua.at.tsvetkov.util.Log;
 import android.content.Context;
 
@@ -20,7 +21,8 @@ import android.content.Context;
  */
 public class FileIO {
 
-   private static final int BUFFER_SIZE = 8192;
+   private static final String CACHE       = "cache/";
+   private static final int    BUFFER_SIZE = 8192;
 
    /**
     * Copy file from source to destination
@@ -183,6 +185,125 @@ public class FileIO {
          Log.w("Fail to delete file " + fileName);
       }
       return result;
+   }
+
+   /**
+    * Default working dir with File.separatorChar at the end of string
+    * 
+    * @return
+    */
+   public static String getDir() {
+      return AppConfig.getApplicationWorkingDir();
+   }
+
+   /**
+    * Return default cache dir with File.separatorChar at the end of string. If cache dir is not present then will be create.
+    * 
+    * @return
+    */
+   public static String getCacheDir() {
+      return createDir(CACHE);
+   }
+
+   /**
+    * Create cache dir in app package default directory
+    */
+   public static void createCacheDir() {
+      createDir(CACHE);
+   }
+
+   /**
+    * Return full path to cashe file from given file name. If cache dir is not present then will be create.
+    * 
+    * @param fileName
+    * @return
+    */
+   public static String getCacheFileName(String fileName) {
+      return getCacheDir() + fileName;
+   }
+
+   /**
+    * Default working dir with subdir and File.separatorChar at the end of string
+    * 
+    * @return
+    */
+   public static String getDir(String subdir) {
+      if (subdir.charAt(subdir.length() - 1) != File.separatorChar) {
+         subdir = subdir + File.separatorChar;
+      }
+      if (subdir.charAt(0) == File.separatorChar) {
+         return AppConfig.getApplicationWorkingDir() + subdir;
+      } else {
+         return AppConfig.getApplicationWorkingDir() + File.separatorChar + subdir;
+      }
+   }
+
+   /**
+    * Return full path to file from given file name in work dir.
+    * 
+    * @param fileName
+    * @return
+    */
+   public static String getFileName(String fileName) {
+      return getFileName(null, fileName);
+
+   }
+
+   /**
+    * Return full path to file from given file name in work dir.
+    * 
+    * @param subdir subdir in work dir, possible to be empty or null.
+    * @param fileName
+    * @return
+    */
+   public static String getFileName(String subdir, String fileName) {
+      String dir = null;
+      if (subdir != null && subdir.length() > 0) {
+         dir = getDir(subdir);
+      } else {
+         dir = getDir();
+      }
+      return dir + fileName;
+   }
+
+   /**
+    * Return file name without extension
+    * 
+    * @param path
+    * @return
+    */
+   public static String getFileNameNoExtension(String path) {
+      String name = "";
+      try {
+         int pos = path.lastIndexOf(File.separator) + 1;
+         int dotPos = path.lastIndexOf(".") + 1;
+         name = path.substring(pos, dotPos);
+      } catch (Exception e) {
+         Log.e(e);
+      }
+      return name;
+   }
+
+   /**
+    * Create a dirs in the working dir
+    * 
+    * @param subdir
+    * @return full path
+    */
+   public static String createDir(String subdir) {
+      String path = AppConfig.getApplicationWorkingDir() + subdir;
+      File dir = new File(path);
+      if (!dir.exists()) {
+         boolean result = dir.mkdirs();
+         if (result) {
+            Log.i("++ Created the Directory: " + path);
+         } else {
+            Log.w("-- Creating the Directory is failed: " + path);
+         }
+         return "";
+      }
+      Log.i("-- The Directory already exist: " + path);
+      return path;
    }
 
 }
