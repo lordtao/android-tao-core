@@ -281,6 +281,33 @@ public class AppConfig {
    }
 
    /**
+    * Return true if new version of app is started
+    * 
+    * @return
+    */
+   public static boolean isNewVersion() {
+      return isNewVersion;
+   }
+
+   /**
+    * Return true if app is absolutely new
+    * 
+    * @return
+    */
+   public static boolean isNewApplication() {
+      return isNewApplication;
+   }
+
+   /**
+    * Return true if app is totally fresh (any old app dirs is absent in to the working dir)
+    * 
+    * @return
+    */
+   public static boolean isFreshInstallation() {
+      return isFreshInstallation;
+   }
+
+   /**
     * Return boolean value
     * 
     * @param key
@@ -391,33 +418,6 @@ public class AppConfig {
          }
       }
       return null;
-   }
-
-   /**
-    * Return true if new version of app is started
-    * 
-    * @return
-    */
-   public static boolean isNewVersion() {
-      return isNewVersion;
-   }
-
-   /**
-    * Return true if app is absolutely new
-    * 
-    * @return
-    */
-   public static boolean isNewApplication() {
-      return isNewApplication;
-   }
-
-   /**
-    * Return true if app is totally fresh (any old app dirs is absent in to the working dir)
-    * 
-    * @return
-    */
-   public static boolean isFreshInstallation() {
-      return isFreshInstallation;
    }
 
    /**
@@ -622,7 +622,7 @@ public class AppConfig {
    }
 
    /**
-    * Print the KeyHash for this application
+    * Print the KeyHash for this application 
     */
    public static String getApplicationSignatureKeyHash() {
       return Apps.getApplicationSignatureKeyHash(getContext().getApplicationInfo().packageName);
