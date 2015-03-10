@@ -87,7 +87,6 @@ public class AppConfig {
    private static Editor            editor;
 
    private static String            workingDirectory        = "";
-   private static String            tmpWorkingDir           = "";
 
    private static Context           myContext;
    private static String            appName                 = "";
@@ -143,7 +142,6 @@ public class AppConfig {
          workingDirectory = context.getFilesDir().getPath() + File.separator + dirName + File.separatorChar;
       }
 
-      tmpWorkingDir = workingDirectory;
       File path = new File(workingDirectory);
       if (!path.exists()) {
          isFreshInstallation = true;
@@ -677,38 +675,6 @@ public class AppConfig {
       } else {
          return null;
       }
-   }
-
-   /**
-    * Call this method to delete any cache created by app
-    * 
-    * @param context context for your application
-    */
-   public static void clearCashedApplicationData() {
-      File cache = getContext().getCacheDir();
-      File appDir = new File(cache.getParent());
-      if (appDir.exists()) {
-         String[] children = appDir.list();
-         for (String s : children) {
-            File f = new File(appDir, s);
-            if (deleteDir(f)) {
-               Log.i(String.format("**************** DELETED -> (%s) *******************", f.getAbsolutePath()));
-            }
-         }
-      }
-   }
-
-   private static boolean deleteDir(File dir) {
-      if (dir != null && dir.isDirectory()) {
-         String[] children = dir.list();
-         for (String element : children) {
-            boolean success = deleteDir(new File(dir, element));
-            if (!success) {
-               return false;
-            }
-         }
-      }
-      return dir.delete();
    }
 
    /**

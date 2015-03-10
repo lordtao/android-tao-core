@@ -306,4 +306,42 @@ public class FileIO {
       return path;
    }
 
+   /**
+    * Call this method to delete any cache created by app
+    * 
+    * @param context context for your application
+    */
+   public static void clearCashedApplicationData() {
+      File cache = AppConfig.getContext().getCacheDir();
+      File appDir = new File(cache.getParent());
+      if (appDir.exists()) {
+         String[] children = appDir.list();
+         for (String s : children) {
+            File f = new File(appDir, s);
+            if (deleteDir(f)) {
+               Log.i(String.format("**************** DELETED -> (%s) *******************", f.getAbsolutePath()));
+            }
+         }
+      }
+   }
+
+   /**
+    * Delete directory with a subdirs and a files
+    * 
+    * @param dir
+    * @return
+    */
+   public static boolean deleteDir(File dir) {
+      if (dir != null && dir.isDirectory()) {
+         String[] children = dir.list();
+         for (String element : children) {
+            boolean success = deleteDir(new File(dir, element));
+            if (!success) {
+               return false;
+            }
+         }
+      }
+      return dir.delete();
+   }
+
 }
