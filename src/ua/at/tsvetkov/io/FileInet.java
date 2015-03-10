@@ -62,20 +62,27 @@ public class FileInet {
 		return 0;
 	}
 
-	/**
-	 * Downloads a remote file and stores it locally.
-	 * 
-	 * @param url Remote URL of the file to download
-	 * @param pathAndFileName Local path with file name where to store the file
-	 * @param rewrite If TRUE and file exist - rewrite the file. If FALSE and file exist and his length > 0 - not download and rewrite the file.
-	 * @param complete listener
-	 * @throws IOException
-	 * @throws MalformedURLException
-	 * @throws Exception Read/write exception
-	 */
-	static public void download(String url, String pathAndFileName, boolean rewrite, CompleteListener listener) {
-		boolean result = download(url, pathAndFileName, rewrite);
-		listener.complete(url, result);
+	   /**
+    * Async downloads a remote file and stores it locally.
+    * 
+    * @param url Remote URL of the file to download
+    * @param pathAndFileName Local path with file name where to store the file
+    * @param rewrite If TRUE and file exist - rewrite the file. If FALSE and file exist and his length > 0 - not download and rewrite the
+    *           file.
+    * @param complete listener
+    * @throws IOException
+    * @throws MalformedURLException
+    * @throws Exception Read/write exception
+    */
+   static public void download(final String url, final String pathAndFileName, final boolean rewrite, final CompleteListener listener) {
+      new Thread(new Runnable() {
+
+         @Override
+         public void run() {
+            boolean result = download(url, pathAndFileName, rewrite);
+            listener.complete(url, result);
+         }
+      }, "Download thread: " + url).start();
 	}
 
 	/**
