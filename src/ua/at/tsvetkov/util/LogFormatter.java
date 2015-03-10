@@ -9,7 +9,7 @@
  *     Alexandr Tsvetkov - initial API and implementation
  *
  * Project:
- *     TAO Util
+ *     TAO Core
  *
  * License agreement:
  *
@@ -50,8 +50,9 @@ public class LogFormatter {
       int max = 0;
       for (Map.Entry<?, ?> item : map.entrySet()) {
          int length = item.getKey().toString().length();
-         if (max < length)
+         if (max < length) {
             max = length;
+         }
       }
       StringBuilder sb = new StringBuilder();
       String fomatString = "%-" + max + "s = %s";
@@ -90,21 +91,22 @@ public class LogFormatter {
       Class<?> cl = myObj.getClass();
       int max = 0;
       Field[] fields = cl.getDeclaredFields();
-      for (int i = 0; i < fields.length; i++) {
-         int length = fields[i].getName().length();
-         if (max < length)
+      for (Field field : fields) {
+         int length = field.getName().length();
+         if (max < length) {
             max = length;
+         }
       }
       String fomatString = PREFIX + "%-" + max + "s = %s" + NL;
       StringBuilder sb = new StringBuilder();
       sb.append(HALF_LINE + cl.getSimpleName() + HALF_LINE + NL);
-      for (int i = 0; i < fields.length; i++) {
+      for (Field field : fields) {
          try {
-            Field myField = getField(cl, fields[i].getName());
+            Field myField = getField(cl, field.getName());
             myField.setAccessible(true);
-            sb.append(String.format(fomatString, fields[i].getName(), myField.get(myObj)));
+            sb.append(String.format(fomatString, field.getName(), myField.get(myObj)));
          } catch (Exception e) {
-            sb.append(PREFIX + "Can't access to field " + fields[i].getName());
+            sb.append(PREFIX + "Can't access to field " + field.getName());
          }
       }
       sb.append(LINE);
@@ -148,9 +150,9 @@ public class LogFormatter {
    public static void printBytesToReadableString(byte[] data, int countPerLine) {
       StringBuilder sb = new StringBuilder(countPerLine * 3);
       int count = 0;
-      for (int i = 0; i < data.length; i++) {
+      for (byte element : data) {
          count++;
-         sb.append(String.format("%02X ", data[i]));
+         sb.append(String.format("%02X ", element));
          if (count >= countPerLine) {
             count = 0;
             sb.trimToSize();
@@ -168,8 +170,8 @@ public class LogFormatter {
     */
    public static String bytesToReadableString(byte[] data) {
       StringBuilder sb = new StringBuilder(data.length * 3);
-      for (int i = 0; i < data.length; i++) {
-         sb.append(String.format("%02X ", data[i]));
+      for (byte element : data) {
+         sb.append(String.format("%02X ", element));
       }
       sb.trimToSize();
       return sb.toString();

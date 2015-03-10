@@ -9,7 +9,7 @@
  *     Alexandr Tsvetkov - initial API and implementation
  *
  * Project:
- *     TAO Util
+ *     TAO Core
  *
  * License agreement:
  *
@@ -24,9 +24,7 @@
 package ua.at.tsvetkov.application;
 
 import java.io.File;
-import java.security.MessageDigest;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -35,21 +33,17 @@ import ua.at.tsvetkov.util.Log;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.content.pm.ResolveInfo;
-import android.content.pm.Signature;
 import android.graphics.PointF;
 import android.os.Build;
 import android.os.Environment;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
-import android.util.Base64;
 import android.widget.Toast;
 
 /**
@@ -87,7 +81,6 @@ public class AppConfig {
    private static Editor            editor;
 
    private static String            workingDirectory        = "";
-   private static String            tmpWorkingDir           = "";
 
    private static Context           myContext;
    private static String            appName                 = "";
@@ -143,7 +136,6 @@ public class AppConfig {
          workingDirectory = context.getFilesDir().getPath() + File.separator + dirName + File.separatorChar;
       }
 
-      tmpWorkingDir = workingDirectory;
       File path = new File(workingDirectory);
       if (!path.exists()) {
          isFreshInstallation = true;
@@ -228,6 +220,19 @@ public class AppConfig {
          android.util.Log.i("", String.format(fomatString, setting.getKey(), setting.getValue()));
       }
       android.util.Log.i(LINE, LINE_DOUBLE);
+   }
+
+   /**
+    * Return base application Context
+    * 
+    * @return
+    */
+   public static Context getContext() {
+      if (isInitializing()) {
+         return myContext;
+      } else {
+         return null;
+      }
    }
 
    /**
@@ -617,115 +622,10 @@ public class AppConfig {
    }
 
    /**
-    * Return info about installed on this device apps with CATEGORY_LAUNCHER (usual apps)
-    * 
-    * @param context
-    * @return List<ResolveInfo>
-    */
-   public static List<ResolveInfo> getAllActivitiesInfo() {
-      Intent intent = new Intent(Intent.ACTION_MAIN, null);
-      intent.addCategory(Intent.CATEGORY_LAUNCHER);
-      PackageManager pm = getContext().getPackageManager();
-      return pm.queryIntentActivities(intent, 0);
-   }
-
-   /**
-    * Print installed apps classes names
-    * 
-    * @param context
-    * @return
-    */
-   public static void printInstalledAppsPackageAndClass() {
-      for (ResolveInfo info : getAllActivitiesInfo()) {
-         Log.d("Package: " + info.activityInfo.packageName + " Class: " + info.activityInfo.name);
-      }
-   }
-
-   public static boolean checkInstalledPackage(String packageName) {
-      for (ResolveInfo info : getAllActivitiesInfo()) {
-         if (info.activityInfo.packageName.equals(packageName)) {
-            return true;
-         }
-      }
-      return false;
-   }
-
-   /**
-    * Checks for an installed application
-    * 
-    * @param context
-    * @param packageName
-    * @return
-    */
-   public static boolean isExistApp(String packageName) {
-      for (ResolveInfo info : getAllActivitiesInfo()) {
-         if (info.activityInfo.packageName.equals(packageName)) {
-            return true;
-         }
-      }
-      return false;
-   }
-
-   /**
-    * Return application Context
-    * 
-    * @return
-    */
-   public static Context getContext() {
-      if (isInitializing()) {
-         return myContext;
-      } else {
-         return null;
-      }
-   }
-
-   /**
-    * Call this method to delete any cache created by app
-    * 
-    * @param context context for your application
-    */
-   public static void clearCashedApplicationData() {
-      File cache = getContext().getCacheDir();
-      File appDir = new File(cache.getParent());
-      if (appDir.exists()) {
-         String[] children = appDir.list();
-         for (String s : children) {
-            File f = new File(appDir, s);
-            if (deleteDir(f)) {
-               Log.i(String.format("**************** DELETED -> (%s) *******************", f.getAbsolutePath()));
-            }
-         }
-      }
-   }
-
-   private static boolean deleteDir(File dir) {
-      if (dir != null && dir.isDirectory()) {
-         String[] children = dir.list();
-         for (String element : children) {
-            boolean success = deleteDir(new File(dir, element));
-            if (!success) {
-               return false;
-            }
-         }
-      }
-      return dir.delete();
-   }
-
-   /**
-    * Print the KeyHash for this application
+    * Return the KeyHash for this application
     */
    public static String getApplicationSignatureKeyHash() {
-      try {
-         PackageInfo info = getContext().getPackageManager().getPackageInfo(getContext().getApplicationInfo().packageName, PackageManager.GET_SIGNATURES);
-         for (Signature signature : info.signatures) {
-            MessageDigest md = MessageDigest.getInstance("SHA");
-            md.update(signature.toByteArray());
-            return Base64.encodeToString(md.digest(), Base64.DEFAULT);
-         }
-      } catch (Exception e) {
-         Log.e(e);
-      }
-      return "";
+      return Apps.getApplicationSignatureKeyHash(getContext().getApplicationInfo().packageName);
    }
 
    /**
@@ -737,7 +637,7 @@ public class AppConfig {
     * @param day
     */
    @SuppressWarnings("deprecation")
-   public static void checkTrial(Activity activity, int year, int month, int day) {
+   public static void finishIfTrialExpired(Activity activity, int year, int month, int day) {
       Date date = new Date();
       Date today = new Date();
       date.setYear(year - 1900);

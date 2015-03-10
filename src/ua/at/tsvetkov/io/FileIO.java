@@ -1,6 +1,26 @@
-/**
- * 
- */
+/*******************************************************************************
+ * Copyright (c) 2014 Alexandr Tsvetkov.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the GNU Lesser General Public License
+ * which accompanies this distribution, and is available at
+ * http://www.gnu.org/licenses/lgpl.html
+ *
+ * Contributors:
+ *     Alexandr Tsvetkov - initial API and implementation
+ *
+ * Project:
+ *     TAO Core
+ *
+ * License agreement:
+ *
+ * 1. This code is published AS IS. Author is not responsible for any damage that can be
+ *    caused by any application that uses this code.
+ * 2. Author does not give a garantee, that this code is error free.
+ * 3. This code can be used in NON-COMMERCIAL applications AS IS without any special
+ *    permission from author.
+ * 4. This code can be modified without any special permission from author IF AND ONLY IF
+ *    this license agreement will remain unchanged.
+ ******************************************************************************/
 package ua.at.tsvetkov.io;
 
 import java.io.BufferedInputStream;
@@ -304,6 +324,44 @@ public class FileIO {
       }
       Log.i("-- The Directory already exist: " + path);
       return path;
+   }
+
+   /**
+    * Call this method to delete any cache created by app
+    * 
+    * @param context context for your application
+    */
+   public static void clearCashedApplicationData() {
+      File cache = AppConfig.getContext().getCacheDir();
+      File appDir = new File(cache.getParent());
+      if (appDir.exists()) {
+         String[] children = appDir.list();
+         for (String s : children) {
+            File f = new File(appDir, s);
+            if (deleteDir(f)) {
+               Log.i(String.format("**************** DELETED -> (%s) *******************", f.getAbsolutePath()));
+            }
+         }
+      }
+   }
+
+   /**
+    * Delete directory with a subdirs and a files
+    * 
+    * @param dir
+    * @return
+    */
+   public static boolean deleteDir(File dir) {
+      if (dir != null && dir.isDirectory()) {
+         String[] children = dir.list();
+         for (String element : children) {
+            boolean success = deleteDir(new File(dir, element));
+            if (!success) {
+               return false;
+            }
+         }
+      }
+      return dir.delete();
    }
 
 }

@@ -9,7 +9,7 @@
  *     Alexandr Tsvetkov - initial API and implementation
  *
  * Project:
- *     TAO Util
+ *     TAO Core
  *
  * License agreement:
  *

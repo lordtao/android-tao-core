@@ -1,19 +1,16 @@
 /*******************************************************************************
- * Copyright (c) 2012 Alexandr Tsvetkov.
+ * Copyright (c) 2014 Alexandr Tsvetkov.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the GNU Public License v2.0
+ * are made available under the terms of the GNU Lesser General Public License
  * which accompanies this distribution, and is available at
- * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ * http://www.gnu.org/licenses/lgpl.html
+ *
  * Contributors:
  *     Alexandr Tsvetkov - initial API and implementation
- * 
+ *
  * Project:
- *     TAO Library
- * 
- * File name:
- *     IO.java
- *     
+ *     TAO Core
+ *
  * License agreement:
  *
  * 1. This code is published AS IS. Author is not responsible for any damage that can be
@@ -23,8 +20,6 @@
  *    permission from author.
  * 4. This code can be modified without any special permission from author IF AND ONLY IF
  *    this license agreement will remain unchanged.
- * 5. SPECIAL PERMISSION for this code usage in COMMERCIAL application SHOULD be obtained
- *    from author.
  ******************************************************************************/
 package ua.at.tsvetkov.io;
 
@@ -39,7 +34,7 @@ import java.net.URL;
 import ua.at.tsvetkov.util.Log;
 
 /**
- * @author A.Tsvetkov 2010 http://tsvetkov.at.ua mailto:al@ukr.net
+ * @author A.Tsvetkov 2014 http://tsvetkov.at.ua mailto:al@ukr.net
  */
 public class FileInet {
 

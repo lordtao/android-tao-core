@@ -9,7 +9,7 @@
  *     Alexandr Tsvetkov - initial API and implementation
  *
  * Project:
- *     TAO Util
+ *     TAO Core
  *
  * License agreement:
  *
@@ -62,8 +62,9 @@ public final class Log {
 	 * @param msg The message you would like logged.
 	 */
 	public static void v(String msg) {
-		if (isDisabled)
-			return;
+		if (isDisabled) {
+         return;
+      }
 		android.util.Log.v(getLocation(), msg);
 	}
 
@@ -73,8 +74,9 @@ public final class Log {
 	 * @param msg The message you would like logged.
 	 */
 	public static void d(String msg) {
-		if (isDisabled)
-			return;
+		if (isDisabled) {
+         return;
+      }
 		android.util.Log.d(getLocation(), msg);
 	}
 
@@ -84,8 +86,9 @@ public final class Log {
 	 * @param msg The message you would like logged.
 	 */
 	public static void i(String msg) {
-		if (isDisabled)
-			return;
+		if (isDisabled) {
+         return;
+      }
 		android.util.Log.i(getLocation(), msg);
 	}
 
@@ -95,8 +98,9 @@ public final class Log {
 	 * @param msg The message you would like logged.
 	 */
 	public static void w(String msg) {
-		if (isDisabled)
-			return;
+		if (isDisabled) {
+         return;
+      }
 		android.util.Log.w(getLocation(), msg);
 	}
 
@@ -106,8 +110,9 @@ public final class Log {
 	 * @param msg The message you would like logged.
 	 */
 	public static void e(String msg) {
-		if (isDisabled)
-			return;
+		if (isDisabled) {
+         return;
+      }
 		android.util.Log.e(getLocation(), msg);
 	}
 
@@ -119,8 +124,9 @@ public final class Log {
 	 * @param msg The message you would like logged.
 	 */
 	public static void wtf(String msg) {
-		if (isDisabled)
-			return;
+		if (isDisabled) {
+         return;
+      }
 		android.util.Log.wtf(getLocation(), msg);
 	}
 
@@ -133,8 +139,9 @@ public final class Log {
 	 * @param tr An exception to log
 	 */
 	public static void v(String msg, Exception tr) {
-		if (isDisabled)
-			return;
+		if (isDisabled) {
+         return;
+      }
 		android.util.Log.v(getLocation(), msg, tr);
 	}
 
@@ -145,8 +152,9 @@ public final class Log {
 	 * @param tr An exception to log
 	 */
 	public static void d(String msg, Exception tr) {
-		if (isDisabled)
-			return;
+		if (isDisabled) {
+         return;
+      }
 		android.util.Log.d(getLocation(), msg, tr);
 	}
 
@@ -157,8 +165,9 @@ public final class Log {
 	 * @param tr An exception to log
 	 */
 	public static void i(String msg, Exception tr) {
-		if (isDisabled)
-			return;
+		if (isDisabled) {
+         return;
+      }
 		android.util.Log.i(getLocation(), msg, tr);
 	}
 
@@ -169,8 +178,9 @@ public final class Log {
 	 * @param tr An exception to log
 	 */
 	public static void w(String msg, Exception tr) {
-		if (isDisabled)
-			return;
+		if (isDisabled) {
+         return;
+      }
 		android.util.Log.w(getLocation(), msg, tr);
 	}
 
@@ -181,8 +191,9 @@ public final class Log {
 	 * @param tr An exception to log
 	 */
 	public static void e(String msg, Exception tr) {
-		if (isDisabled)
-			return;
+		if (isDisabled) {
+         return;
+      }
 		android.util.Log.e(getLocation(), msg, tr);
 	}
 
@@ -193,8 +204,9 @@ public final class Log {
 	 * @param tr An exception to log
 	 */
 	public static void wtf(String msg, Exception tr) {
-		if (isDisabled)
-			return;
+		if (isDisabled) {
+         return;
+      }
 		android.util.Log.wtf(getLocation(), msg, tr);
 	}
 
@@ -206,8 +218,9 @@ public final class Log {
 	 * @param tr An exception to log
 	 */
 	public static void v(Exception tr) {
-		if (isDisabled)
-			return;
+		if (isDisabled) {
+         return;
+      }
 		android.util.Log.v(getLocation(), "", tr);
 	}
 
@@ -217,8 +230,9 @@ public final class Log {
 	 * @param tr An exception to log
 	 */
 	public static void d(Exception tr) {
-		if (isDisabled)
-			return;
+		if (isDisabled) {
+         return;
+      }
 		android.util.Log.d(getLocation(), "", tr);
 	}
 
@@ -228,8 +242,9 @@ public final class Log {
 	 * @param tr An exception to log
 	 */
 	public static void i(Exception tr) {
-		if (isDisabled)
-			return;
+		if (isDisabled) {
+         return;
+      }
 		android.util.Log.i(getLocation(), "", tr);
 	}
 
@@ -239,8 +254,9 @@ public final class Log {
 	 * @param tr An exception to log
 	 */
 	public static void w(Exception tr) {
-		if (isDisabled)
-			return;
+		if (isDisabled) {
+         return;
+      }
 		android.util.Log.w(getLocation(), "", tr);
 	}
 
@@ -250,8 +266,9 @@ public final class Log {
 	 * @param tr An exception to log
 	 */
 	public static void e(Exception tr) {
-		if (isDisabled)
-			return;
+		if (isDisabled) {
+         return;
+      }
 		android.util.Log.e(getLocation(), "", tr);
 	}
 
@@ -261,8 +278,9 @@ public final class Log {
 	 * @param tr An exception to log
 	 */
 	public static void wtf(Exception tr) {
-		if (isDisabled)
-			return;
+		if (isDisabled) {
+         return;
+      }
 		android.util.Log.wtf(getLocation(), "", tr);
 	}
 
@@ -277,8 +295,9 @@ public final class Log {
 	 * @param msg The message you would like logged.
 	 */
 	public static void v(Object obj, String msg) {
-		if (isDisabled)
-			return;
+		if (isDisabled) {
+         return;
+      }
 		android.util.Log.v(gatExtendedTag(obj), msg);
 	}
 
@@ -290,8 +309,9 @@ public final class Log {
 	 * @param msg The message you would like logged.
 	 */
 	public static void d(Object obj, String msg) {
-		if (isDisabled)
-			return;
+		if (isDisabled) {
+         return;
+      }
 		android.util.Log.d(gatExtendedTag(obj), msg);
 	}
 
@@ -303,8 +323,9 @@ public final class Log {
 	 * @param msg The message you would like logged.
 	 */
 	public static void i(Object obj, String msg) {
-		if (isDisabled)
-			return;
+		if (isDisabled) {
+         return;
+      }
 		android.util.Log.i(gatExtendedTag(obj), msg);
 	}
 
@@ -316,8 +337,9 @@ public final class Log {
 	 * @param msg The message you would like logged.
 	 */
 	public static void w(Object obj, String msg) {
-		if (isDisabled)
-			return;
+		if (isDisabled) {
+         return;
+      }
 		android.util.Log.w(gatExtendedTag(obj), msg);
 	}
 
@@ -342,8 +364,9 @@ public final class Log {
 	 * @param msg The message you would like logged.
 	 */
 	public static void wtf(Object obj, String msg) {
-		if (isDisabled)
-			return;
+		if (isDisabled) {
+         return;
+      }
 		android.util.Log.wtf(gatExtendedTag(obj), msg);
 	}
 
@@ -359,8 +382,9 @@ public final class Log {
 	 * @param tr An exception to log
 	 */
 	public static void v(Object obj, String msg, Exception tr) {
-		if (isDisabled)
-			return;
+		if (isDisabled) {
+         return;
+      }
 		android.util.Log.v(gatExtendedTag(obj), msg, tr);
 	}
 
@@ -374,8 +398,9 @@ public final class Log {
 	 * @param tr An exception to log
 	 */
 	public static void d(Object obj, String msg, Exception tr) {
-		if (isDisabled)
-			return;
+		if (isDisabled) {
+         return;
+      }
 		android.util.Log.d(gatExtendedTag(obj), msg, tr);
 	}
 
@@ -389,8 +414,9 @@ public final class Log {
 	 * @param tr An exception to log
 	 */
 	public static void i(Object obj, String msg, Exception tr) {
-		if (isDisabled)
-			return;
+		if (isDisabled) {
+         return;
+      }
 		android.util.Log.i(gatExtendedTag(obj), msg, tr);
 	}
 
@@ -404,8 +430,9 @@ public final class Log {
 	 * @param tr An exception to log
 	 */
 	public static void w(Object obj, String msg, Exception tr) {
-		if (isDisabled)
-			return;
+		if (isDisabled) {
+         return;
+      }
 		android.util.Log.w(gatExtendedTag(obj), msg, tr);
 	}
 
@@ -419,8 +446,9 @@ public final class Log {
 	 * @param msg The message you would like logged.
 	 */
 	public static void e(Object obj, String msg, Exception tr) {
-		if (isDisabled)
-			return;
+		if (isDisabled) {
+         return;
+      }
 		android.util.Log.e(gatExtendedTag(obj), msg, tr);
 	}
 
@@ -434,8 +462,9 @@ public final class Log {
 	 * @param msg The message you would like logged.
 	 */
 	public static void wtf(Object obj, String msg, Exception tr) {
-		if (isDisabled)
-			return;
+		if (isDisabled) {
+         return;
+      }
 		android.util.Log.wtf(gatExtendedTag(obj), msg, tr);
 	}
 
@@ -443,8 +472,9 @@ public final class Log {
 	 * Logging the current Thread info
 	 */
 	public static void threadInfo() {
-		if (isDisabled)
-			return;
+		if (isDisabled) {
+         return;
+      }
 		Thread thread = Thread.currentThread();
 		long id = thread.getId();
 		String name = thread.getName();
@@ -467,8 +497,9 @@ public final class Log {
 	 * Logging the current Thread info and a message
 	 */
 	public static void threadInfo(String msg) {
-		if (isDisabled)
-			return;
+		if (isDisabled) {
+         return;
+      }
 		Thread thread = Thread.currentThread();
 		long id = thread.getId();
 		String name = thread.getName();
@@ -493,8 +524,8 @@ public final class Log {
 		final String className = Log.class.getName();
 		final StackTraceElement[] traces = Thread.currentThread().getStackTrace();
 		boolean found = false;
-		for (int i = 0; i < traces.length; i++) {
-			StackTraceElement trace = traces[i];
+		for (StackTraceElement trace2 : traces) {
+			StackTraceElement trace = trace2;
 
 			try {
 				if (found) {
