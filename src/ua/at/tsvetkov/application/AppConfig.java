@@ -47,10 +47,9 @@ import android.preference.PreferenceManager;
 import android.widget.Toast;
 
 /**
- * Class for initialize the storage and restoration of essential parameters and simple data for app. Data saves and loads in to the Shared
- * Preferences with name equals the app packages name. Automatically create the working directory for the application in the standard place
- * and help to create subdirs. Checks is the app is new or is new version and whether it was previously installed. You can print Shared
- * Preferences in to the LogCat. Offers a variety of static methods to manage an application.
+ * Return the basic parameters of the application. Initialize and restoration of essential parameters for the app. Data saves and loads in
+ * to the Shared Preferences with name equals the app packages name. Automatically create the working directory for the application in the
+ * standard place. Checks is the app is new or is new version and whether it was previously installed.
  * 
  * @author A.Tsvetkov 2010 http://tsvetkov.at.ua mailto:al@ukr.net
  */
@@ -281,6 +280,33 @@ public class AppConfig {
    }
 
    /**
+    * Return true if new version of app is started
+    * 
+    * @return
+    */
+   public static boolean isNewVersion() {
+      return isNewVersion;
+   }
+
+   /**
+    * Return true if app is absolutely new
+    * 
+    * @return
+    */
+   public static boolean isNewApplication() {
+      return isNewApplication;
+   }
+
+   /**
+    * Return true if app is totally fresh (any old app dirs is absent in to the working dir)
+    * 
+    * @return
+    */
+   public static boolean isFreshInstallation() {
+      return isFreshInstallation;
+   }
+
+   /**
     * Return boolean value
     * 
     * @param key
@@ -391,33 +417,6 @@ public class AppConfig {
          }
       }
       return null;
-   }
-
-   /**
-    * Return true if new version of app is started
-    * 
-    * @return
-    */
-   public static boolean isNewVersion() {
-      return isNewVersion;
-   }
-
-   /**
-    * Return true if app is absolutely new
-    * 
-    * @return
-    */
-   public static boolean isNewApplication() {
-      return isNewApplication;
-   }
-
-   /**
-    * Return true if app is totally fresh (any old app dirs is absent in to the working dir)
-    * 
-    * @return
-    */
-   public static boolean isFreshInstallation() {
-      return isFreshInstallation;
    }
 
    /**
