@@ -622,7 +622,7 @@ public class AppConfig {
    }
 
    /**
-    * Return the KeyHash for this application
+    * Print the KeyHash for this application
     */
    public static String getApplicationSignatureKeyHash() {
       return Apps.getApplicationSignatureKeyHash(getContext().getApplicationInfo().packageName);
