@@ -217,7 +217,7 @@ public class FileIO {
    }
 
    /**
-    * Return default cache dir with File.separatorChar at the end of string. If cache dir is not present then will be create.
+    * Return default cache dir with File.separatorChar at the end of string.
     * 
     * @return
     */
@@ -322,7 +322,6 @@ public class FileIO {
          }
          return "";
       }
-      Log.i("-- The Directory already exist: " + path);
       return path;
    }
 
