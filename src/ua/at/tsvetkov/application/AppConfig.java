@@ -214,11 +214,20 @@ public class AppConfig {
       android.util.Log.i("", LINE_DOUBLE);
       android.util.Log.i("", DEFAULT_SETTINGS_STRING);
       android.util.Log.i("", LINE_DOUBLE);
-      SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+      SharedPreferences defaultSharedPreferences = getDefaultSharedPreferences();
       for (Map.Entry<String, ?> setting : defaultSharedPreferences.getAll().entrySet()) {
          android.util.Log.i("", String.format(fomatString, setting.getKey(), setting.getValue()));
       }
       android.util.Log.i(LINE, LINE_DOUBLE);
+   }
+
+   /**
+    * Return default shared preferences (main Application settings)
+    * 
+    * @return
+    */
+   public static SharedPreferences getDefaultSharedPreferences() {
+      return PreferenceManager.getDefaultSharedPreferences(getContext());
    }
 
    /**
