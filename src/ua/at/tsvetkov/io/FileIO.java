@@ -208,6 +208,25 @@ public class FileIO {
    }
 
    /**
+    * Rename file
+    * 
+    * @param srcFileName
+    * @param dstFileName
+    * @return true if success
+    */
+   public static boolean rename(String srcFileName, String dstFileName) {
+      File src = new File(srcFileName);
+      File dst = new File(dstFileName);
+      boolean result = src.renameTo(dst);
+      if (result) {
+         Log.v("File success renamed to " + dstFileName);
+      } else {
+         Log.w("Fail to rename file " + srcFileName);
+      }
+      return result;
+   }
+
+   /**
     * Default working dir with File.separatorChar at the end of string
     * 
     * @return

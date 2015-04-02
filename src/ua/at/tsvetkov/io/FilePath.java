@@ -102,4 +102,28 @@ public class FilePath {
       return fileName;
    }
 
+   /**
+    * Return path for this file without file name
+    * 
+    * @param fullPath
+    * @return
+    */
+   public static String getFilePath(String fullPath) {
+      String fileName = "";
+      if (fullPath == null) {
+         Log.w("The path to file is null");
+         return fileName;
+      }
+      if (fullPath.length() == 0) {
+         Log.w("The path to file is empty");
+         return fileName;
+      }
+      int pos = fullPath.lastIndexOf(File.separator);
+      if (pos != -1) {
+         fileName = fullPath.substring(0, pos + 1);
+         return fileName;
+      }
+      return "";
+   }
+
 }
