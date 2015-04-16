@@ -30,13 +30,17 @@ package ua.at.tsvetkov.util;
  */
 public class Const {
 
-	public final static long	SEC	= 1000;
-	public final static long	MIN	= 60 * SEC;
-	public final static long	HOUR	= 60 * MIN;
-	public final static long	DAY	= 24 * HOUR;
+   public final static long SEC  = 1000;
+   public final static long MIN  = 60 * SEC;
+   public final static long HOUR = 60 * MIN;
+   public final static long DAY  = 24 * HOUR;
 
-	public final static int		KB		= 1024;
-	public final static int		MB		= KB * 1024;
-	public final static int		GB		= MB * 1024;
+   public final static int  KB   = 1024;
+   public final static int  MB   = KB * 1024;
+   public final static int  GB   = MB * 1024;
+
+   public final static char AR_R = '⇢';
+   public final static char AR_L = '⇠';
+   public final static char NL   = '\n';
 
 }

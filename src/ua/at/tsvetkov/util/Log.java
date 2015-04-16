@@ -568,7 +568,6 @@ public final class Log {
                   sb.append(COLON);
                   sb.append(trace.getLineNumber());
                   return sb.toString();
-                  // return PREFIX_MAIN_STRING + getClassName(clazz) + ":" + trace.getMethodName() + ":" + trace.getLineNumber();
                }
             } else if (trace.getClassName().startsWith(className)) {
                found = true;

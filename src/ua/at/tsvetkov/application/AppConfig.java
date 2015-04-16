@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.Set;
 
 import ua.at.tsvetkov.ui.Screen;
+import ua.at.tsvetkov.util.Const;
 import ua.at.tsvetkov.util.Log;
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -89,6 +90,8 @@ public class AppConfig {
    private static boolean           isStrictMode            = false;
    private static boolean           isInitialized           = false;
    private static Diagonal          diagonal;
+   private static boolean           isDebuggable;
+   private static boolean           isBeingDebugged;
 
    /**
     * Init configuration. Use in class extended Application class. Create the working dirs in standard dir "/Android/data/" + application
@@ -171,6 +174,16 @@ public class AppConfig {
       editor.putBoolean(NEW_INSTALL, isNewApplication);
       editor.putBoolean(FRESH_INSTALL, isFreshInstallation);
       save();
+
+      isDebuggable = (0 != (getContext().getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE));
+      isBeingDebugged = android.os.Debug.isDebuggerConnected();
+      if (isDebuggable) {
+         android.util.Log.i('<' + appName + '>', Const.AR_R + " Log enabled.");
+      } else {
+         android.util.Log.w('<' + appName + '>', Const.AR_R + " Log is prohibited because debug mode is disabled.");
+         Log.setDisabled(true);
+      }
+
    }
 
    /**
@@ -187,9 +200,30 @@ public class AppConfig {
    }
 
    /**
+    * Whether the app is debuggable or not
+    * 
+    * @return
+    */
+   public static boolean isDebuggable() {
+      return isDebuggable;
+   }
+
+   /**
+    * Whether the app is currently being debugged (e.g. over ADB)
+    * 
+    * @return
+    */
+   public static boolean isBeingDebugged() {
+      return isBeingDebugged;
+   }
+
+   /**
     * Print stored SharedPreferences in to the LogCat
     */
    public static void printInfo() {
+      if (!isDebuggable) {
+         return;
+      }
       android.util.Log.i(LINE, LINE_DOUBLE);
       android.util.Log.i("", PREFIX + "App name:                    " + appName);
       android.util.Log.i("", PREFIX + "First installation:          " + isNewVersion);
@@ -630,7 +664,7 @@ public class AppConfig {
    }
 
    /**
-    * Print the KeyHash for this application 
+    * Print the KeyHash for this application
     */
    public static String getApplicationSignatureKeyHash() {
       return Apps.getApplicationSignatureKeyHash(getContext().getApplicationInfo().packageName);
