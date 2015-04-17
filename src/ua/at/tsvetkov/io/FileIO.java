@@ -208,6 +208,27 @@ public class FileIO {
    }
 
    /**
+    * Delete content from directory
+    * 
+    * @param pathName
+    */
+   public static void deleteDirContent(String pathName) {
+      File path = new File(pathName);
+      String[] files = path.list();
+      if (files != null) {
+         for (String fileName : files) {
+            File file = new File(fileName);
+            boolean result = file.delete();
+            if (result) {
+               Log.v("File success deleted " + fileName);
+            } else {
+               Log.w("Fail to delete file " + fileName);
+            }
+         }
+      }
+   }
+
+   /**
     * Rename file
     * 
     * @param srcFileName
