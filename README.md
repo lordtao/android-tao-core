@@ -60,7 +60,9 @@ public void startDiscovery() {
 ```
 
 you received in log class:method:lineNumber :
+```code
 04-20 19:28:05.958: I/> PrinterDiscoveryJmDNS:startDiscovery:49         WiFi is enabled.
+```
 
 ##FileIO:
 Static methods for file and directory/assets operations - copy, delete, move
