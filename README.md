@@ -13,6 +13,7 @@ AppConfig.printInfo();
 
 you received in log:
 
+```code
 Log enabled.
 -------------------------------------------------------------------------------
  App name:                    Leitz Icon
@@ -46,6 +47,7 @@ Log enabled.
  pref_Font                  = Roboto Serif
  pref_region                = US
 -------------------------------------------------------------------------------
+```
 
 ##Log:
 
