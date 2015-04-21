@@ -1,4 +1,4 @@
-android-tao-util
+android-tao-core
 ================
 
 Android App Configurator, easy Log with detailed information, Net checker.
@@ -67,7 +67,7 @@ public void startDiscovery() {
    ...
 ```
 
-you received in log class:method:lineNumber :
+you received in log <b>class:method:lineNumber</b> :
 ```code
 04-20 19:28:05.958: I/> PrinterDiscoveryJmDNS:startDiscovery:49         WiFi is enabled.
 ```
