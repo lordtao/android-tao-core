@@ -48,6 +48,14 @@ Log enabled.
  pref_region                = US
 -------------------------------------------------------------------------------
 ```
+Store some data:
+```java
+AppConfig.putSetting(key, isGood);
+```
+Restore data
+```java
+AppConfig.getBoolean(key, true);
+```
 
 ##Log:
 
@@ -63,6 +71,9 @@ you received in log class:method:lineNumber :
 ```code
 04-20 19:28:05.958: I/> PrinterDiscoveryJmDNS:startDiscovery:49         WiFi is enabled.
 ```
+
+###NetChecker:
+Check a web site status.
 
 ##FileIO:
 Static methods for file and directory/assets operations - copy, delete, move
