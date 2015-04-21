@@ -28,6 +28,8 @@ import java.io.File;
 import ua.at.tsvetkov.util.Log;
 
 /**
+ * Methods for dismantling the filename
+ * 
  * @author Alexandr Tsvetkov 2015
  */
 public class FilePath {

@@ -37,6 +37,8 @@ import ua.at.tsvetkov.util.Log;
 import android.content.Context;
 
 /**
+ * Methods for file and directory operations
+ * 
  * @author Alexandr Tsvetkov 2014
  */
 public class FileIO {

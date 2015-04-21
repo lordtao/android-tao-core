@@ -34,6 +34,8 @@ import java.net.URL;
 import ua.at.tsvetkov.util.Log;
 
 /**
+ * Methods for downloading files from the Internet
+ * 
  * @author A.Tsvetkov 2014 http://tsvetkov.at.ua mailto:al@ukr.net
  */
 public class FileInet {
