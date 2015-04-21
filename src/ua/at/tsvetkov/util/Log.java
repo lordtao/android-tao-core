@@ -506,7 +506,7 @@ public final class Log {
          return;
       }
       StringBuilder sb = getThreadInfoString(detailMessage, Thread.currentThread());
-      android.util.Log.v(THREAD + getLocation(), sb.toString(), throwable);
+      android.util.Log.e(THREAD + getLocation(), sb.toString(), throwable);
    }
 
    /**
@@ -520,7 +520,7 @@ public final class Log {
          return;
       }
       StringBuilder sb = getThreadInfoString("", thread);
-      android.util.Log.v(THREAD + getLocation(), sb.toString(), throwable);
+      android.util.Log.e(THREAD + getLocation(), sb.toString(), throwable);
    }
 
    /**
