@@ -15,36 +15,36 @@ you received in log:
 
 Log enabled.
 ================================================================================
-| App name:                    Leitz Icon
-| First installation:          false
-| Working directory:           /storage/emulated/0/Android/data/com.leitz.icon/
-| Strict mode:                 false
-| Diagonal:                    TABLET_10
-| Application signature SHA-1: frGG2Kpy0QC+DesuQC2/B4Y4418=
+ App name:                    Leitz Icon
+ First installation:          false
+ Working directory:           /storage/emulated/0/Android/data/com.leitz.icon/
+ Strict mode:                 false
+ Diagonal:                    TABLET_10
+ Application signature SHA-1: frGG2Kpy0QC+DesuQC2/B4Y4418=
 ================================================================================
-|                                  Shared Data
+                                  Shared Data
 ================================================================================
-| APP_NAME                   = Leitz Icon
-| NEW_VERSION                = false
-| PRINT_SERVICE_KEY          = [fe80::21e:c0ff:fe17:dd96]
-| LASTDEVICELANGUAGE         = eng
-| LABEL_TEMPLATE_FROM_ASSETS = true
-| selected_region            = US
-| FRESH_INSTALL              = false
-| APP_WORKING_DIRECTORY      = /storage/emulated/0/Android/data/com.leitz.icon/
-| LABEL_TEMPLATE_FILE_NAME   = templates/Standard Address Label - Address.LeitzLbl
-| OBJECT_ADDING_MENU_INDEX   = 3
-| NEW_INSTALL                = false
-| APP_VERSION_NAME           = 1.0.05
-| APP_VERSION_CODE           = 1005
+ APP_NAME                   = Leitz Icon
+ NEW_VERSION                = false
+ PRINT_SERVICE_KEY          = [fe80::21e:c0ff:fe17:dd96]
+ LASTDEVICELANGUAGE         = eng
+ LABEL_TEMPLATE_FROM_ASSETS = true
+ selected_region            = US
+ FRESH_INSTALL              = false
+ APP_WORKING_DIRECTORY      = /storage/emulated/0/Android/data/com.leitz.icon/
+ LABEL_TEMPLATE_FILE_NAME   = templates/Standard Address Label - Address.LeitzLbl
+ OBJECT_ADDING_MENU_INDEX   = 3
+ NEW_INSTALL                = false
+ APP_VERSION_NAME           = 1.0.05
+ APP_VERSION_CODE           = 1005
 ================================================================================
-|                          Default Shared Preferences
+                             Default Shared Preferences
 ================================================================================
-| acra.lastVersionNr         = 1005
-| pref_usemetric             = true
-| pref_FontSize              = 4
-| pref_Font                  = Roboto Serif
-| pref_region                = US
+ acra.lastVersionNr         = 1005
+ pref_usemetric             = true
+ pref_FontSize              = 4
+ pref_Font                  = Roboto Serif
+ pref_region                = US
 ================================================================================
 
 #Log:
