@@ -468,7 +468,7 @@ public class AppConfig {
     * @param key
     * @param value
     */
-   public static void putSetting(String key, boolean value) {
+   public static void putBoolean(String key, boolean value) {
       editor.putBoolean(key, value);
    }
 
@@ -478,7 +478,7 @@ public class AppConfig {
     * @param key
     * @param value
     */
-   public static void putSetting(String key, float value) {
+   public static void putFloat(String key, float value) {
       editor.putFloat(key, value);
    }
 
@@ -488,7 +488,7 @@ public class AppConfig {
     * @param key
     * @param value
     */
-   public static void putSetting(String key, int value) {
+   public static void putInt(String key, int value) {
       editor.putInt(key, value);
    }
 
@@ -498,7 +498,7 @@ public class AppConfig {
     * @param key
     * @param value
     */
-   public static void putSetting(String key, long value) {
+   public static void putLong(String key, long value) {
       editor.putLong(key, value);
    }
 
@@ -508,7 +508,7 @@ public class AppConfig {
     * @param key
     * @param value
     */
-   public static void putSetting(String key, String value) {
+   public static void putString(String key, String value) {
       editor.putString(key, value);
    }
 
@@ -519,7 +519,7 @@ public class AppConfig {
     * @param value
     */
    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-   public static void putSetting(String key, Set<String> values) {
+   public static void putStringSet(String key, Set<String> values) {
       editor.putStringSet(key, values);
    }
 
@@ -530,7 +530,7 @@ public class AppConfig {
     * @param value
     * @param isNeedToSave Go write the SharedPreferences or postpone.
     */
-   public static void putSetting(String key, boolean value, boolean isNeedToSave) {
+   public static void putBoolean(String key, boolean value, boolean isNeedToSave) {
       editor.putBoolean(key, value);
       if (isNeedToSave) {
          save();
@@ -544,7 +544,7 @@ public class AppConfig {
     * @param value
     * @param isNeedToSave Go write the SharedPreferences or postpone.
     */
-   public static void putSetting(String key, float value, boolean isNeedToSave) {
+   public static void putFloat(String key, float value, boolean isNeedToSave) {
       editor.putFloat(key, value);
       if (isNeedToSave) {
          save();
@@ -558,7 +558,7 @@ public class AppConfig {
     * @param value
     * @param isNeedToSave Go write the SharedPreferences or postpone.
     */
-   public static void putSetting(String key, int value, boolean isNeedToSave) {
+   public static void putInt(String key, int value, boolean isNeedToSave) {
       editor.putInt(key, value);
       if (isNeedToSave) {
          save();
@@ -572,7 +572,7 @@ public class AppConfig {
     * @param value
     * @param isNeedToSave Go write the SharedPreferences or postpone.
     */
-   public static void putSetting(String key, long value, boolean isNeedToSave) {
+   public static void putLong(String key, long value, boolean isNeedToSave) {
       editor.putLong(key, value);
       if (isNeedToSave) {
          save();
@@ -586,7 +586,7 @@ public class AppConfig {
     * @param value
     * @param isNeedToSave Go write the SharedPreferences or postpone.
     */
-   public static void putSetting(String key, String value, boolean isNeedToSave) {
+   public static void putString(String key, String value, boolean isNeedToSave) {
       editor.putString(key, value);
       if (isNeedToSave) {
          save();
@@ -601,7 +601,7 @@ public class AppConfig {
     * @param isNeedToSave Go write the SharedPreferences or postpone.
     */
    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-   public static void putSetting(String key, Set<String> values, boolean isNeedToSave) {
+   public static void putStringSet(String key, Set<String> values, boolean isNeedToSave) {
       editor.putStringSet(key, values);
       if (isNeedToSave) {
          save();
