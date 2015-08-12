@@ -1,0 +1,42 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+subprojects {
+
+    repositories {
+        mavenCentral()
+    }
+
+    buildscript {
+        repositories {
+            mavenCentral()
+        }
+        dependencies {
+            classpath 'com.android.tools.build:gradle:1.2.3'
+        }
+    }
+}
+
+ext {
+    androidPlugin = 'com.android.tools.build:gradle:1.2.3'
+    minSdkVersion = 8
+    compileSdkVersion = 22
+    targetSdkVersion = compileSdkVersion
+    buildToolsVersion = '22.0.1'
+    javaVersion = JavaVersion.VERSION_1_7
+
+    GROUP = 'ua.at.tsvetkov'
+    VERSION_NAME = "1.2.0-SNAPSHOT"
+    POM_PACKAGING = "pom"
+    POM_DESCRIPTION= "Android TAO Core"
+
+    POM_URL="http://github.com/lordtao/android-tao-core/"
+    POM_SCM_URL="http://github.com/lordtao/android-tao-core/"
+    POM_SCM_CONNECTION="scm:git:https://github.com/lordtao/android-tao-core.git"
+    POM_SCM_DEV_CONNECTION="scm:git:git@github.com:lordtao/android-tao-core.git"
+
+    POM_LICENCE_NAME="The BSD 3-Clause License"
+    POM_LICENCE_URL="http://opensource.org/licenses/BSD-3-Clause"
+    POM_LICENCE_DIST="repo"
+
+    POM_DEVELOPER_ID="lordtao"
+    POM_DEVELOPER_NAME="Alexandr Tsvetkov"
+}

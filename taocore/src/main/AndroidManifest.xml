@@ -1,0 +1,14 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="ua.at.tsvetkov"
+          android:versionCode="5"
+          android:versionName="1.2.00">
+
+    <uses-sdk
+        android:minSdkVersion="8"
+        android:targetSdkVersion="22"/>
+
+    <application
+        android:allowBackup="true">
+    </application>
+
+</manifest>
