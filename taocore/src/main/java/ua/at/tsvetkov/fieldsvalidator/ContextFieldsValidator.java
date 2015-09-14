@@ -20,86 +20,86 @@ import ua.at.tsvetkov.util.Log;
  */
 public class ContextFieldsValidator {
 
-   private final Context mContext;
-   protected     Set<AbstractValidator> mFieldHolderList;
+    private final Context mContext;
+    protected Set<AbstractValidator> mFieldHolderList;
 
-   public ContextFieldsValidator(Context context) {
-      mFieldHolderList = new HashSet<>();
-      mContext = context;
-   }
+    public ContextFieldsValidator(Context context) {
+        mFieldHolderList = new HashSet<>();
+        mContext = context;
+    }
 
-   public void addEditText(EditText editText, String regex, String errMsg) {
-      EditTextValidator fieldHolder = new EditTextValidator(editText, regex, errMsg);
-      mFieldHolderList.add(fieldHolder);
-   }
+    public void addEditText(EditText editText, String regex, String errMsg) {
+        EditTextValidator fieldHolder = new EditTextValidator(editText, regex, errMsg);
+        mFieldHolderList.add(fieldHolder);
+    }
 
-   public void addEditText(EditText editText, String regex, int errMsgId) {
-      String errMsg = mContext.getResources().getString(errMsgId);
-      addEditText(editText, regex, errMsg);
-   }
+    public void addEditText(EditText editText, String regex, int errMsgId) {
+        String errMsg = mContext.getResources().getString(errMsgId);
+        addEditText(editText, regex, errMsg);
+    }
 
-   public void addCheckBox(CheckBox checkBox, boolean isMustChecked, String errMsg) {
-      CheckBoxValidator fieldHolder = new CheckBoxValidator(checkBox, isMustChecked, errMsg);
-      mFieldHolderList.add(fieldHolder);
-   }
+    public void addCheckBox(CheckBox checkBox, boolean isMustChecked, String errMsg) {
+        CheckBoxValidator fieldHolder = new CheckBoxValidator(checkBox, isMustChecked, errMsg);
+        mFieldHolderList.add(fieldHolder);
+    }
 
-   public void addCheckBox(CheckBox checkBox, boolean isMustChecked, int errMsgId) {
-      String errMsg = mContext.getResources().getString(errMsgId);
-      addCheckBox(checkBox, isMustChecked, errMsg);
-   }
+    public void addCheckBox(CheckBox checkBox, boolean isMustChecked, int errMsgId) {
+        String errMsg = mContext.getResources().getString(errMsgId);
+        addCheckBox(checkBox, isMustChecked, errMsg);
+    }
 
-   public void addDate(EditText editText, Date start, Date finish, String errMsg) {
-      DateValidator fieldHolder = new DateValidator(editText, start, finish, errMsg);
-      mFieldHolderList.add(fieldHolder);
-   }
-
-
-   public void addDate(EditText editText, Date start, Date finish, int errMsgId) {
-      String errMsg = mContext.getResources().getString(errMsgId);
-      addDate(editText, start, finish, errMsg);
-   }
+    public void addDate(EditText editText, Date start, Date finish, String dateFormat, String errMsg) {
+        DateValidator fieldHolder = new DateValidator(editText, start, finish, dateFormat, errMsg);
+        mFieldHolderList.add(fieldHolder);
+    }
 
 
-   public void addDate(EditText editText, int years, String errMsg) {
-      DateValidator fieldHolder = new DateValidator(editText, years, errMsg);
-      mFieldHolderList.add(fieldHolder);
-   }
+    public void addDate(EditText editText, Date start, Date finish, String dateFormat, int errMsgId) {
+        String errMsg = mContext.getResources().getString(errMsgId);
+        addDate(editText, start, finish, dateFormat, errMsg);
+    }
 
 
-   public void addDate(EditText editText, int years, int errMsgId) {
-      String errMsg = mContext.getResources().getString(errMsgId);
-      addDate(editText, years, errMsg);
-   }
-
-   public void addPassword(EditText password, EditText passwordAgain, String regex, String errMsg) {
-      PasswordValidator fieldHolder = new PasswordValidator(password, passwordAgain, regex, errMsg);
-      mFieldHolderList.add(fieldHolder);
-   }
+    public void addDate(EditText editText, int years, String dateFormat, String errMsg) {
+        DateValidator fieldHolder = new DateValidator(editText, years, dateFormat, errMsg);
+        mFieldHolderList.add(fieldHolder);
+    }
 
 
-   public void addPassword(EditText password, EditText passwordAgain, String regex, int errMsgId) {
-      String errMsg = mContext.getResources().getString(errMsgId);
-      addPassword(password, passwordAgain, regex, errMsg);
-   }
+    public void addDate(EditText editText, int years, String dateFormat, int errMsgId) {
+        String errMsg = mContext.getResources().getString(errMsgId);
+        addDate(editText, years, dateFormat, errMsg);
+    }
 
-   public boolean isValid() {
-      boolean result = true;
-      for (AbstractValidator fieldHolder : mFieldHolderList) {
-         if (!fieldHolder.isValid()) {
-            fieldHolder.setError();
-            Log.w(fieldHolder.getFieldName() + " > Not correct data in field: " + fieldHolder.getContentString());
-            result = false;
-         } else {
-            Log.i(fieldHolder.getFieldName() + " > Correct data in field: " + fieldHolder.getContentString());
-         }
-      }
-      return result;
-   }
+    public void addPassword(EditText password, EditText passwordAgain, String regex, String errMsg) {
+        PasswordValidator fieldHolder = new PasswordValidator(password, passwordAgain, regex, errMsg);
+        mFieldHolderList.add(fieldHolder);
+    }
 
-   public void clear() {
-      for (AbstractValidator fieldHolder : mFieldHolderList) {
-         fieldHolder.clearError();
-      }
-   }
+
+    public void addPassword(EditText password, EditText passwordAgain, String regex, int errMsgId) {
+        String errMsg = mContext.getResources().getString(errMsgId);
+        addPassword(password, passwordAgain, regex, errMsg);
+    }
+
+    public boolean isValid() {
+        boolean result = true;
+        for (AbstractValidator fieldHolder : mFieldHolderList) {
+            if (!fieldHolder.isValid()) {
+                fieldHolder.setError();
+                Log.w(fieldHolder.getFieldName() + " > Not correct data in field: " + fieldHolder.getContentString());
+                result = false;
+            } else {
+                Log.i(fieldHolder.getFieldName() + " > Correct data in field: " + fieldHolder.getContentString());
+            }
+        }
+        return result;
+    }
+
+    public void clear() {
+        for (AbstractValidator fieldHolder : mFieldHolderList) {
+            fieldHolder.clearError();
+        }
+    }
 }
 
