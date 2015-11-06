@@ -110,13 +110,13 @@ public class RegExp {
    }
 
    /**
-    * Generate user name regexp include only chars
+    * Generate user name regexp include only chars (Upper and lower space)
     *
     * @param min minimal length
     * @param max maximal length
     * @return regexp string
     */
    public static final String getName(int min, int max) {
-      return "^[a-z]{" + min + ',' + max + "}$";
+      return "^[a-zA-Z]{" + min + ',' + max + "}$";
    }
 }

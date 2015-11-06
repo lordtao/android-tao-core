@@ -25,14 +25,16 @@
  */
 package ua.at.tsvetkov.netchecker;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+
+import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 
 import ua.at.tsvetkov.util.Log;
-
-import android.content.Context;
-import android.net.ConnectivityManager;
 
 /**
  * Check a web site status.
@@ -82,7 +84,7 @@ public class NetChecker {
                   Log.v("Checked Server response time " + timeReplay + " ms. [" + urlStr + " ]");
                   break;
                } else if (timeReplay > timeout) {
-                  result = NetStatus.NO_NET;
+                  result = NetStatus.TIMEOUT;
                   Log.w("Timeout! Server [ " + urlStr + " ] response time exceeds " + timeReplay + "ms.");
                   break;
                }
@@ -107,8 +109,10 @@ public class NetChecker {
                urlc = null;
             } catch (MalformedURLException e1) {
                result = NetStatus.FAULTY_URL;
-            } catch (Exception e) {
-               result = NetStatus.NO_NET;
+            } catch (SocketTimeoutException e) {
+               result = NetStatus.TIMEOUT;
+            } catch (IOException e) {
+               result = NetStatus.IO_ERROR;
             }
          }
       }, "Get net status").start();

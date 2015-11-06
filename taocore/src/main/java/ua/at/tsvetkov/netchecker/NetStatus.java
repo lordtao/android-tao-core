@@ -29,5 +29,21 @@ package ua.at.tsvetkov.netchecker;
  * @author A.Tsvetkov 2010, http://tsvetkov.at.ua, al@ukr.net<br>
  */
 public enum NetStatus {
-   NOT_DEFINED_YET, FAULTY_URL, NO_NET, CONNECTION_MISSING, NET_OK
+    NOT_DEFINED_YET("Network status is not defined yet."),
+    FAULTY_URL("Wrong server url"),
+    IO_ERROR("IO Error while reading the server page."),
+    CONNECTION_MISSING("No default network is currently active. Please check internet connection."),
+    NET_OK("Connection is good."),
+    TIMEOUT("A timeout was reached while waiting for a response from the server.");
+
+    private final String mMessage;
+
+    NetStatus(String message) {
+        mMessage = message;
+    }
+
+    public String getMessage() {
+        return mMessage;
+    }
+
 }

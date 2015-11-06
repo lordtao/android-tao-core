@@ -25,11 +25,11 @@
  */
 package ua.at.tsvetkov.netchecker;
 
-import ua.at.tsvetkov.application.AppConfig;
-import ua.at.tsvetkov.util.Log;
-
 import android.app.Activity;
 import android.widget.Toast;
+
+import ua.at.tsvetkov.application.AppConfig;
+import ua.at.tsvetkov.util.Log;
 
 /**
  * Check a web site connection.
@@ -40,7 +40,8 @@ import android.widget.Toast;
 public class Net {
 
    private static final String URL_OF_THE_SERVER_IS_FAULTY = "Url of the server is faulty";
-   private static final String USER_HAS_ENABLED_NETWORK_BUT_IT_S_NOT_WORKING = "User has enabled network, but it's not working";
+   private static final String USER_HAS_ENABLED_NETWORK_BUT_TIMEOUT= "User has enabled network, but Timeout on server";
+   private static final String USER_HAS_ENABLED_NETWORK_BUT_SITE_IS_NOT_REACHABLE = "User has enabled network, but site is not reachable";
    private static final String USER_SHOULD_ENABLE_INTERNET = "User should enable WiFi/3g etc";
    private static final String NET_IS_OK = "The network is connected. The site is available.";
    private static final String NET_STATUS_IS_NOT_DEFINED = "Network Status is not defined.";
@@ -56,8 +57,11 @@ public class Net {
          case CONNECTION_MISSING:
             Log.w(USER_SHOULD_ENABLE_INTERNET);
             return false;
-         case NO_NET:
-            Log.w(USER_HAS_ENABLED_NETWORK_BUT_IT_S_NOT_WORKING);
+         case IO_ERROR:
+            Log.w(USER_HAS_ENABLED_NETWORK_BUT_SITE_IS_NOT_REACHABLE);
+            return false;
+         case TIMEOUT:
+            Log.w(USER_HAS_ENABLED_NETWORK_BUT_TIMEOUT);
             return false;
          case FAULTY_URL:
             Log.w(URL_OF_THE_SERVER_IS_FAULTY);
@@ -84,9 +88,12 @@ public class Net {
          case CONNECTION_MISSING:
             message(activity, USER_SHOULD_ENABLE_INTERNET);
             return false;
-         case NO_NET:
-            message(activity, USER_HAS_ENABLED_NETWORK_BUT_IT_S_NOT_WORKING);
+          case TIMEOUT:
+            message(activity, USER_HAS_ENABLED_NETWORK_BUT_TIMEOUT);
             return false;
+          case IO_ERROR:
+              message(activity, USER_HAS_ENABLED_NETWORK_BUT_SITE_IS_NOT_REACHABLE);
+              return false;
          case FAULTY_URL:
             message(activity, URL_OF_THE_SERVER_IS_FAULTY);
             return false;
