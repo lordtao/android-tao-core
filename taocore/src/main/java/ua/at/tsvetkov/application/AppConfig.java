@@ -5,15 +5,15 @@
  * are made available under the terms of the GNU Lesser General Public License
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/lgpl.html
- * <p/>
+ * <p>
  * Contributors:
  * Alexandr Tsvetkov - initial API and implementation
- * <p/>
+ * <p>
  * Project:
  * TAO Core
- * <p/>
+ * <p>
  * License agreement:
- * <p/>
+ * <p>
  * 1. This code is published AS IS. Author is not responsible for any damage that can be
  * caused by any application that uses this code.
  * 2. Author does not give a garantee, that this code is error free.
@@ -27,6 +27,7 @@ package ua.at.tsvetkov.application;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -80,7 +81,6 @@ public final class AppConfig {
 
     private static String workingDirectory = "";
     private static String appName = "";
-    private static Context myContext = null;
     private static SharedPreferences preferences = null;
     private static Editor editor = null;
     private static Diagonal diagonal = null;
@@ -91,45 +91,42 @@ public final class AppConfig {
     private static boolean isFreshInstallation = false;
     private static boolean isStrictMode = false;
     private static boolean isInitialized = false;
+    private static String appSignatureKeyHash = null;
+    private static String appSignatureFingerprint = null;
+    private static String myPackageName = null;
 
     /**
-     * Init configuration. Use in class extended Application class. Create the working dirs in standard dir "/Android/data/" + application
-     * package name.
+     * Init configuration. Create the working dirs in standard dir "/Android/data/" + application package name.
      *
-     * @param context Base context
+     * @param application
      * @throws NumberFormatException
      */
-    public static void init(Context context) {
-        init(context, false);
+    public static void init(Application application) {
+        init(application, false);
     }
 
     /**
-     * Init configuration. Usually in class extended Application class.
+     * Init configuration.
      *
-     * @param context          Base context
-     * @param putWorkDirInRoot true - put the working dirs in SD root, false - put the working dirs in standart dir "/Android/data/" +
-     *                         appData.applicationInfo.packageName.
+     * @param application
+     * @param putWorkDirInRoot true - put the working dirs in SD root, false - put the working dirs in standard dir "/Android/data/" + app package name.
      * @throws NumberFormatException
      */
-    public static void init(Context context, boolean putWorkDirInRoot) {
-        if (context == null) {
-            Log.e("Can't init AppConfig, your context eq null.");
-            return;
-        }
-        myContext = context;
+    public static void init(Application application, boolean putWorkDirInRoot) {
         isNewVersion = false;
         isNewApplication = false;
         isFreshInstallation = false;
         isInitialized = true;
+        myPackageName = application.getApplicationInfo().packageName;
         PackageInfo appData = null;
         try {
-            appData = myContext.getPackageManager().getPackageInfo(context.getPackageName(), PackageManager.GET_SIGNATURES);
+            appData = application.getPackageManager().getPackageInfo(application.getPackageName(), PackageManager.GET_SIGNATURES);
         } catch (NameNotFoundException e) {
             Log.e("Package not found", e);
         }
-        preferences = context.getSharedPreferences(appData.packageName, Context.MODE_PRIVATE);
+        preferences = application.getSharedPreferences(appData.packageName, Context.MODE_PRIVATE);
         editor = preferences.edit();
-        appName = context.getString(appData.applicationInfo.labelRes);
+        appName = application.getString(appData.applicationInfo.labelRes);
         String dirName = appName.replaceAll("[\\W&&\\D&&\\S]", "");
         if (android.os.Environment.getExternalStorageState().equals(android.os.Environment.MEDIA_MOUNTED)) {
             if (putWorkDirInRoot) {
@@ -138,7 +135,7 @@ public final class AppConfig {
                 workingDirectory = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/data/" + appData.applicationInfo.packageName + File.separatorChar;
             }
         } else {
-            workingDirectory = context.getFilesDir().getPath() + File.separator + dirName + File.separatorChar;
+            workingDirectory = application.getFilesDir().getPath() + File.separator + dirName + File.separatorChar;
         }
 
         File path = new File(workingDirectory);
@@ -157,7 +154,7 @@ public final class AppConfig {
             isNewVersion = true;
         }
 
-        PointF pf = Screen.getSizeInInch(context);
+        PointF pf = Screen.getSizeInInch(application);
         double diag = Math.sqrt(pf.x * pf.x + pf.y * pf.y);
         if (diag < 6) {
             diagonal = Diagonal.PHONE;
@@ -169,6 +166,9 @@ public final class AppConfig {
             diagonal = Diagonal.TABLET_BIG;
         }
 
+        appSignatureKeyHash = Apps.getApplicationSignatureKeyHash(application, myPackageName);
+        appSignatureFingerprint = Apps.getSignatureFingerprint(application, myPackageName);
+
         editor.putString(APP_NAME, appName);
         editor.putString(APP_VERSION_NAME, String.valueOf(appData.versionName));
         editor.putInt(APP_VERSION_CODE, appData.versionCode);
@@ -178,7 +178,7 @@ public final class AppConfig {
         editor.putBoolean(FRESH_INSTALL, isFreshInstallation);
         save();
 
-        isDebuggable = (0 != (myContext.getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE));
+        isDebuggable = (0 != (application.getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE));
         isBeingDebugged = android.os.Debug.isDebuggerConnected();
         if (isDebuggable) {
             android.util.Log.i(DIV_LEFT + appName + DIV_RIGHT, "➧ Log enabled.");
@@ -198,7 +198,7 @@ public final class AppConfig {
         if (isInitialized) {
             return true;
         } else {
-            throw new IllegalArgumentException("AppConfig is not initiated. Call ua.at.tsvetkov.application.AppConfig.init(your_context) in your Application code.");
+            throw new IllegalArgumentException("AppConfig is not initiated. Call ua.at.tsvetkov.application.AppConfig.init(application) in your Application code.");
         }
     }
 
@@ -221,7 +221,7 @@ public final class AppConfig {
     }
 
     /**
-     * Print stored SharedPreferences in to the LogCat
+     * Print the app data and shared preferences in to the LogCat
      */
     public static void printInfo() {
         if (!isDebuggable) {
@@ -230,9 +230,9 @@ public final class AppConfig {
         android.util.Log.i(LINE, LINE_DOUBLE);
 
         android.util.Log.i(LINE_EMPTY, PREFIX + "Application name:      " + appName);
-        android.util.Log.i(LINE_EMPTY, PREFIX + "Application package:   " + myContext.getApplicationInfo().packageName);
-        android.util.Log.i(LINE_EMPTY, PREFIX + "Signature Fingerprint: " + getSignatureFingerprint());
-        android.util.Log.i(LINE_EMPTY, PREFIX + "Signature SHA-1:       " + getApplicationSignatureKeyHash());
+        android.util.Log.i(LINE_EMPTY, PREFIX + "Application package:   " + myPackageName);
+        android.util.Log.i(LINE_EMPTY, PREFIX + "Signature Fingerprint: " + appSignatureFingerprint);
+        android.util.Log.i(LINE_EMPTY, PREFIX + "Signature SHA-1:       " + appSignatureKeyHash);
         android.util.Log.i(LINE_EMPTY, PREFIX + "Working directory:     " + workingDirectory);
         android.util.Log.i(LINE_EMPTY, PREFIX + "Diagonal:              " + diagonal);
         android.util.Log.i(LINE_EMPTY, PREFIX + "First installation:    " + isNewVersion);
@@ -263,10 +263,21 @@ public final class AppConfig {
 
     /**
      * Return default shared preferences (main Application settings)
+     * Deprecated, use getDefaultSharedPreferences(Context context)
      *
      * @return default SharedPreferences
      */
     public static SharedPreferences getDefaultSharedPreferences() {
+        throw new UnsupportedOperationException("Use getDefaultSharedPreferences(Context context) instead getDefaultSharedPreferences().");
+    }
+
+    /**
+     * Return default shared preferences (main Application settings)
+     *
+     * @param myContext default context
+     * @return default SharedPreferences
+     */
+    public static SharedPreferences getDefaultSharedPreferences(Context myContext) {
         return PreferenceManager.getDefaultSharedPreferences(myContext);
     }
 
@@ -275,12 +286,9 @@ public final class AppConfig {
      *
      * @return Context
      */
+    @Deprecated
     public static Context getContext() {
-        if (isInitializing()) {
-            return myContext;
-        } else {
-            return null;
-        }
+        throw new UnsupportedOperationException("Deprecated method.");
     }
 
     /**
@@ -452,7 +460,7 @@ public final class AppConfig {
 
     /**
      * Retrieve a set of String values from the preferences.
-     * <p/>
+     * <p>
      * <p>Note that you <em>must not</em> modify the set instance returned
      * by this call.  The consistency of the stored data is not guaranteed
      * if you do, nor is your ability to modify the instance at all.
@@ -631,23 +639,30 @@ public final class AppConfig {
      */
     public static void clear() {
         editor.clear();
-        Log.i(">>> Shared preferenced CLEARED!!! <<<");
+        Log.i(">>> Shared preferences was CLEARED! <<<");
+    }
+
+    /**
+     * Enable StrictMode in the app. Put call in the first called onCreate() method in Application or Activity.
+     * Deprecated, use enableStrictMode(Context context)
+     *
+     * @throws IllegalAccessException if AppConfig is not initialized
+     */
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    @Deprecated
+    public static void enableStrictMode() throws IllegalAccessException {
+        throw new UnsupportedOperationException("Use enableStrictMode(Context context) instead enableStrictMode().");
     }
 
     /**
      * Enable StrictMode in the app. Put call in the first called onCreate() method in Application or Activity.
      *
-     * @throws IllegalAccessException if AppConfig is not initialized
+     * @param myContext
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    public static void enableStrictMode() throws IllegalAccessException {
+    public static void enableStrictMode(Context myContext) {
         try {
-            int appFlags = 0;
-            if (myContext != null) {
-                appFlags = myContext.getApplicationInfo().flags;
-            } else {
-                throw new IllegalAccessException("AppConfig is not initialized");
-            }
+            int appFlags = myContext.getApplicationInfo().flags;
             if ((appFlags & ApplicationInfo.FLAG_DEBUGGABLE) != 0) {
                 StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().detectDiskReads().detectDiskWrites().detectNetwork().penaltyLog().build());
                 StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder().detectActivityLeaks().detectLeakedSqlLiteObjects().detectLeakedClosableObjects().penaltyLog().penaltyDeath().build());
@@ -673,38 +688,27 @@ public final class AppConfig {
      * Return true if application run in debug mode
      *
      * @return Return true if application run in debug mode
-     * @throws IllegalAccessException if AppConfig is not initialized
      */
     public static boolean isDebugMode() {
-        if (myContext != null) {
-            return (0 != (myContext.getApplicationInfo().flags &= ApplicationInfo.FLAG_DEBUGGABLE));
-        } else {
-            Log.e( new IllegalAccessException("AppConfig is not initialized"));
-            return false;
-        }
+        return isDebuggable;
     }
 
     /**
-     * Print the KeyHash for this application or emty String if AppConfig is not initialized
+     * Return the app signature KeyHash for this application
      *
-     * @throws IllegalAccessException if AppConfig is not initialized
+     * @return the app signature KeyHash
      */
     public static String getApplicationSignatureKeyHash() {
-        if (myContext != null) {
-            return Apps.getApplicationSignatureKeyHash(myContext.getApplicationInfo().packageName);
-        } else {
-            Log.e("AppConfig is not initialized. Can't get KeyHash for this application");
-            return "";
-        }
+        return appSignatureKeyHash;
     }
 
+    /**
+     * Return the app signature fingerprint for this application
+     *
+     * @return the app signature fingerprint
+     */
     public static String getSignatureFingerprint() {
-        if (myContext != null) {
-            return Apps.getSignatureFingerprint(myContext.getApplicationInfo().packageName);
-        } else {
-            Log.e("AppConfig is not initialized. Can't get the app certificate's fingerprint");
-            return "";
-        }
+        return appSignatureFingerprint;
     }
 
     /**
