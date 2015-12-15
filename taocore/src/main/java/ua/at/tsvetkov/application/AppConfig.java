@@ -62,6 +62,7 @@ public final class AppConfig {
     public static final String APP_NAME = "APP_NAME";
     public static final String APP_VERSION_NAME = "APP_VERSION_NAME";
     public static final String APP_VERSION_CODE = "APP_VERSION_CODE";
+    public static final String APP_PACKAGE_NAME = "APP_PACKAGE_NAME";
     public static final String APP_WORKING_DIRECTORY = "APP_WORKING_DIRECTORY";
     public static final String IMEI = "IMEI";
     public static final String NEW_VERSION = "NEW_VERSION";
@@ -69,6 +70,7 @@ public final class AppConfig {
     public static final String FRESH_INSTALL = "FRESH_INSTALL";
     public static final boolean SAVE = true;
     public static final boolean NOT_SAVE = false;
+
     private static final String PREFIX = "| ";
     private static final String LINE = "▪=====================▪";
     private static final String LINE_EMPTY = "▪                     ▪";
@@ -79,11 +81,11 @@ public final class AppConfig {
     private static final String DIV_LEFT = "▪ ";
     private static final String DIV_RIGHT = " ▪";
 
-    private static String workingDirectory = "";
-    private static String appName = "";
-    private static SharedPreferences preferences = null;
-    private static Editor editor = null;
-    private static Diagonal diagonal = null;
+    private static String mWorkingDirectory = "";
+    private static String mAppName = "";
+    private static SharedPreferences mPreferences = null;
+    private static Editor mEditor = null;
+    private static Diagonal mDiagonal = null;
     private static boolean isDebuggable = true;
     private static boolean isBeingDebugged = true;
     private static boolean isNewApplication = false;
@@ -91,9 +93,11 @@ public final class AppConfig {
     private static boolean isFreshInstallation = false;
     private static boolean isStrictMode = false;
     private static boolean isInitialized = false;
-    private static String appSignatureKeyHash = null;
-    private static String appSignatureFingerprint = null;
-    private static String myPackageName = null;
+    private static String mAppSignatureKeyHash = null;
+    private static String mAppSignatureFingerprint = null;
+    private static String mPackageName = null;
+    private static String mAppVersionName = null;
+    private static int mAppVersionCode = 0;
 
     /**
      * Init configuration. Create the working dirs in standard dir "/Android/data/" + application package name.
@@ -117,76 +121,104 @@ public final class AppConfig {
         isNewApplication = false;
         isFreshInstallation = false;
         isInitialized = true;
-        myPackageName = application.getApplicationInfo().packageName;
+        mPackageName = application.getApplicationInfo().packageName;
         PackageInfo appData = null;
         try {
             appData = application.getPackageManager().getPackageInfo(application.getPackageName(), PackageManager.GET_SIGNATURES);
         } catch (NameNotFoundException e) {
             Log.e("Package not found", e);
         }
-        preferences = application.getSharedPreferences(appData.packageName, Context.MODE_PRIVATE);
-        editor = preferences.edit();
-        appName = application.getString(appData.applicationInfo.labelRes);
-        String dirName = appName.replaceAll("[\\W&&\\D&&\\S]", "");
+        mPreferences = application.getSharedPreferences(appData.packageName, Context.MODE_PRIVATE);
+        mEditor = mPreferences.edit();
+        mAppName = application.getString(appData.applicationInfo.labelRes);
+        String dirName = mAppName.replaceAll("[\\W&&\\D&&\\S]", "");
         if (android.os.Environment.getExternalStorageState().equals(android.os.Environment.MEDIA_MOUNTED)) {
             if (putWorkDirInRoot) {
-                workingDirectory = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + dirName + File.separatorChar;
+                mWorkingDirectory = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + dirName + File.separatorChar;
             } else {
-                workingDirectory = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/data/" + appData.applicationInfo.packageName + File.separatorChar;
+                mWorkingDirectory = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/data/" + appData.applicationInfo.packageName + File.separatorChar;
             }
         } else {
-            workingDirectory = application.getFilesDir().getPath() + File.separator + dirName + File.separatorChar;
+            mWorkingDirectory = application.getFilesDir().getPath() + File.separator + dirName + File.separatorChar;
         }
 
-        File path = new File(workingDirectory);
+        File path = new File(mWorkingDirectory);
         if (!path.exists()) {
             isFreshInstallation = true;
             if (path.mkdir()) {
-                android.util.Log.i(DIV_LEFT + appName + DIV_RIGHT, "➧ Created the working directory: " + workingDirectory);
+                android.util.Log.i(DIV_LEFT + mAppName + DIV_RIGHT, "➧ Created the working directory: " + mWorkingDirectory);
             } else {
-                android.util.Log.e(DIV_LEFT + appName + DIV_RIGHT, "➧ Creating of the working directory is failed.\nPlease check the permission android.permission.WRITE_EXTERNAL_STORAGE.");
+                android.util.Log.e(DIV_LEFT + mAppName + DIV_RIGHT, "➧ Creating of the working directory is failed.\nPlease check the permission android.permission.WRITE_EXTERNAL_STORAGE.");
             }
         } else {
             isFreshInstallation = false;
         }
-        isNewApplication = (preferences.getInt(APP_VERSION_CODE, -1) < 0);
-        if (appData.versionCode > preferences.getInt(APP_VERSION_CODE, 0)) {
+        isNewApplication = (mPreferences.getInt(APP_VERSION_CODE, -1) < 0);
+        if (appData.versionCode > mPreferences.getInt(APP_VERSION_CODE, 0)) {
             isNewVersion = true;
         }
 
         PointF pf = Screen.getSizeInInch(application);
         double diag = Math.sqrt(pf.x * pf.x + pf.y * pf.y);
         if (diag < 6) {
-            diagonal = Diagonal.PHONE;
+            mDiagonal = Diagonal.PHONE;
         } else if (diag >= 6 && diag < 8) {
-            diagonal = Diagonal.TABLET_7;
+            mDiagonal = Diagonal.TABLET_7;
         } else if (diag >= 8 && diag < 11) {
-            diagonal = Diagonal.TABLET_10;
+            mDiagonal = Diagonal.TABLET_10;
         } else {
-            diagonal = Diagonal.TABLET_BIG;
+            mDiagonal = Diagonal.TABLET_BIG;
         }
 
-        appSignatureKeyHash = Apps.getApplicationSignatureKeyHash(application, myPackageName);
-        appSignatureFingerprint = Apps.getSignatureFingerprint(application, myPackageName);
+        mAppSignatureKeyHash = Apps.getApplicationSignatureKeyHash(application, mPackageName);
+        mAppSignatureFingerprint = Apps.getSignatureFingerprint(application, mPackageName);
 
-        editor.putString(APP_NAME, appName);
-        editor.putString(APP_VERSION_NAME, String.valueOf(appData.versionName));
-        editor.putInt(APP_VERSION_CODE, appData.versionCode);
-        editor.putString(APP_WORKING_DIRECTORY, workingDirectory);
-        editor.putBoolean(NEW_VERSION, isNewVersion);
-        editor.putBoolean(NEW_INSTALL, isNewApplication);
-        editor.putBoolean(FRESH_INSTALL, isFreshInstallation);
+        mAppVersionName = appData.versionName;
+        mAppVersionCode = appData.versionCode;
+
+        mEditor.putString(APP_NAME, mAppName);
+        mEditor.putString(APP_VERSION_NAME, mAppVersionName);
+        mEditor.putString(APP_PACKAGE_NAME, mPackageName);
+        mEditor.putInt(APP_VERSION_CODE, mAppVersionCode);
+        mEditor.putString(APP_WORKING_DIRECTORY, mWorkingDirectory);
+        mEditor.putBoolean(NEW_VERSION, isNewVersion);
+        mEditor.putBoolean(NEW_INSTALL, isNewApplication);
+        mEditor.putBoolean(FRESH_INSTALL, isFreshInstallation);
         save();
 
         isDebuggable = (0 != (application.getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE));
         isBeingDebugged = android.os.Debug.isDebuggerConnected();
         if (isDebuggable) {
-            android.util.Log.i(DIV_LEFT + appName + DIV_RIGHT, "➧ Log enabled.");
+            android.util.Log.i(DIV_LEFT + mAppName + DIV_RIGHT, "➧ Log enabled.");
         } else {
-            android.util.Log.w(DIV_LEFT + appName + DIV_RIGHT, "➧ Log is prohibited because debug mode is disabled.");
+            android.util.Log.w(DIV_LEFT + mAppName + DIV_RIGHT, "➧ Log is prohibited because debug mode is disabled.");
             Log.setDisabled(true);
         }
 
+    }
+
+    /**
+     * Name of the app package.
+     * @return
+     */
+    public static String getPackageName(){
+        return mPackageName;
+    }
+
+    /**
+     * The version name of this package, as specified by the <manifest> tag's versionName attribute.
+     * @return
+     */
+    public static String getAppVersionName(){
+        return mAppVersionName;
+    }
+
+    /**
+     * The version number of this package, as specified by the <manifest> tag's versionCode attribute.
+     * @return
+     */
+    public static int getAppVersionCode(){
+        return mAppVersionCode;
     }
 
     /**
@@ -221,40 +253,41 @@ public final class AppConfig {
     }
 
     /**
-     * Print the app data and shared preferences in to the LogCat
+     * Print the app data and shared mPreferences in to the LogCat
+     * @param context
      */
-    public static void printInfo() {
+    public static void printInfo(Context context) {
         if (!isDebuggable) {
             return;
         }
         android.util.Log.i(LINE, LINE_DOUBLE);
 
-        android.util.Log.i(LINE_EMPTY, PREFIX + "Application name:      " + appName);
-        android.util.Log.i(LINE_EMPTY, PREFIX + "Application package:   " + myPackageName);
-        android.util.Log.i(LINE_EMPTY, PREFIX + "Signature Fingerprint: " + appSignatureFingerprint);
-        android.util.Log.i(LINE_EMPTY, PREFIX + "Signature SHA-1:       " + appSignatureKeyHash);
-        android.util.Log.i(LINE_EMPTY, PREFIX + "Working directory:     " + workingDirectory);
-        android.util.Log.i(LINE_EMPTY, PREFIX + "Diagonal:              " + diagonal);
+        android.util.Log.i(LINE_EMPTY, PREFIX + "Application name:      " + mAppName);
+        android.util.Log.i(LINE_EMPTY, PREFIX + "Application package:   " + mPackageName);
+        android.util.Log.i(LINE_EMPTY, PREFIX + "Signature Fingerprint: " + mAppSignatureFingerprint);
+        android.util.Log.i(LINE_EMPTY, PREFIX + "Signature SHA-1:       " + mAppSignatureKeyHash);
+        android.util.Log.i(LINE_EMPTY, PREFIX + "Working directory:     " + mWorkingDirectory);
+        android.util.Log.i(LINE_EMPTY, PREFIX + "Diagonal:              " + mDiagonal);
         android.util.Log.i(LINE_EMPTY, PREFIX + "First installation:    " + isNewVersion);
         android.util.Log.i(LINE_EMPTY, PREFIX + "Strict mode:           " + isStrictMode);
         android.util.Log.i(LINE_EMPTY, LINE_DOUBLE);
         android.util.Log.i(LINE_EMPTY, CURRENT_SETTINGS_STRING);
         android.util.Log.i(LINE_EMPTY, LINE_DOUBLE);
         int max = 0;
-        for (Map.Entry<String, ?> setting : preferences.getAll().entrySet()) {
+        for (Map.Entry<String, ?> setting : mPreferences.getAll().entrySet()) {
             int length = setting.getKey().length();
             if (max < length) {
                 max = length;
             }
         }
         String formatString = PREFIX + "%-" + max + "s = %s";
-        for (Map.Entry<String, ?> setting : preferences.getAll().entrySet()) {
+        for (Map.Entry<String, ?> setting : mPreferences.getAll().entrySet()) {
             android.util.Log.i(LINE_EMPTY, String.format(formatString, setting.getKey(), setting.getValue()));
         }
         android.util.Log.i(LINE_EMPTY, LINE_DOUBLE);
         android.util.Log.i(LINE_EMPTY, DEFAULT_SETTINGS_STRING);
         android.util.Log.i(LINE_EMPTY, LINE_DOUBLE);
-        SharedPreferences defaultSharedPreferences = getDefaultSharedPreferences();
+        SharedPreferences defaultSharedPreferences = getDefaultSharedPreferences(context);
         for (Map.Entry<String, ?> setting : defaultSharedPreferences.getAll().entrySet()) {
             android.util.Log.i(LINE_EMPTY, String.format(formatString, setting.getKey(), setting.getValue()));
         }
@@ -262,17 +295,18 @@ public final class AppConfig {
     }
 
     /**
-     * Return default shared preferences (main Application settings)
+     * Return default shared mPreferences (main Application settings)
      * Deprecated, use getDefaultSharedPreferences(Context context)
      *
      * @return default SharedPreferences
      */
+    @Deprecated
     public static SharedPreferences getDefaultSharedPreferences() {
         throw new UnsupportedOperationException("Use getDefaultSharedPreferences(Context context) instead getDefaultSharedPreferences().");
     }
 
     /**
-     * Return default shared preferences (main Application settings)
+     * Return default shared mPreferences (main Application settings)
      *
      * @param myContext default context
      * @return default SharedPreferences
@@ -297,7 +331,7 @@ public final class AppConfig {
      * @return is the device is a telephone
      */
     public static boolean isPhone() {
-        return diagonal == Diagonal.PHONE;
+        return mDiagonal == Diagonal.PHONE;
     }
 
     /**
@@ -306,16 +340,16 @@ public final class AppConfig {
      * @return is the device is a tablet
      */
     public static boolean isTablet() {
-        return diagonal != Diagonal.PHONE;
+        return mDiagonal != Diagonal.PHONE;
     }
 
     /**
-     * Return device diagonal enum constant
+     * Return device mDiagonal enum constant
      *
      * @return Diagonal
      */
     public static Diagonal getDeviceDiagonal() {
-        return diagonal;
+        return mDiagonal;
     }
 
     /**
@@ -324,7 +358,7 @@ public final class AppConfig {
      * @return String - current working directory
      */
     public static String getApplicationWorkingDir() {
-        return workingDirectory;
+        return mWorkingDirectory;
     }
 
     /**
@@ -332,8 +366,8 @@ public final class AppConfig {
      *
      * @return the app name without spaces.
      */
-    public static String getAppName() {
-        return appName;
+    public static String getmAppName() {
+        return mAppName;
     }
 
     /**
@@ -364,35 +398,35 @@ public final class AppConfig {
     }
 
     /**
-     * Retrieve a boolean value from the preferences.
+     * Retrieve a boolean value from the mPreferences.
      *
      * @param key      The name of the preference to modify.
      * @param defValue Value to return if this preference does not exist.
      * @return Returns the preference value if it exists, or defValue. Throws ClassCastException if there is a preference with this name that is not a boolean.
      */
     public static boolean getBoolean(String key, boolean defValue) {
-        return preferences.getBoolean(key, defValue);
+        return mPreferences.getBoolean(key, defValue);
     }
 
     /**
-     * Retrieve a float value from the preferences.
+     * Retrieve a float value from the mPreferences.
      *
      * @param key      The name of the preference to modify.
      * @param defValue Value to return if this preference does not exist.
      * @return Returns the preference value if it exists, or defValue. Throws ClassCastException if there is a preference with this name that is not a float.
      */
     public static float getFloat(String key, float defValue) {
-        return preferences.getFloat(key, defValue);
+        return mPreferences.getFloat(key, defValue);
     }
 
     /**
-     * Retrieve a float value from the preferences, 0 if not found
+     * Retrieve a float value from the mPreferences, 0 if not found
      *
      * @param key The name of the preference to modify.
      * @return Returns the preference value if it exists, or defValue. Throws ClassCastException if there is a preference with this name that is not a float.
      */
     public static float getFloat(String key) {
-        return preferences.getFloat(key, 0);
+        return mPreferences.getFloat(key, 0);
     }
 
     /**
@@ -403,7 +437,7 @@ public final class AppConfig {
      * @return Returns the preference value if it exists, or defValue. Throws ClassCastException if there is a preference with this name that is not a int.
      */
     public static int getInt(String key, int defValue) {
-        return preferences.getInt(key, defValue);
+        return mPreferences.getInt(key, defValue);
     }
 
     /**
@@ -413,7 +447,7 @@ public final class AppConfig {
      * @return value
      */
     public static int getInt(String key) {
-        return preferences.getInt(key, 0);
+        return mPreferences.getInt(key, 0);
     }
 
     /**
@@ -424,7 +458,7 @@ public final class AppConfig {
      * @return Returns the preference value if it exists, or defValue. Throws ClassCastException if there is a preference with this name that is not a long.
      */
     public static long getLong(String key, long defValue) {
-        return preferences.getLong(key, defValue);
+        return mPreferences.getLong(key, defValue);
     }
 
     /**
@@ -434,7 +468,7 @@ public final class AppConfig {
      * @return value
      */
     public static long getLong(String key) {
-        return preferences.getLong(key, 0);
+        return mPreferences.getLong(key, 0);
     }
 
     /**
@@ -444,7 +478,7 @@ public final class AppConfig {
      * @return value
      */
     public static String getString(String key) {
-        return preferences.getString(key, "");
+        return mPreferences.getString(key, "");
     }
 
     /**
@@ -455,11 +489,11 @@ public final class AppConfig {
      * @return Returns the preference value if it exists, or defValue. Throws ClassCastException if there is a preference with this name that is not a String.
      */
     public static String getString(String key, String defValue) {
-        return preferences.getString(key, defValue);
+        return mPreferences.getString(key, defValue);
     }
 
     /**
-     * Retrieve a set of String values from the preferences.
+     * Retrieve a set of String values from the mPreferences.
      * <p>
      * <p>Note that you <em>must not</em> modify the set instance returned
      * by this call.  The consistency of the stored data is not guaranteed
@@ -475,7 +509,7 @@ public final class AppConfig {
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public static Set<String> getStringSet(String key, Set<String> defValues) throws Exception {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            return preferences.getStringSet(key, defValues);
+            return mPreferences.getStringSet(key, defValues);
         } else {
             throw new Exception("Not supported before version API 11 (HONEYCOMB)");
         }
@@ -488,7 +522,7 @@ public final class AppConfig {
      * @param value The new value for the preference.
      */
     public static void putBoolean(String key, boolean value) {
-        editor.putBoolean(key, value);
+        mEditor.putBoolean(key, value);
     }
 
     /**
@@ -498,7 +532,7 @@ public final class AppConfig {
      * @param value The new value for the preference.
      */
     public static void putFloat(String key, float value) {
-        editor.putFloat(key, value);
+        mEditor.putFloat(key, value);
     }
 
     /**
@@ -508,7 +542,7 @@ public final class AppConfig {
      * @param value The new value for the preference.
      */
     public static void putInt(String key, int value) {
-        editor.putInt(key, value);
+        mEditor.putInt(key, value);
     }
 
     /**
@@ -518,7 +552,7 @@ public final class AppConfig {
      * @param value The new value for the preference.
      */
     public static void putLong(String key, long value) {
-        editor.putLong(key, value);
+        mEditor.putLong(key, value);
     }
 
     /**
@@ -528,7 +562,7 @@ public final class AppConfig {
      * @param value The new value for the preference.
      */
     public static void putString(String key, String value) {
-        editor.putString(key, value);
+        mEditor.putString(key, value);
     }
 
     /**
@@ -539,7 +573,7 @@ public final class AppConfig {
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public static void putStringSet(String key, Set<String> value) {
-        editor.putStringSet(key, value);
+        mEditor.putStringSet(key, value);
     }
 
     /**
@@ -550,7 +584,7 @@ public final class AppConfig {
      * @param isNeedToSave Go write the SharedPreferences or postpone.
      */
     public static void putBoolean(String key, boolean value, boolean isNeedToSave) {
-        editor.putBoolean(key, value);
+        mEditor.putBoolean(key, value);
         if (isNeedToSave) {
             save();
         }
@@ -564,7 +598,7 @@ public final class AppConfig {
      * @param isNeedToSave Go write the SharedPreferences or postpone.
      */
     public static void putFloat(String key, float value, boolean isNeedToSave) {
-        editor.putFloat(key, value);
+        mEditor.putFloat(key, value);
         if (isNeedToSave) {
             save();
         }
@@ -578,7 +612,7 @@ public final class AppConfig {
      * @param isNeedToSave Go write the SharedPreferences or postpone.
      */
     public static void putInt(String key, int value, boolean isNeedToSave) {
-        editor.putInt(key, value);
+        mEditor.putInt(key, value);
         if (isNeedToSave) {
             save();
         }
@@ -592,7 +626,7 @@ public final class AppConfig {
      * @param isNeedToSave Go write the SharedPreferences or postpone.
      */
     public static void putLong(String key, long value, boolean isNeedToSave) {
-        editor.putLong(key, value);
+        mEditor.putLong(key, value);
         if (isNeedToSave) {
             save();
         }
@@ -606,7 +640,7 @@ public final class AppConfig {
      * @param isNeedToSave Go write the SharedPreferences or postpone.
      */
     public static void putString(String key, String value, boolean isNeedToSave) {
-        editor.putString(key, value);
+        mEditor.putString(key, value);
         if (isNeedToSave) {
             save();
         }
@@ -621,7 +655,7 @@ public final class AppConfig {
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public static void putStringSet(String key, Set<String> value, boolean isNeedToSave) {
-        editor.putStringSet(key, value);
+        mEditor.putStringSet(key, value);
         if (isNeedToSave) {
             save();
         }
@@ -631,15 +665,15 @@ public final class AppConfig {
      * Go write the SharedPreferences.
      */
     public static void save() {
-        editor.commit();
+        mEditor.commit();
     }
 
     /**
      * Clear the SharedPreferences
      */
     public static void clear() {
-        editor.clear();
-        Log.i(">>> Shared preferences was CLEARED! <<<");
+        mEditor.clear();
+        Log.i(">>> Shared mPreferences was CLEARED! <<<");
     }
 
     /**
@@ -657,12 +691,12 @@ public final class AppConfig {
     /**
      * Enable StrictMode in the app. Put call in the first called onCreate() method in Application or Activity.
      *
-     * @param myContext
+     * @param aContext
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    public static void enableStrictMode(Context myContext) {
+    public static void enableStrictMode(Context aContext) {
         try {
-            int appFlags = myContext.getApplicationInfo().flags;
+            int appFlags = aContext.getApplicationInfo().flags;
             if ((appFlags & ApplicationInfo.FLAG_DEBUGGABLE) != 0) {
                 StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().detectDiskReads().detectDiskWrites().detectNetwork().penaltyLog().build());
                 StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder().detectActivityLeaks().detectLeakedSqlLiteObjects().detectLeakedClosableObjects().penaltyLog().penaltyDeath().build());
@@ -699,7 +733,7 @@ public final class AppConfig {
      * @return the app signature KeyHash
      */
     public static String getApplicationSignatureKeyHash() {
-        return appSignatureKeyHash;
+        return mAppSignatureKeyHash;
     }
 
     /**
@@ -708,7 +742,7 @@ public final class AppConfig {
      * @return the app signature fingerprint
      */
     public static String getSignatureFingerprint() {
-        return appSignatureFingerprint;
+        return mAppSignatureFingerprint;
     }
 
     /**
