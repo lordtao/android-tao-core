@@ -5,15 +5,15 @@
  * are made available under the terms of the GNU Lesser General Public License
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/lgpl.html
- * <p>
+ * <p/>
  * Contributors:
  * Alexandr Tsvetkov - initial API and implementation
- * <p>
+ * <p/>
  * Project:
  * TAO Core
- * <p>
+ * <p/>
  * License agreement:
- * <p>
+ * <p/>
  * 1. This code is published AS IS. Author is not responsible for any damage that can be
  * caused by any application that uses this code.
  * 2. Author does not give a garantee, that this code is error free.
@@ -40,6 +40,7 @@ import android.os.Build;
 import android.os.Environment;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.widget.Toast;
 
 import java.io.File;
@@ -63,6 +64,7 @@ public final class AppConfig {
     public static final String APP_VERSION_NAME = "APP_VERSION_NAME";
     public static final String APP_VERSION_CODE = "APP_VERSION_CODE";
     public static final String APP_PACKAGE_NAME = "APP_PACKAGE_NAME";
+    public static final String ANDROID_ID = "APP_ANDROID_ID";
     public static final String APP_WORKING_DIRECTORY = "APP_WORKING_DIRECTORY";
     public static final String IMEI = "IMEI";
     public static final String NEW_VERSION = "NEW_VERSION";
@@ -98,6 +100,7 @@ public final class AppConfig {
     private static String mPackageName = null;
     private static String mAppVersionName = null;
     private static int mAppVersionCode = 0;
+    private static String mAndroidId;
 
     /**
      * Init configuration. Create the working dirs in standard dir "/Android/data/" + application package name.
@@ -175,7 +178,9 @@ public final class AppConfig {
 
         mAppVersionName = appData.versionName;
         mAppVersionCode = appData.versionCode;
+        mAndroidId = Settings.Secure.getString(application.getContentResolver(), Settings.Secure.ANDROID_ID);
 
+        mEditor.putString(ANDROID_ID, mAndroidId);
         mEditor.putString(APP_NAME, mAppName);
         mEditor.putString(APP_VERSION_NAME, mAppVersionName);
         mEditor.putString(APP_PACKAGE_NAME, mPackageName);
@@ -201,7 +206,7 @@ public final class AppConfig {
      * Name of the app package.
      * @return
      */
-    public static String getPackageName(){
+    public static String getPackageName() {
         return mPackageName;
     }
 
@@ -209,7 +214,7 @@ public final class AppConfig {
      * The version name of this package, as specified by the <manifest> tag's versionName attribute.
      * @return
      */
-    public static String getAppVersionName(){
+    public static String getAppVersionName() {
         return mAppVersionName;
     }
 
@@ -217,8 +222,18 @@ public final class AppConfig {
      * The version number of this package, as specified by the <manifest> tag's versionCode attribute.
      * @return
      */
-    public static int getAppVersionCode(){
+    public static int getAppVersionCode() {
         return mAppVersionCode;
+    }
+
+    /**
+     * A 64-bit number (as a hex string) that is randomly generated when the user first sets up the device
+     * and should remain constant for the lifetime of the user's device.
+     * The value may change if a factory reset is performed on the device.
+     * @return
+     */
+    public static String getAndroidId() {
+        return mAndroidId;
     }
 
     /**
@@ -263,6 +278,7 @@ public final class AppConfig {
         android.util.Log.i(LINE, LINE_DOUBLE);
 
         android.util.Log.i(LINE_EMPTY, PREFIX + "Application name:      " + mAppName);
+        android.util.Log.i(LINE_EMPTY, PREFIX + "Android  device ID:    " + mAndroidId);
         android.util.Log.i(LINE_EMPTY, PREFIX + "Application package:   " + mPackageName);
         android.util.Log.i(LINE_EMPTY, PREFIX + "Signature Fingerprint: " + mAppSignatureFingerprint);
         android.util.Log.i(LINE_EMPTY, PREFIX + "Signature SHA-1:       " + mAppSignatureKeyHash);
@@ -780,6 +796,5 @@ public final class AppConfig {
     public static void setEclipseLogStyle() {
         Log.setEclipseStyle();
     }
-
 
 }
