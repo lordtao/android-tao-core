@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="ua.at.tsvetkov"
-          android:versionCode="5"
-          android:versionName="1.2.00">
+          android:versionCode="6"
+          android:versionName="1.2.1">
 
     <uses-sdk
         android:minSdkVersion="8"

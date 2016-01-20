@@ -5,15 +5,15 @@
  * are made available under the terms of the GNU Lesser General Public License
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/lgpl.html
- * <p>
+ * <p/>
  * Contributors:
  * Alexandr Tsvetkov - initial API and implementation
- * <p>
+ * <p/>
  * Project:
  * TAO Core
- * <p>
+ * <p/>
  * License agreement:
- * <p>
+ * <p/>
  * 1. This code is published AS IS. Author is not responsible for any damage that can be
  * caused by any application that uses this code.
  * 2. Author does not give a garantee, that this code is error free.
@@ -40,17 +40,29 @@ public class Net {
 
     /**
      * Reports the current coarse-grained state of the network.
+     *
      * @param context
-     * @return coarse-grained state
+     * @return coarse-grained state or if no default network is currently active
      */
     public static NetworkInfo.State getState(Context context) {
         NetworkInfo netInfo = getNetworkInfo(context);
+        if (netInfo == null)
+            return null;
+        else
         return netInfo.getState();
     }
 
+    /**
+     * Check net connection
+     * @param context
+     * @return
+     */
     public static boolean isConnected(Context context) {
         NetworkInfo netInfo = getNetworkInfo(context);
-        return netInfo.isConnected();
+        if (netInfo == null)
+            return false;
+        else
+            return netInfo.isConnected();
     }
 
     public static void printState(Context context) {
@@ -58,7 +70,7 @@ public class Net {
 
     }
 
-    private static NetworkInfo getNetworkInfo(Context context) {
+    public static NetworkInfo getNetworkInfo(Context context) {
         return ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo();
     }
 

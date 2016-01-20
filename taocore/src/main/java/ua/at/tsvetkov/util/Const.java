@@ -42,8 +42,6 @@ public final class Const {
    public final static int MB = KB * 1024;
    public final static int GB = MB * 1024;
 
-   public final static char AR_R = '⇢';
-   public final static char AR_L = '⇠';
    public final static char NL = '\n';
 
 }

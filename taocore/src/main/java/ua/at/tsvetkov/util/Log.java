@@ -266,6 +266,22 @@ public class Log {
    }
 
    /**
+    * Send a ERROR log message and log the throwable. RuntimeException is not handled.
+    *
+    * @param detailMessage The message you would like logged.
+    * @param tr            An throwable to log
+    */
+   public static void rt(String detailMessage, Throwable tr) {
+      if(tr instanceof RuntimeException) {
+         throw (RuntimeException) tr;
+      }
+      if (isDisabled) {
+         return;
+      }
+      android.util.Log.e(getLocation(), detailMessage, tr);
+   }
+
+   /**
     * What a Terrible Failure: Report an throwable that should never happen. Similar to wtf(String, Throwable), with a message as well.
     *
     * @param detailMessage The message you would like logged.
@@ -334,6 +350,21 @@ public class Log {
     * @param tr An throwable to log
     */
    public static void e(Throwable tr) {
+      if (isDisabled) {
+         return;
+      }
+      android.util.Log.e(getLocation(), "", tr);
+   }
+
+   /**
+    * Send a ERROR log the throwable. RuntimeException is not handled.
+    *
+    * @param tr An throwable to log
+    */
+   public static void rt(Throwable tr) {
+      if(tr instanceof RuntimeException) {
+         throw (RuntimeException) tr;
+      }
       if (isDisabled) {
          return;
       }
@@ -773,7 +804,7 @@ public class Log {
          return xmlStr;
       }
    }
-      // ==========================================================
+   // ==========================================================
 
    /**
     * @param detailMessage a message
@@ -840,7 +871,7 @@ public class Log {
                      for (int i = 0; i < extraSpaceCount; i++) {
                         sb.append(' ');
                      }
-                     sb.append('➧');
+                     sb.append('\u21DB');
                   }
                   return sb.toString();
                }
