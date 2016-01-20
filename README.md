@@ -1,10 +1,12 @@
 android-tao-core
 ================
 
-Android App Configurator, easy Log with detailed information, Net checker.
+Android App Configurator, easy Log with detailed information, Screen dimensions calculator, Units measures converter (mm - cm - inch - pix - pt - twip).
+
+Download from Bintray: [ ![Download](https://api.bintray.com/packages/lordtao/maven/android-tao-core/images/download.svg) ](https://bintray.com/lordtao/maven/android-tao-core/_latestVersion)
 
 ##AppConfig:
-Return the basic parameters of the application. Initialize and restoration of essential parameters for the app. Data saves and loads in to the Shared Preferences with name equals the app packages name. Automatically create the working directory for the application in the standard place. Checks is the app is new or is new version and whether it was previously installed. Print to log general info. Give information about device type (tablet or phone). Must be init in Application.
+Easy access to the basic parameters of the application. Print to log detailed app info. Give information about device type (tablet or phone).
 
 ```java
 AppConfig.init(this);
@@ -48,16 +50,16 @@ Log enabled.
  pref_region                = US
 -------------------------------------------------------------------------------
 ```
-Store some data:
+Store some data in Shared preferences:
 ```java
 AppConfig.putSetting(key, isGood);
 ```
-Restore data
+Restore data in Shared preferences:
 ```java
 AppConfig.getBoolean(key, true);
 ```
 
-##Log:
+##Easy for using and detail Log:
 
 ```java
 
@@ -67,22 +69,10 @@ public void startDiscovery() {
    ...
 ```
 
-you received in log <b>class:method:lineNumber</b> :
+you received in log <b>Class Name:Method:Line Number</b> :
 ```code
 04-20 19:28:05.958: I/> PrinterDiscoveryJmDNS:startDiscovery:49         WiFi is enabled.
 ```
-
-###NetChecker:
-Check a web site status.
-
-##FileIO:
-Static methods for file and directory/assets operations - copy, delete, move
-
-##FileInet:
-Static methods for downloading files from the Internet
-
-##FilePath:
-Static methods for dismantling the filename
 
 ##Screen:
 Static methods for different screen parameters
@@ -90,3 +80,36 @@ Static methods for different screen parameters
 ##Converter:
 Units measures converter
 
+Add android-tao-core to your project
+----------------------------
+greenDAO is available on Bintray. Please ensure that you are using the latest versions by [ ![Download](https://api.bintray.com/packages/lordtao/maven/android-tao-core/images/download.svg) ](https://bintray.com/lordtao/maven/android-tao-core/_latestVersion)
+
+Gradle dependency for your Android app:
+
+add to general build.gradle
+```
+buildscript {
+    repositories {
+        jcenter()
+        maven {
+            url  "http://dl.bintray.com/lordtao/maven"
+        }
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:2.0.0-alpha5'
+    }
+}
+
+allprojects {
+    repositories {
+        jcenter()
+        maven {
+            url  "http://dl.bintray.com/lordtao/maven"
+        }
+    }
+}
+```
+add to your module build.gradle
+```
+    compile 'ua.at.tsvetkov:taocore:1.2.1'
+```
