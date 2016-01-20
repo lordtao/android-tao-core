@@ -38,10 +38,14 @@ import ua.at.tsvetkov.util.Log;
  */
 public class Net {
 
+    private Net() {
+
+    }
+
     /**
      * Reports the current coarse-grained state of the network.
      *
-     * @param context
+     * @param context the application Context
      * @return coarse-grained state or if no default network is currently active
      */
     public static NetworkInfo.State getState(Context context) {
@@ -49,20 +53,18 @@ public class Net {
         if (netInfo == null)
             return null;
         else
-        return netInfo.getState();
+            return netInfo.getState();
     }
 
     /**
      * Check net connection
-     * @param context
-     * @return
+     *
+     * @param context the application Context
+     * @return is network is active
      */
     public static boolean isConnected(Context context) {
         NetworkInfo netInfo = getNetworkInfo(context);
-        if (netInfo == null)
-            return false;
-        else
-            return netInfo.isConnected();
+        return netInfo != null && netInfo.isConnected();
     }
 
     public static void printState(Context context) {

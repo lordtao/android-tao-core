@@ -18,24 +18,23 @@ you received in log:
 ```code
 Log enabled.
 -------------------------------------------------------------------------------
- App name:                    Leitz Icon
+ App name:                    My Great App
  First installation:          false
- Working directory:           /storage/emulated/0/Android/data/com.leitz.icon/
+ Working directory:           /storage/emulated/0/Android/data/com.great.app/
  Strict mode:                 false
  Diagonal:                    TABLET_10
- Application signature SHA-1: frGG2Kpy0QC+DesuQC2/B4Y4418=
+ Application signature SHA-1: frGG2Kp50QC+DesuQft/B4Y4318=
 -------------------------------------------------------------------------------
                                   Shared Data
 -------------------------------------------------------------------------------
- APP_NAME                   = Leitz Icon
+ APP_NAME                   = My Great App
  NEW_VERSION                = false
- PRINT_SERVICE_KEY          = [fe80::21e:c0ff:fe17:dd96]
+ PRINT_SERVICE_KEY          = [fe00::21e:c05f:fed7:dd16]
  LASTDEVICELANGUAGE         = eng
  LABEL_TEMPLATE_FROM_ASSETS = true
  selected_region            = US
  FRESH_INSTALL              = false
- APP_WORKING_DIRECTORY      = /storage/emulated/0/Android/data/com.leitz.icon/
- LABEL_TEMPLATE_FILE_NAME   = templates/Standard Address Label - Address.LeitzLbl
+ APP_WORKING_DIRECTORY      = /storage/emulated/0/Android/data/com.com.great.app/
  OBJECT_ADDING_MENU_INDEX   = 3
  NEW_INSTALL                = false
  APP_VERSION_NAME           = 1.0.05

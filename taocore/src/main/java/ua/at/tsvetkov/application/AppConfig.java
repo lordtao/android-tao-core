@@ -25,6 +25,7 @@
  */
 package ua.at.tsvetkov.application;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Application;
@@ -105,7 +106,7 @@ public final class AppConfig {
     /**
      * Init configuration. Create the working dirs in standard dir "/Android/data/" + application package name.
      *
-     * @param application
+     * @param application the Application
      * @throws NumberFormatException
      */
     public static void init(Application application) {
@@ -115,10 +116,11 @@ public final class AppConfig {
     /**
      * Init configuration.
      *
-     * @param application
+     * @param application      the Application
      * @param putWorkDirInRoot true - put the working dirs in SD root, false - put the working dirs in standard dir "/Android/data/" + app package name.
      * @throws NumberFormatException
      */
+    @SuppressLint("CommitPrefEdits")
     public static void init(Application application, boolean putWorkDirInRoot) {
         isNewVersion = false;
         isNewApplication = false;
@@ -204,7 +206,8 @@ public final class AppConfig {
 
     /**
      * Name of the app package.
-     * @return
+     *
+     * @return the package name
      */
     public static String getPackageName() {
         return mPackageName;
@@ -212,7 +215,8 @@ public final class AppConfig {
 
     /**
      * The version name of this package, as specified by the <manifest> tag's versionName attribute.
-     * @return
+     *
+     * @return the app version name
      */
     public static String getAppVersionName() {
         return mAppVersionName;
@@ -220,7 +224,8 @@ public final class AppConfig {
 
     /**
      * The version number of this package, as specified by the <manifest> tag's versionCode attribute.
-     * @return
+     *
+     * @return the app version code
      */
     public static int getAppVersionCode() {
         return mAppVersionCode;
@@ -230,7 +235,8 @@ public final class AppConfig {
      * A 64-bit number (as a hex string) that is randomly generated when the user first sets up the device
      * and should remain constant for the lifetime of the user's device.
      * The value may change if a factory reset is performed on the device.
-     * @return
+     *
+     * @return the android id
      */
     public static String getAndroidId() {
         return mAndroidId;
@@ -269,7 +275,8 @@ public final class AppConfig {
 
     /**
      * Print the app data and shared mPreferences in to the LogCat
-     * @param context
+     *
+     * @param context the app context
      */
     public static void printInfo(Context context) {
         if (!isDebuggable) {
@@ -382,7 +389,7 @@ public final class AppConfig {
      *
      * @return the app name without spaces.
      */
-    public static String getmAppName() {
+    public static String getAppName() {
         return mAppName;
     }
 
@@ -510,7 +517,7 @@ public final class AppConfig {
 
     /**
      * Retrieve a set of String values from the mPreferences.
-     * <p>
+     * <p/>
      * <p>Note that you <em>must not</em> modify the set instance returned
      * by this call.  The consistency of the stored data is not guaranteed
      * if you do, nor is your ability to modify the instance at all.
@@ -707,7 +714,7 @@ public final class AppConfig {
     /**
      * Enable StrictMode in the app. Put call in the first called onCreate() method in Application or Activity.
      *
-     * @param aContext
+     * @param aContext the app Context
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public static void enableStrictMode(Context aContext) {

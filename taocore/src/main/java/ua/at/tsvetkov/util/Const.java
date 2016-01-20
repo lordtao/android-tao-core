@@ -32,6 +32,10 @@ package ua.at.tsvetkov.util;
  */
 public final class Const {
 
+   private Const(){
+
+   }
+
    public final static long SEC = 1000;
    public final static long MIN = 60 * SEC;
    public final static long HOUR = 60 * MIN;

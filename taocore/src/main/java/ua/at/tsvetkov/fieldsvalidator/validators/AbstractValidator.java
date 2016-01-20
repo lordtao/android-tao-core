@@ -32,7 +32,7 @@ public abstract class AbstractValidator {
    }
 
    /**
-    * Clear error messag
+    * Clear error message
     */
    public void clearError() {
       mView.setError(null);
@@ -47,7 +47,7 @@ public abstract class AbstractValidator {
 
    /**
     * Return string representation of field
-    * @return
+    * @return content string
     */
    public abstract String getContentString();
 

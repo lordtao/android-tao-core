@@ -21,7 +21,7 @@ import ua.at.tsvetkov.util.Log;
 public class FieldsValidator {
 
     private final Activity mActivity;
-    protected Set<AbstractValidator> mFieldHolderList;
+    protected final Set<AbstractValidator> mFieldHolderList;
 
     public FieldsValidator(Activity activity) {
         mFieldHolderList = new HashSet<>();

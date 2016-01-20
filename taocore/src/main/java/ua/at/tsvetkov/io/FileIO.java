@@ -49,6 +49,10 @@ public final class FileIO {
     private static final String CACHE = "cache/";
     private static final int BUFFER_SIZE = 8192;
 
+    private FileIO() {
+
+    }
+
     /**
      * Copy file from source to destination
      *
@@ -71,7 +75,7 @@ public final class FileIO {
             in = new BufferedInputStream(new FileInputStream(srcFileName));
             out = new BufferedOutputStream(new FileOutputStream(dstFileName));
             byte[] buffer = new byte[BUFFER_SIZE];
-            int count = 0;
+            int count;
             while ((count = in.read(buffer)) > 0) {
                 out.write(buffer, 0, count);
             }
@@ -81,14 +85,18 @@ public final class FileIO {
             return false;
         } finally {
             try {
-                in.close();
+                if (in != null)
+                    in.close();
             } catch (IOException e) {
                 Log.e(e);
+                return false;
             }
             try {
-                out.close();
+                if (out != null)
+                    out.close();
             } catch (IOException e) {
                 Log.e(e);
+                return false;
             }
         }
         Log.v("Success copied file " + srcFileName + " to " + dstFileName);
@@ -177,14 +185,18 @@ public final class FileIO {
             return false;
         } finally {
             try {
-                in.close();
+                if (in != null)
+                    in.close();
             } catch (IOException e) {
                 Log.e(e);
+                return false;
             }
             try {
-                out.close();
+                if (out != null)
+                    out.close();
             } catch (IOException e) {
                 Log.e(e);
+                return false;
             }
         }
         Log.v("Success copy file " + assetsFileName + " to " + dstFileName);
@@ -338,7 +350,7 @@ public final class FileIO {
      * @return full path to file
      */
     public static String getFileName(String subdir, String fileName) {
-        String dir = null;
+        String dir;
         if (subdir != null && subdir.length() > 0) {
             dir = getDir(subdir);
         } else {

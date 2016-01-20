@@ -65,7 +65,8 @@ public final class FileInet {
         } catch (Exception e) {
             Log.e(e);
         } finally {
-            conn.disconnect();
+            if (conn != null)
+                conn.disconnect();
         }
         return length;
     }
@@ -101,7 +102,7 @@ public final class FileInet {
     static public boolean download(String url, String pathAndFileName, boolean rewrite) {
         String urlEnc = null;
         HttpURLConnection conn = null;
-        InputStream input = null;
+        InputStream input;
         FileOutputStream output = null;
 
         try {
@@ -129,7 +130,7 @@ public final class FileInet {
             input = conn.getInputStream();
             output = new FileOutputStream(pathAndFileName);
             byte[] buffer = new byte[BUFFER];
-            int bytesRead = -1;
+            int bytesRead;
             while ((bytesRead = input.read(buffer)) != -1) {
                 output.write(buffer, 0, bytesRead);
             }
@@ -138,11 +139,13 @@ public final class FileInet {
             Log.w("Download error " + url, e);
             return false;
         } finally {
-            conn.disconnect();
+            if (conn != null)
+                conn.disconnect();
             try {
                 output.close();
             } catch (IOException e) {
                 Log.e("Error closing file > " + pathAndFileName, e);
+                return false;
             }
         }
         return true;

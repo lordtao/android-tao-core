@@ -5,25 +5,26 @@ import android.widget.EditText;
 import java.util.regex.Pattern;
 
 /**
+ * Text validator
  * Created by Alexandr Tsvetkov on 28.05.2015.
  */
-public class EditTextValidator extends AbstractValidator{
+public class EditTextValidator extends AbstractValidator {
 
-   private Pattern  mPattern;
+    private final Pattern mPattern;
 
-   public EditTextValidator(EditText editText, String regex, String errMsg) {
-      super(editText, errMsg);
-      mPattern = Pattern.compile(regex);
-   }
+    public EditTextValidator(EditText editText, String regex, String errMsg) {
+        super(editText, errMsg);
+        mPattern = Pattern.compile(regex);
+    }
 
 
-   public boolean isValid() {
-      return mPattern.matcher(getView().getText()).matches();
-   }
+    public boolean isValid() {
+        return mPattern.matcher(getView().getText()).matches();
+    }
 
-   @Override
-   public String getContentString() {
-      return getView().getText().toString();
-   }
+    @Override
+    public String getContentString() {
+        return getView().getText().toString();
+    }
 
 }

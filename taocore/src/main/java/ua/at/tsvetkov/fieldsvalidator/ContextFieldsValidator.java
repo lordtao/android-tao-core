@@ -21,7 +21,7 @@ import ua.at.tsvetkov.util.Log;
 public class ContextFieldsValidator {
 
     private final Context mContext;
-    protected Set<AbstractValidator> mFieldHolderList;
+    protected final Set<AbstractValidator> mFieldHolderList;
 
     public ContextFieldsValidator(Context context) {
         mFieldHolderList = new HashSet<>();

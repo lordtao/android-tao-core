@@ -5,15 +5,15 @@
  * are made available under the terms of the GNU Lesser General Public License
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/lgpl.html
- * <p>
+ * <p/>
  * Contributors:
  * Alexandr Tsvetkov - initial API and implementation
- * <p>
+ * <p/>
  * Project:
  * TAO Core
- * <p>
+ * <p/>
  * License agreement:
- * <p>
+ * <p/>
  * 1. This code is published AS IS. Author is not responsible for any damage that can be
  * caused by any application that uses this code.
  * 2. Author does not give a garantee, that this code is error free.
@@ -46,12 +46,15 @@ import ua.at.tsvetkov.util.Log;
  */
 public final class Apps {
 
+    private Apps() {
+
+    }
+
     /**
      * Return info about installed on this device apps with CATEGORY_LAUNCHER (usual apps)
      *
-     * @param context
+     * @param context the application Context
      * @return List<ResolveInfo>
-     * @throws IllegalAccessException if AppConfig is not initialized
      */
     public static List<ResolveInfo> getAllActivitiesInfo(Context context) {
         Intent intent = new Intent(Intent.ACTION_MAIN, null);
@@ -74,8 +77,7 @@ public final class Apps {
     /**
      * Print installed apps classes names
      *
-     * @param context
-     * @throws IllegalAccessException if AppConfig is not initialized
+     * @param context the application Context
      */
     public static void printInstalledAppsPackageAndClass(Context context) {
         for (ResolveInfo info : getAllActivitiesInfo(context)) {
@@ -97,7 +99,7 @@ public final class Apps {
      * Checks for an installed application
      *
      * @param packageName app package name
-     * @param context
+     * @param context     the application Context
      * @return is an installed application
      * @throws IllegalAccessException if AppConfig is not initialized
      */
@@ -125,8 +127,8 @@ public final class Apps {
     /**
      * Return the KeyHash for the application
      *
-     * @param context
-     * @param packageName
+     * @param context     the application Context
+     * @param packageName a package name
      */
     public static String getApplicationSignatureKeyHash(Context context, String packageName) {
         try {
@@ -146,7 +148,7 @@ public final class Apps {
     /**
      * Return the KeyHash for the application
      *
-     * @param packageName
+     * @param packageName a package name
      */
     @Deprecated
     public static String getApplicationSignatureKeyHash(String packageName) {
@@ -156,16 +158,14 @@ public final class Apps {
     /**
      * Return the app certificate's fingerprint
      *
-     * @param context
-     * @param packageName
+     * @param context     the application Context
+     * @param packageName a package name
      * @return certificate's fingerprint
      */
     public static String getSignatureFingerprint(Context context, String packageName) {
-        MessageDigest md = null;
-        Signature sig = null;
         try {
-            md = MessageDigest.getInstance("SHA-1");
-            sig = context.getPackageManager().getPackageInfo(packageName, PackageManager.GET_SIGNATURES).signatures[0];
+            MessageDigest md = MessageDigest.getInstance("SHA-1");
+            Signature sig = context.getPackageManager().getPackageInfo(packageName, PackageManager.GET_SIGNATURES).signatures[0];
             return (toHexStringWithColons(md.digest(sig.toByteArray())));
         } catch (NoSuchAlgorithmException e) {
             Log.e(e);
@@ -178,7 +178,7 @@ public final class Apps {
     /**
      * Return the app certificate's fingerprint
      *
-     * @param packageName
+     * @param packageName a package name
      * @return certificate's fingerprint
      */
     @Deprecated

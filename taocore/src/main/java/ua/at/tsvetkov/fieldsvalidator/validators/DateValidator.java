@@ -11,6 +11,7 @@ import ua.at.tsvetkov.util.Const;
 import ua.at.tsvetkov.util.Log;
 
 /**
+ * Date validator
  * Created by Alexandr Tsvetkov on 28.05.2015.
  */
 public class DateValidator extends AbstractValidator {
@@ -26,11 +27,10 @@ public class DateValidator extends AbstractValidator {
         sdf = new SimpleDateFormat(dateFormat, Locale.ENGLISH);
     }
 
-
     public DateValidator(EditText editText, int years, String dateFormat, String errMsg) {
         super(editText, errMsg);
         if (editText == null || errMsg == null) {
-            throw new IllegalArgumentException("Validators field can' be null");
+            throw new IllegalArgumentException("Validators field can't be null");
         }
         mStartDate = new Date(System.currentTimeMillis() - (Const.YEAR * years));
         mFinishDate = null;
@@ -39,7 +39,7 @@ public class DateValidator extends AbstractValidator {
 
     public boolean isValid() {
         String dateString = getView().getText().toString();
-        Date date = null;
+        Date date;
         try {
             date = sdf.parse(dateString);
         } catch (ParseException e) {
