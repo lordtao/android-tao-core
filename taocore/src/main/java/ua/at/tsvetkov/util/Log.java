@@ -74,8 +74,18 @@ public class Log {
     private static boolean isDisabled = false;
     private static boolean isAndroidStudioStyle = true;
     private static int maxTagLength = MAX_TAG_LENGTH;
+    private static boolean isJumpLink = true;
 
     private Log() {
+    }
+
+    /**
+     * Set active jump link in log cat.
+     *
+     * @param isActive set active/inactive
+     */
+    public static void setJumpLinkActive(boolean isActive) {
+        isJumpLink = isActive;
     }
 
     /**
@@ -856,12 +866,24 @@ public class Log {
                     if (!trace.getClassName().startsWith(className)) {
                         Class<?> clazz = Class.forName(trace.getClassName());
                         StringBuilder sb = new StringBuilder();
-                        sb.append(PREFIX_MAIN_STRING);
-                        sb.append(getClassName(clazz));
-                        sb.append(COLON);
-                        sb.append(trace.getMethodName());
-                        sb.append(COLON);
-                        sb.append(trace.getLineNumber());
+
+                        if (isJumpLink) {
+                            sb.append(PREFIX_MAIN_STRING);
+                            sb.append('(');
+                            sb.append(getClassName(clazz));
+                            sb.append(".java");
+                            sb.append(COLON);
+                            sb.append(trace.getLineNumber());
+                            sb.append(") ");
+                            sb.append(trace.getMethodName());
+                        } else {
+                            sb.append(PREFIX_MAIN_STRING);
+                            sb.append(getClassName(clazz));
+                            sb.append(COLON);
+                            sb.append(trace.getMethodName());
+                            sb.append(COLON);
+                            sb.append(trace.getLineNumber());
+                        }
                         if (isAndroidStudioStyle) {
                             int extraSpaceCount = maxTagLength - sb.length();
                             if (extraSpaceCount < 0) {

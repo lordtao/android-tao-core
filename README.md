@@ -60,18 +60,29 @@ AppConfig.getBoolean(key, true);
 
 ##Easy for using and detail Log:
 
+Code example:
+
 ```java
-
-public void startDiscovery() {
-   ...
-   Log.i("WiFi is enabled.");
-   ...
+   Log.v("Verbose");
+   Log.d("Debug");
+   Log.i("Info");
+   Log.e("Error");
+   try{
+       int i = 10/0;
+   } catch (Exception e) {
+       Log.e("Some exception", e);
+   }
+   try{
+       int i = 10/0;
+   } catch (Exception e) {
+       Log.rt("RuntimeException is not handled by Log.rt()", e);
+   }
 ```
 
-you received in log <b>Class Name:Method:Line Number</b> :
-```code
-04-20 19:28:05.958: I/> PrinterDiscoveryJmDNS:startDiscovery:49         WiFi is enabled.
-```
+You'll get in your LogCat the lines like below. 
+Clicking on the tag brings you to log into the source code of the class which was caused by the logger:
+
+![Image of LogCat example](log_example.png)
 
 ##Screen:
 Static methods for different screen parameters
@@ -95,7 +106,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.0.0-alpha5'
+        classpath 'com.android.tools.build:gradle:2.0.0-alpha7'
     }
 }
 
@@ -110,5 +121,5 @@ allprojects {
 ```
 add to your module build.gradle
 ```
-    compile 'ua.at.tsvetkov:taocore:1.2.1'
+    compile 'ua.at.tsvetkov:taocore:1.2.4'
 ```

@@ -2,7 +2,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'com.jfrog.bintray'
 apply plugin: 'com.github.dcendents.android-maven'
 
-version = "1.2.2"
+version = "1.2.4"
 group = "ua.at.tsvetkov"
 
 def siteUrl = 'https://github.com/lordtao/android-tao-core'
@@ -15,7 +15,7 @@ android {
     defaultConfig {
         minSdkVersion 8
         targetSdkVersion 23
-        versionCode 6
+        versionCode 8
         versionName version
     }
 
