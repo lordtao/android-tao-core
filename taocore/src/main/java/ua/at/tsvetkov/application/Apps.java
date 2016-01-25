@@ -64,17 +64,6 @@ public final class Apps {
     }
 
     /**
-     * Return info about installed on this device apps with CATEGORY_LAUNCHER (usual apps)
-     *
-     * @return List<ResolveInfo>
-     * @throws IllegalAccessException if AppConfig is not initialized
-     */
-    @Deprecated
-    public static List<ResolveInfo> getAllActivitiesInfo() throws IllegalAccessException {
-        throw new UnsupportedOperationException("Use getAllActivitiesInfo(Context context) instead getAllActivitiesInfo().");
-    }
-
-    /**
      * Print installed apps classes names
      *
      * @param context the application Context
@@ -83,16 +72,6 @@ public final class Apps {
         for (ResolveInfo info : getAllActivitiesInfo(context)) {
             Log.d("Package: " + info.activityInfo.packageName + " Class: " + info.activityInfo.name);
         }
-    }
-
-    /**
-     * Print installed apps classes names
-     *
-     * @throws IllegalAccessException if AppConfig is not initialized
-     */
-    @Deprecated
-    public static void printInstalledAppsPackageAndClass() throws IllegalAccessException {
-        throw new UnsupportedOperationException("Use printInstalledAppsPackageAndClass(Context context) instead printInstalledAppsPackageAndClass().");
     }
 
     /**
@@ -113,18 +92,6 @@ public final class Apps {
     }
 
     /**
-     * Checks for an installed application
-     *
-     * @param packageName app package name
-     * @return is an installed application
-     * @throws IllegalAccessException if AppConfig is not initialized
-     */
-    @Deprecated
-    public static boolean isApplicationInstalled(String packageName) throws IllegalAccessException {
-        throw new UnsupportedOperationException("Use isApplicationInstalled(Context context) instead isApplicationInstalled().");
-    }
-
-    /**
      * Return the KeyHash for the application
      *
      * @param context     the application Context
@@ -142,17 +109,6 @@ public final class Apps {
             Log.e(e);
         }
         return "";
-    }
-
-
-    /**
-     * Return the KeyHash for the application
-     *
-     * @param packageName a package name
-     */
-    @Deprecated
-    public static String getApplicationSignatureKeyHash(String packageName) {
-        throw new UnsupportedOperationException("Use getApplicationSignatureKeyHash(Context context) instead getApplicationSignatureKeyHash().");
     }
 
     /**

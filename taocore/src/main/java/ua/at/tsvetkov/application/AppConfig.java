@@ -319,33 +319,12 @@ public final class AppConfig {
 
     /**
      * Return default shared mPreferences (main Application settings)
-     * Deprecated, use getDefaultSharedPreferences(Context context)
-     *
-     * @return default SharedPreferences
-     */
-    @Deprecated
-    public static SharedPreferences getDefaultSharedPreferences() {
-        throw new UnsupportedOperationException("Use getDefaultSharedPreferences(Context context) instead getDefaultSharedPreferences().");
-    }
-
-    /**
-     * Return default shared mPreferences (main Application settings)
      *
      * @param myContext default context
      * @return default SharedPreferences
      */
     public static SharedPreferences getDefaultSharedPreferences(Context myContext) {
         return PreferenceManager.getDefaultSharedPreferences(myContext);
-    }
-
-    /**
-     * Return base application Context
-     *
-     * @return Context
-     */
-    @Deprecated
-    public static Context getContext() {
-        throw new UnsupportedOperationException("Deprecated method.");
     }
 
     /**
@@ -697,18 +676,6 @@ public final class AppConfig {
     public static void clear() {
         mEditor.clear();
         Log.i(">>> Shared mPreferences was CLEARED! <<<");
-    }
-
-    /**
-     * Enable StrictMode in the app. Put call in the first called onCreate() method in Application or Activity.
-     * Deprecated, use enableStrictMode(Context context)
-     *
-     * @throws IllegalAccessException if AppConfig is not initialized
-     */
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    @Deprecated
-    public static void enableStrictMode() throws IllegalAccessException {
-        throw new UnsupportedOperationException("Use enableStrictMode(Context context) instead enableStrictMode().");
     }
 
     /**
