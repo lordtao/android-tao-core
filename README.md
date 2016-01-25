@@ -80,46 +80,7 @@ AppConfig.getBoolean(key, true);
 You'll get in LogCat the lines like below. 
 Clicking on the tag brings you to log into the source code of the class which was caused by the logger:
 
-[[https://github.com/lordtao/android-tao-core/log_example.png|alt=octocat]]
-
-```code
-V/ ▪ (AcMain.java:48) onCreate            ⇛: Verbose
-D/ ▪ (AcMain.java:49) onCreate            ⇛: Debug
-I/ ▪ (AcMain.java:50) onCreate            ⇛: Info
-E/ ▪ (AcMain.java:51) onCreate            ⇛: Error
-E/ ▪ (AcMain.java:55) onCreate            ⇛: Some exception
-                                              java.lang.ArithmeticException: divide by zero
-                                                  at test.tsvetkov.at.ua.test.AcMain.onCreate(AcMain.java:53)
-                                                  at android.app.Activity.performCreate(Activity.java:6052)
-                                                  at android.app.Instrumentation.callActivityOnCreate(Instrumentation.java:1106)
-                                                  at android.app.ActivityThread.performLaunchActivity(ActivityThread.java:2308)
-                                                  at android.app.ActivityThread.handleLaunchActivity(ActivityThread.java:2418)
-                                                  at android.app.ActivityThread.access$800(ActivityThread.java:167)
-                                                  at android.app.ActivityThread$H.handleMessage(ActivityThread.java:1326)
-                                                  at android.os.Handler.dispatchMessage(Handler.java:102)
-                                                  at android.os.Looper.loop(Looper.java:135)
-                                                  at android.app.ActivityThread.main(ActivityThread.java:5309)
-                                                  at java.lang.reflect.Method.invoke(Native Method)
-                                                  at java.lang.reflect.Method.invoke(Method.java:372)
-                                                  at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:908)
-                                                  at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:703)
-E/AndroidRuntime: FATAL EXCEPTION: main
-                                               Process: test.tsvetkov.at.ua.test, PID: 20538
-                                               java.lang.RuntimeException: Unable to start activity ComponentInfo{test.tsvetkov.at.ua.test/test.tsvetkov.at.ua.test.AcMain}: java.lang.ArithmeticException: divide by zero
-                                                   at android.app.ActivityThread.performLaunchActivity(ActivityThread.java:2355)
-                                                   at android.app.ActivityThread.handleLaunchActivity(ActivityThread.java:2418)
-                                                   at android.app.ActivityThread.access$800(ActivityThread.java:167)
-                                                   at android.app.ActivityThread$H.handleMessage(ActivityThread.java:1326)
-                                                   at android.os.Handler.dispatchMessage(Handler.java:102)
-                                                   at android.os.Looper.loop(Looper.java:135)
-                                                   at android.app.ActivityThread.main(ActivityThread.java:5309)
-                                                   at java.lang.reflect.Method.invoke(Native Method)
-                                                   at java.lang.reflect.Method.invoke(Method.java:372)
-                                                   at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:908)
-                                                   at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:703)
-                                                Caused by: java.lang.ArithmeticException: divide by zero
-                                                       at test.tsvetkov.at.ua.test.AcMain.onCreate(AcMain.java:58)
-```
+![Image of LogCat example](log_example.png)
 
 ##Screen:
 Static methods for different screen parameters
