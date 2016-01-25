@@ -60,6 +60,8 @@ AppConfig.getBoolean(key, true);
 
 ##Easy for using and detail Log:
 
+Code example:
+
 ```java
    Log.v("Verbose");
    Log.d("Debug");
@@ -77,7 +79,7 @@ AppConfig.getBoolean(key, true);
    }
 ```
 
-You'll get in LogCat the lines like below. 
+You'll get in your LogCat the lines like below. 
 Clicking on the tag brings you to log into the source code of the class which was caused by the logger:
 
 ![Image of LogCat example](log_example.png)
@@ -104,7 +106,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.0.0-alpha5'
+        classpath 'com.android.tools.build:gradle:2.0.0-alpha7'
     }
 }
 
@@ -119,5 +121,5 @@ allprojects {
 ```
 add to your module build.gradle
 ```
-    compile 'ua.at.tsvetkov:taocore:1.2.1'
+    compile 'ua.at.tsvetkov:taocore:1.2.4'
 ```
