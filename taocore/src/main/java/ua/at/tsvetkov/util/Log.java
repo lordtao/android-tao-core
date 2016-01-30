@@ -73,8 +73,18 @@ public class Log {
     private static boolean isDisabled = false;
     private static boolean isAndroidStudioStyle = true;
     private static int maxTagLength = MAX_TAG_LENGTH;
+    private static boolean isJumpLink = true;
 
     private Log() {
+    }
+
+    /**
+     * Set active jump link in log cat.
+     *
+     * @param isActive set active/inactive
+     */
+    public static void setJumpLinkActive(boolean isActive) {
+        isJumpLink = isActive;
     }
 
     /**
@@ -913,7 +923,6 @@ public class Log {
             }
         }
     }
-
 
     private static void addClassLink(StringBuilder sb, String className, int lineNumber) {
         sb.append('(');
