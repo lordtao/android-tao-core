@@ -51,9 +51,7 @@ public class Log {
 
     // ==========================================================
 
-    private static final String COLON = ":";
-    private static final String POSTFIX_STRING = ")";
-    private static final String PREFIX_STRING = "▪ (";
+    private static final char COLON = ':';
     private static final String PREFIX_MAIN_STRING = " ▪ ";
     private static final String STRING_MORE = "▪ ";
     private static final String GROUP = "|Group:";
@@ -69,23 +67,14 @@ public class Log {
     private static final String MAP_LINE = "-------------------------- Map ---------------------------" + NL;
     private static final String LIST_LINE = "-------------------------- List --------------------------" + NL;
     private static final String LINE = "----------------------------------------------------------" + NL;
+    private static final String JAVA = ".java";
 
 
     private static boolean isDisabled = false;
     private static boolean isAndroidStudioStyle = true;
     private static int maxTagLength = MAX_TAG_LENGTH;
-    private static boolean isJumpLink = true;
 
     private Log() {
-    }
-
-    /**
-     * Set active jump link in log cat.
-     *
-     * @param isActive set active/inactive
-     */
-    public static void setJumpLinkActive(boolean isActive) {
-        isJumpLink = isActive;
     }
 
     /**
@@ -143,7 +132,7 @@ public class Log {
         if (isDisabled) {
             return;
         }
-        android.util.Log.v(getLocation(), detailMessage);
+        android.util.Log.v(getTag(), detailMessage);
     }
 
     /**
@@ -155,7 +144,7 @@ public class Log {
         if (isDisabled) {
             return;
         }
-        android.util.Log.d(getLocation(), detailMessage);
+        android.util.Log.d(getTag(), detailMessage);
     }
 
     /**
@@ -167,7 +156,7 @@ public class Log {
         if (isDisabled) {
             return;
         }
-        android.util.Log.i(getLocation(), detailMessage);
+        android.util.Log.i(getTag(), detailMessage);
     }
 
     /**
@@ -179,7 +168,7 @@ public class Log {
         if (isDisabled) {
             return;
         }
-        android.util.Log.w(getLocation(), detailMessage);
+        android.util.Log.w(getTag(), detailMessage);
     }
 
     /**
@@ -191,7 +180,7 @@ public class Log {
         if (isDisabled) {
             return;
         }
-        android.util.Log.e(getLocation(), detailMessage);
+        android.util.Log.e(getTag(), detailMessage);
     }
 
     /**
@@ -205,7 +194,7 @@ public class Log {
         if (isDisabled) {
             return;
         }
-        android.util.Log.wtf(getLocation(), detailMessage);
+        android.util.Log.wtf(getTag(), detailMessage);
     }
 
     // ==========================================================
@@ -220,7 +209,7 @@ public class Log {
         if (isDisabled) {
             return;
         }
-        android.util.Log.v(getLocation(), detailMessage, tr);
+        android.util.Log.v(getTag(), detailMessage, tr);
     }
 
     /**
@@ -233,7 +222,7 @@ public class Log {
         if (isDisabled) {
             return;
         }
-        android.util.Log.d(getLocation(), detailMessage, tr);
+        android.util.Log.d(getTag(), detailMessage, tr);
     }
 
     /**
@@ -246,7 +235,7 @@ public class Log {
         if (isDisabled) {
             return;
         }
-        android.util.Log.i(getLocation(), detailMessage, tr);
+        android.util.Log.i(getTag(), detailMessage, tr);
     }
 
     /**
@@ -259,7 +248,7 @@ public class Log {
         if (isDisabled) {
             return;
         }
-        android.util.Log.w(getLocation(), detailMessage, tr);
+        android.util.Log.w(getTag(), detailMessage, tr);
     }
 
     /**
@@ -272,7 +261,7 @@ public class Log {
         if (isDisabled) {
             return;
         }
-        android.util.Log.e(getLocation(), detailMessage, tr);
+        android.util.Log.e(getTag(), detailMessage, tr);
     }
 
     /**
@@ -288,7 +277,7 @@ public class Log {
         if (isDisabled) {
             return;
         }
-        android.util.Log.e(getLocation(), detailMessage, tr);
+        android.util.Log.e(getTag(), detailMessage, tr);
     }
 
     /**
@@ -301,7 +290,7 @@ public class Log {
         if (isDisabled) {
             return;
         }
-        android.util.Log.wtf(getLocation(), detailMessage, tr);
+        android.util.Log.wtf(getTag(), detailMessage, tr);
     }
 
     // ==========================================================
@@ -315,7 +304,7 @@ public class Log {
         if (isDisabled) {
             return;
         }
-        android.util.Log.v(getLocation(), "", tr);
+        android.util.Log.v(getTag(), "", tr);
     }
 
     /**
@@ -327,7 +316,7 @@ public class Log {
         if (isDisabled) {
             return;
         }
-        android.util.Log.d(getLocation(), "", tr);
+        android.util.Log.d(getTag(), "", tr);
     }
 
     /**
@@ -339,7 +328,7 @@ public class Log {
         if (isDisabled) {
             return;
         }
-        android.util.Log.i(getLocation(), "", tr);
+        android.util.Log.i(getTag(), "", tr);
     }
 
     /**
@@ -351,7 +340,7 @@ public class Log {
         if (isDisabled) {
             return;
         }
-        android.util.Log.w(getLocation(), "", tr);
+        android.util.Log.w(getTag(), "", tr);
     }
 
     /**
@@ -363,7 +352,7 @@ public class Log {
         if (isDisabled) {
             return;
         }
-        android.util.Log.e(getLocation(), "", tr);
+        android.util.Log.e(getTag(), "", tr);
     }
 
     /**
@@ -378,7 +367,7 @@ public class Log {
         if (isDisabled) {
             return;
         }
-        android.util.Log.e(getLocation(), "", tr);
+        android.util.Log.e(getTag(), "", tr);
     }
 
     /**
@@ -390,7 +379,7 @@ public class Log {
         if (isDisabled) {
             return;
         }
-        android.util.Log.wtf(getLocation(), "", tr);
+        android.util.Log.wtf(getTag(), "", tr);
     }
 
     // ==========================================================
@@ -603,7 +592,7 @@ public class Log {
             return;
         }
         StringBuilder sb = getThreadInfoString(detailMessage, Thread.currentThread());
-        android.util.Log.v(THREAD + getLocation(), sb.toString());
+        android.util.Log.v(THREAD + getTag(), sb.toString());
     }
 
     /**
@@ -617,7 +606,7 @@ public class Log {
             return;
         }
         StringBuilder sb = getThreadInfoString(detailMessage, Thread.currentThread());
-        android.util.Log.e(THREAD + getLocation(), sb.toString(), throwable);
+        android.util.Log.e(THREAD + getTag(), sb.toString(), throwable);
     }
 
     /**
@@ -631,7 +620,7 @@ public class Log {
             return;
         }
         StringBuilder sb = getThreadInfoString("", thread);
-        android.util.Log.e(THREAD + getLocation(), sb.toString(), throwable);
+        android.util.Log.e(THREAD + getTag(), sb.toString(), throwable);
     }
 
     // ==========================================================
@@ -855,77 +844,113 @@ public class Log {
         }
     }
 
-    private static String getLocation() {
+    private static String getTag() {
         final String className = Log.class.getName();
         final StackTraceElement[] traces = Thread.currentThread().getStackTrace();
-        boolean found = false;
-        for (StackTraceElement trace : traces) {
+        StringBuilder sb = new StringBuilder();
 
+        sb.append(PREFIX_MAIN_STRING);
+        addLocation(className, traces, sb);
+        addSpaces(sb);
+
+        return sb.toString();
+    }
+
+    private static String gatExtendedTag(Object obj) {
+
+        Class clazz = obj.getClass();
+        String className = clazz.getName();
+        String classSimpleName = clazz.getSimpleName();
+        String parentClassName = Log.class.getName();
+
+        final StackTraceElement[] traces = Thread.currentThread().getStackTrace();
+
+        StringBuilder sb = new StringBuilder();
+        sb.append(PREFIX_MAIN_STRING);
+
+        if (!clazz.isAnonymousClass()) {
+            for (int i = 0; i < traces.length; i++) {
+                if (traces[i].getClassName().startsWith(className)) {
+                    if (className.contains("$")) {
+                        sb.append('(');
+                        sb.append(classSimpleName);
+                        sb.append(JAVA);
+                        sb.append(')');
+                        sb.append(' ');
+                    } else {
+                        addClassLink(sb, classSimpleName, traces[i].getLineNumber());
+                    }
+                    break;
+                }
+            }
+        } else {
+            sb.append("(Anonymous Class) ");
+        }
+        sb.append('-');
+        sb.append(' ');
+        addLocation(parentClassName, traces, sb);
+        addSpaces(sb);
+
+        return sb.toString();
+    }
+
+    private static void addLocation(String className, StackTraceElement[] traces, StringBuilder sb) {
+        boolean found = false;
+        for (int i = 0; i < traces.length; i++) {
             try {
                 if (found) {
-                    if (!trace.getClassName().startsWith(className)) {
-                        Class<?> clazz = Class.forName(trace.getClassName());
-                        StringBuilder sb = new StringBuilder();
-
-                        if (isJumpLink) {
-                            sb.append(PREFIX_MAIN_STRING);
-                            sb.append('(');
-                            sb.append(getClassName(clazz));
-                            sb.append(".java");
-                            sb.append(COLON);
-                            sb.append(trace.getLineNumber());
-                            sb.append(") ");
-                            sb.append(trace.getMethodName());
-                        } else {
-                            sb.append(PREFIX_MAIN_STRING);
-                            sb.append(getClassName(clazz));
-                            sb.append(COLON);
-                            sb.append(trace.getMethodName());
-                            sb.append(COLON);
-                            sb.append(trace.getLineNumber());
-                        }
-                        if (isAndroidStudioStyle) {
-                            int extraSpaceCount = maxTagLength - sb.length();
-                            if (extraSpaceCount < 0) {
-                                maxTagLength = sb.length();
-                                extraSpaceCount = 0;
-                            }
-                            for (int i = 0; i < extraSpaceCount; i++) {
-                                sb.append(' ');
-                            }
-                            sb.append('\u21DB');
-                        }
-                        return sb.toString();
+                    if (!traces[i].getClassName().startsWith(className)) {
+                        Class<?> clazz = Class.forName(traces[i].getClassName());
+                        addClassLink(sb, getClassName(clazz), traces[i].getLineNumber());
+                        sb.append(traces[i].getMethodName());
+                        break;
                     }
-                } else if (trace.getClassName().startsWith(className)) {
+                } else if (traces[i].getClassName().startsWith(className)) {
                     found = true;
                 }
             } catch (ClassNotFoundException e) {
                 android.util.Log.e("LOG", e.toString());
             }
         }
-        return "[]: ";
     }
 
-    @SuppressWarnings("StringBufferReplaceableByString")
-    private static String gatExtendedTag(Object obj) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(PREFIX_STRING);
-        sb.append(obj.getClass().getSimpleName());
-        sb.append(POSTFIX_STRING);
-        sb.append(getLocation());
-        return sb.toString();
+
+    private static void addClassLink(StringBuilder sb, String className, int lineNumber) {
+        sb.append('(');
+        sb.append(className);
+        sb.append(JAVA);
+        sb.append(COLON);
+        sb.append(lineNumber);
+        sb.append(')');
+        sb.append(' ');
+    }
+
+    private static void addSpaces(StringBuilder sb) {
+        if (isAndroidStudioStyle) {
+            sb.append(' ');
+            int extraSpaceCount = maxTagLength - sb.length();
+            if (extraSpaceCount < 0) {
+                maxTagLength = sb.length();
+                extraSpaceCount = 0;
+            }
+            for (int i = 0; i < extraSpaceCount; i++) {
+                sb.append(' ');
+            }
+            sb.append('\u21DB');
+        }
     }
 
     private static String getClassName(Class<?> clazz) {
         if (clazz != null) {
             if (!TextUtils.isEmpty(clazz.getSimpleName())) {
-                return clazz.getSimpleName();
+                if (clazz.getName().contains("$")) {
+                    return clazz.getName().substring(clazz.getName().lastIndexOf(0x2e) + 1, clazz.getName().lastIndexOf(0x24));
+                } else {
+                    return clazz.getSimpleName();
+                }
             }
-
             return getClassName(clazz.getEnclosingClass());
         }
-
         return "";
     }
 
