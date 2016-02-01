@@ -202,6 +202,7 @@ public final class AppConfig {
             Log.setDisabled(true);
         }
 
+        AppResources.init(application);
     }
 
     /**
