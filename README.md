@@ -121,5 +121,5 @@ allprojects {
 ```
 add to your module build.gradle
 ```
-    compile 'ua.at.tsvetkov:taocore:[ ![Download](https://api.bintray.com/packages/lordtao/maven/android-tao-core/images/download.svg) ](https://bintray.com/lordtao/maven/android-tao-core/_latestVersion)'
+    compile 'ua.at.tsvetkov:taocore:1.2.7'
 ```
