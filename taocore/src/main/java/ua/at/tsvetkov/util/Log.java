@@ -74,6 +74,7 @@ public class Log {
     private static boolean isAndroidStudioStyle = true;
     private static int maxTagLength = MAX_TAG_LENGTH;
     private static boolean isJumpLink = true;
+    private static String stamp = null;
 
     private Log() {
     }
@@ -103,6 +104,15 @@ public class Log {
      */
     public static void setDisabled(boolean isDisabled) {
         Log.isDisabled = isDisabled;
+    }
+
+    /**
+     * Set stamp for mark log. You can add a stamp which are awesome for binding the commits/build time to your logs among other things.
+     *
+     * @param stamp
+     */
+    public static void setStamp(String stamp) {
+        Log.stamp = stamp;
     }
 
     /**
@@ -860,6 +870,7 @@ public class Log {
         StringBuilder sb = new StringBuilder();
 
         sb.append(PREFIX_MAIN_STRING);
+        addStamp(sb);
         addLocation(className, traces, sb);
         addSpaces(sb);
 
@@ -877,6 +888,7 @@ public class Log {
 
         StringBuilder sb = new StringBuilder();
         sb.append(PREFIX_MAIN_STRING);
+        addStamp(sb);
 
         if (!clazz.isAnonymousClass()) {
             for (int i = 0; i < traces.length; i++) {
@@ -902,6 +914,13 @@ public class Log {
         addSpaces(sb);
 
         return sb.toString();
+    }
+
+    private static void addStamp(StringBuilder sb) {
+        if (stamp != null && stamp.length() > 0) {
+            sb.append(stamp);
+            sb.append(' ');
+        }
     }
 
     private static void addLocation(String className, StackTraceElement[] traces, StringBuilder sb) {

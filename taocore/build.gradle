@@ -2,8 +2,12 @@ apply plugin: 'com.android.library'
 apply plugin: 'com.jfrog.bintray'
 apply plugin: 'com.github.dcendents.android-maven'
 
-version = "1.2.7"
+version = "1.2.8"
 group = "ua.at.tsvetkov"
+
+def versionMajor = 1
+def versionMinor = 2
+def versionPatch = 8
 
 def siteUrl = 'https://github.com/lordtao/android-tao-core'
 def gitUrl = 'https://github.com/lordtao/android-tao-core.git'
@@ -15,8 +19,10 @@ android {
     defaultConfig {
         minSdkVersion 8
         targetSdkVersion 23
-        versionCode 11
+        versionCode 12
         versionName version
+//        versionCode versionMajor * 10000 + versionMinor * 100 + versionPatch
+//        versionName "${versionMajor}.${versionMinor}.${versionPatch}"
     }
 
     buildTypes {
