@@ -2,15 +2,17 @@ apply plugin: 'com.android.library'
 apply plugin: 'com.jfrog.bintray'
 apply plugin: 'com.github.dcendents.android-maven'
 
-version = "1.2.9"
-group = "ua.at.tsvetkov"
-
 def versionMajor = 1
 def versionMinor = 2
-def versionPatch = 9
+def versionPatch = 10
 
-def siteUrl = 'https://github.com/lordtao/android-tao-core'
-def gitUrl = 'https://github.com/lordtao/android-tao-core.git'
+version = "${versionMajor}.${versionMinor}.${versionPatch}"
+group = "ua.at.tsvetkov"
+
+def gitUser = "lordtao"
+def gitProject = "android-tao-core"
+def siteUrl = 'https://github.com/${gitUser}/${gitProject}'
+def gitUrl = 'https://github.com/${gitUser}/${gitProject}.git'
 
 android {
     compileSdkVersion 23
@@ -19,9 +21,9 @@ android {
     defaultConfig {
         minSdkVersion 8
         targetSdkVersion 23
-        versionCode 12
+//        versionCode 12
         versionName version
-//        versionCode versionMajor * 10000 + versionMinor * 100 + versionPatch
+        versionCode versionMajor * 10000 + versionMinor * 100 + versionPatch
 //        versionName "${versionMajor}.${versionMinor}.${versionPatch}"
     }
 
@@ -51,7 +53,7 @@ bintray {
     configurations = ['archives']
     pkg {
         repo = "maven"
-        name = "android-tao-core"
+        name = gitProject
         websiteUrl = siteUrl
         vcsUrl = gitUrl
         licenses = ["BSD 3-Clause"]
@@ -74,7 +76,7 @@ install {
                 }
                 developers {
                     developer {
-                        id 'lordtao'
+                        id gitUser
                         name 'Alexandr Tsvetkov'
                         email 'tsvetkov2010@gmail.com'
                     }
