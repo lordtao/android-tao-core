@@ -105,7 +105,7 @@ public class Log {
     @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     public static void enableActivityLifecycleAutoLogger(Application application, final String commonMessage) {
 
-        if(activityLifecycleCallback == null) {
+        if (activityLifecycleCallback == null) {
             activityLifecycleCallback = new Application.ActivityLifecycleCallbacks() {
 
                 @Override
@@ -970,6 +970,8 @@ public class Log {
         sb.append(PREFIX_MAIN_STRING);
         addStamp(sb);
 
+        int sbPrefixLength = sb.length();
+
         if (!clazz.isAnonymousClass()) {
             for (int i = 0; i < traces.length; i++) {
                 if (traces[i].getClassName().startsWith(className)) {
@@ -988,9 +990,11 @@ public class Log {
         } else {
             sb.append("(Anonymous Class) ");
         }
-        sb.append('<');
-        sb.append('-');
-        sb.append(' ');
+        if (sb.length() > sbPrefixLength) {
+            sb.append('<');
+            sb.append('-');
+            sb.append(' ');
+        }
         addLocation(parentClassName, traces, sb);
         addSpaces(sb);
 
