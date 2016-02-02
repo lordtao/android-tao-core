@@ -19,7 +19,7 @@ public class App extends Application {
         registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
             @Override
             public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
-                Log.i("onActivityCreated");
+                Log.i(activity, "onActivityCreated");
             }
 
             @Override
