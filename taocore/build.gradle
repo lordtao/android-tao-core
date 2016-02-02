@@ -2,12 +2,12 @@ apply plugin: 'com.android.library'
 apply plugin: 'com.jfrog.bintray'
 apply plugin: 'com.github.dcendents.android-maven'
 
-version = "1.2.8"
+version = "1.2.9"
 group = "ua.at.tsvetkov"
 
 def versionMajor = 1
 def versionMinor = 2
-def versionPatch = 8
+def versionPatch = 9
 
 def siteUrl = 'https://github.com/lordtao/android-tao-core'
 def gitUrl = 'https://github.com/lordtao/android-tao-core.git'

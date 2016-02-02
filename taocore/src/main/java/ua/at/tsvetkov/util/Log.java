@@ -25,6 +25,11 @@
  */
 package ua.at.tsvetkov.util;
 
+import android.annotation.TargetApi;
+import android.app.Activity;
+import android.app.Application;
+import android.os.Build;
+import android.os.Bundle;
 import android.text.TextUtils;
 
 import java.io.StringReader;
@@ -64,6 +69,7 @@ public class Log {
     private static final char PREFIX = '|';
     private static final String NL = "\n";
     private static final String HALF_LINE = "---------------------";
+    private static final String ACTIVITY_COMMON_MESSAGE = HALF_LINE + " Activity lifecycle " + HALF_LINE;
     private static final String MAP_LINE = "-------------------------- Map ---------------------------" + NL;
     private static final String LIST_LINE = "-------------------------- List --------------------------" + NL;
     private static final String LINE = "----------------------------------------------------------" + NL;
@@ -75,8 +81,82 @@ public class Log {
     private static int maxTagLength = MAX_TAG_LENGTH;
     private static boolean isJumpLink = true;
     private static String stamp = null;
+    private static Application.ActivityLifecycleCallbacks activityLifecycleCallback = null;
 
     private Log() {
+    }
+
+    /**
+     * Added auto log messages for activity lifecycle.
+     *
+     * @param application the application instance
+     */
+    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+    public static void enableActivityLifecycleAutoLogger(Application application) {
+        enableActivityLifecycleAutoLogger(application, ACTIVITY_COMMON_MESSAGE);
+    }
+
+    /**
+     * Enabled auto log messages for activity lifecycle.
+     *
+     * @param application   the application instance
+     * @param commonMessage common message called when activities lifecycle events come.
+     */
+    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+    public static void enableActivityLifecycleAutoLogger(Application application, final String commonMessage) {
+
+        if(activityLifecycleCallback == null) {
+            activityLifecycleCallback = new Application.ActivityLifecycleCallbacks() {
+
+                @Override
+                public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+                    android.util.Log.i(getActivityTag(activity), commonMessage);
+                }
+
+                @Override
+                public void onActivityStarted(Activity activity) {
+                    android.util.Log.i(getActivityTag(activity), commonMessage);
+                }
+
+                @Override
+                public void onActivityResumed(Activity activity) {
+                    android.util.Log.i(getActivityTag(activity), commonMessage);
+                }
+
+                @Override
+                public void onActivityPaused(Activity activity) {
+                    android.util.Log.i(getActivityTag(activity), commonMessage);
+                }
+
+                @Override
+                public void onActivityStopped(Activity activity) {
+                    android.util.Log.i(getActivityTag(activity), commonMessage);
+                }
+
+                @Override
+                public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
+                    android.util.Log.i(getActivityTag(activity), commonMessage);
+                }
+
+                @Override
+                public void onActivityDestroyed(Activity activity) {
+                    android.util.Log.i(getActivityTag(activity), commonMessage);
+                }
+
+            };
+        }
+
+        application.registerActivityLifecycleCallbacks(activityLifecycleCallback);
+    }
+
+    /**
+     * Disabled auto log messages for activity lifecycle.
+     *
+     * @param application the application instance
+     */
+    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+    public static void disableActivityLifecycleAutoLogger(Application application) {
+        application.unregisterActivityLifecycleCallbacks(activityLifecycleCallback);
     }
 
     /**
@@ -893,24 +973,54 @@ public class Log {
         if (!clazz.isAnonymousClass()) {
             for (int i = 0; i < traces.length; i++) {
                 if (traces[i].getClassName().startsWith(className)) {
-                    if (className.contains("$")) {
-                        sb.append('(');
-                        sb.append(classSimpleName);
-                        sb.append(JAVA);
-                        sb.append(')');
-                        sb.append(' ');
-                    } else {
-                        addClassLink(sb, classSimpleName, traces[i].getLineNumber());
-                    }
+//                    if (className.contains("$")) {
+//                        sb.append('(');
+                    sb.append(classSimpleName);
+                    sb.append(JAVA);
+//                        sb.append(')');
+                    sb.append(' ');
+//                    } else {
+//                        addClassLink(sb, classSimpleName, traces[i].getLineNumber());
+//                    }
                     break;
                 }
             }
         } else {
             sb.append("(Anonymous Class) ");
         }
+        sb.append('<');
         sb.append('-');
         sb.append(' ');
         addLocation(parentClassName, traces, sb);
+        addSpaces(sb);
+
+        return sb.toString();
+    }
+
+
+    private static String getActivityTag(Activity activity) {
+        String classSimpleName = activity.getClass().getSimpleName();
+
+        final StackTraceElement[] traces = Thread.currentThread().getStackTrace();
+
+        StringBuilder sb = new StringBuilder();
+        sb.append(PREFIX_MAIN_STRING);
+        addStamp(sb);
+
+        for (int i = 0; i < traces.length; i++) {
+            if (traces[i].getClassName().startsWith("android.app.Activity")) {
+                sb.append('(');
+                sb.append(classSimpleName);
+                sb.append(JAVA);
+                sb.append(COLON);
+                sb.append('0');
+                sb.append(')');
+                sb.append(' ');
+                sb.append(traces[i].getMethodName());
+                break;
+            }
+        }
+
         addSpaces(sb);
 
         return sb.toString();
