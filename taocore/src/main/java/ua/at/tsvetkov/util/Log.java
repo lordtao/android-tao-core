@@ -53,8 +53,9 @@ public class Log {
     private static final String NAME = "Name:";
     private static final String THREAD = "▪ Thread";
     private static final String HALF_LINE = "---------------------";
-    private static final String ACTIVITY_COMMON_MESSAGE = HALF_LINE + " Activity lifecycle " + HALF_LINE;
+    private static final String ACTIVITY_MESSAGE = " Activity: ";
     private static final String JAVA = ".java";
+    private static final String ACTIVITY_CLASS = "android.app.Activity";
 
 
     private static boolean isDisabled = false;
@@ -72,18 +73,7 @@ public class Log {
      * @param application the application instance
      */
     @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-    public static void enableActivityLifecycleAutoLogger(Application application) {
-        enableActivityLifecycleAutoLogger(application, ACTIVITY_COMMON_MESSAGE);
-    }
-
-    /**
-     * Enabled auto log messages for activity lifecycle.
-     *
-     * @param commonMessage common message called when activities lifecycle events come.
-     * @param application   the application instance
-     */
-    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-    public static void enableActivityLifecycleAutoLogger(@NonNull Application application, final String commonMessage) {
+    public static void enableActivityLifecycleAutoLogger(@NonNull Application application) {
         if (application == null) {
             Log.w("Can't enable Activity auto logger, application=null");
         }
@@ -95,37 +85,41 @@ public class Log {
 
                 @Override
                 public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
-                    android.util.Log.i(getActivityTag(activity), commonMessage);
+                    printActivityCallMethod(activity);
                 }
 
                 @Override
                 public void onActivityStarted(Activity activity) {
-                    android.util.Log.i(getActivityTag(activity), commonMessage);
+                    printActivityCallMethod(activity);
                 }
 
                 @Override
                 public void onActivityResumed(Activity activity) {
-                    android.util.Log.i(getActivityTag(activity), commonMessage);
+                    printActivityCallMethod(activity);
                 }
 
                 @Override
                 public void onActivityPaused(Activity activity) {
-                    android.util.Log.i(getActivityTag(activity), commonMessage);
+                    printActivityCallMethod(activity);
                 }
 
                 @Override
                 public void onActivityStopped(Activity activity) {
-                    android.util.Log.i(getActivityTag(activity), commonMessage);
+                    printActivityCallMethod(activity);
                 }
 
                 @Override
                 public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
-                    android.util.Log.i(getActivityTag(activity), commonMessage);
+                    printActivityCallMethod(activity);
                 }
 
                 @Override
                 public void onActivityDestroyed(Activity activity) {
-                    android.util.Log.i(getActivityTag(activity), commonMessage);
+                    printActivityCallMethod(activity);
+                }
+
+                private void printActivityCallMethod(Activity activity) {
+                    android.util.Log.i(getActivityTag(activity), getActivityMethodInfo(activity));
                 }
 
             };
@@ -823,6 +817,7 @@ public class Log {
     }
 
     static String getActivityTag(Activity activity) {
+        String className = activity.getClass().getCanonicalName();
         String classSimpleName = activity.getClass().getSimpleName();
 
         final StackTraceElement[] traces = Thread.currentThread().getStackTrace();
@@ -831,21 +826,53 @@ public class Log {
         sb.append(PREFIX_MAIN_STRING);
         addStamp(sb);
 
-        for (int i = 0; i < traces.length; i++) {
-            if (traces[i].getClassName().startsWith("android.app.Activity")) {
-                sb.append('(');
-                sb.append(classSimpleName);
-                sb.append(JAVA);
-                sb.append(COLON);
-                sb.append('0');
-                sb.append(')');
-                sb.append(' ');
-                sb.append(traces[i].getMethodName());
-                break;
-            }
+        StackTraceElement trace = findStackTraceElement(traces, className);
+
+        if (trace != null) {
+            addClassLink(sb, classSimpleName, trace.getLineNumber());
+        } else {
+            addClassLink(sb, classSimpleName, 0);
+            trace = findStackTraceElement(traces, ACTIVITY_CLASS);
         }
 
+        sb.append(trace.getMethodName());
+
         addSpaces(sb);
+
+        return sb.toString();
+    }
+
+    static String getActivityMethodInfo(Activity activity) {
+        String className = activity.getClass().getCanonicalName();
+        String classSimpleName = activity.getClass().getSimpleName();
+
+        final StackTraceElement[] traces = Thread.currentThread().getStackTrace();
+
+        StringBuilder sb = new StringBuilder();
+        sb.append(HALF_LINE);
+        sb.append(ACTIVITY_MESSAGE);
+
+        StackTraceElement trace = findStackTraceElement(traces, className);
+
+        boolean isOverride = false;
+        if (trace != null) {
+            addClassLink(sb, classSimpleName, trace.getLineNumber());
+            isOverride = true;
+        } else {
+            addClassLink(sb, classSimpleName, 0);
+            trace = findStackTraceElement(traces, ACTIVITY_CLASS);
+        }
+
+        if(isOverride) {
+            sb.append("@Override");
+        } else {
+            sb.append("not override");
+        }
+
+        sb.append(" -> ");
+        sb.append(trace.getMethodName());
+        sb.append(' ');
+        sb.append(HALF_LINE);
 
         return sb.toString();
     }
@@ -915,5 +942,17 @@ public class Log {
         }
         return "";
     }
+
+    static StackTraceElement findStackTraceElement(StackTraceElement[] traces, String startsFrom) {
+        StackTraceElement trace = null;
+        for (int i = 0; i < traces.length; i++) {
+            if (traces[i].getClassName().startsWith(startsFrom)) {
+                trace = traces[i];
+                break;
+            }
+        }
+        return trace;
+    }
+
 
 }
