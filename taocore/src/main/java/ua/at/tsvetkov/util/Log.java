@@ -856,17 +856,18 @@ public class Log {
 
         boolean isOverride = false;
         if (trace != null) {
-            addClassLink(sb, classSimpleName, trace.getLineNumber());
             isOverride = true;
         } else {
-            addClassLink(sb, classSimpleName, 0);
             trace = findStackTraceElement(traces, ACTIVITY_CLASS);
         }
 
+        sb.append(' ');
+        sb.append(classSimpleName);
+
         if(isOverride) {
-            sb.append("@Override");
+            sb.append(" @Override");
         } else {
-            sb.append("not override");
+            sb.append(" not override");
         }
 
         sb.append(" -> ");
