@@ -49,5 +49,6 @@ public final class Const {
     public final static char AR_R = '\u2190';
     public final static char AR_L = '\u2192';
     public final static char NL = '\n';
+    public final static char TAB = '\t';
 
 }

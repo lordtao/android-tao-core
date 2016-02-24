@@ -4,7 +4,7 @@ apply plugin: 'com.github.dcendents.android-maven'
 
 def versionMajor = 1
 def versionMinor = 2
-def versionPatch = 11
+def versionPatch = 13
 
 version = "${versionMajor}.${versionMinor}.${versionPatch}"
 group = "ua.at.tsvetkov"
@@ -21,10 +21,8 @@ android {
     defaultConfig {
         minSdkVersion 8
         targetSdkVersion 23
-//        versionCode 12
         versionName version
         versionCode versionMajor * 10000 + versionMinor * 100 + versionPatch
-//        versionName "${versionMajor}.${versionMinor}.${versionPatch}"
     }
 
     buildTypes {

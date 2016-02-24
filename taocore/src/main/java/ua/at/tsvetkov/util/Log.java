@@ -30,21 +30,10 @@ import android.app.Activity;
 import android.app.Application;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
-import java.io.StringReader;
-import java.io.StringWriter;
 import java.lang.reflect.Field;
-import java.util.List;
-import java.util.Map;
-
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
 
 /**
  * Extended logger. Allows you to automatically adequately logged class, method and line call in the log. Makes it easy to write logs. For
@@ -54,8 +43,7 @@ import javax.xml.transform.stream.StreamSource;
  */
 public class Log {
 
-    // ==========================================================
-
+    private static final int MAX_TAG_LENGTH = 40;
     private static final char COLON = ':';
     private static final String PREFIX_MAIN_STRING = " ▪ ";
     private static final String STRING_MORE = "▪ ";
@@ -64,22 +52,14 @@ public class Log {
     private static final String ID = "|id:";
     private static final String NAME = "Name:";
     private static final String THREAD = "▪ Thread";
-    private static final int MAX_TAG_LENGTH = 40;
-    private static final String HEX_FORM = "%02X ";
-    private static final char PREFIX = '|';
-    private static final String NL = "\n";
     private static final String HALF_LINE = "---------------------";
     private static final String ACTIVITY_COMMON_MESSAGE = HALF_LINE + " Activity lifecycle " + HALF_LINE;
-    private static final String MAP_LINE = "-------------------------- Map ---------------------------" + NL;
-    private static final String LIST_LINE = "-------------------------- List --------------------------" + NL;
-    private static final String LINE = "----------------------------------------------------------" + NL;
     private static final String JAVA = ".java";
 
 
     private static boolean isDisabled = false;
     private static boolean isAndroidStudioStyle = true;
     private static int maxTagLength = MAX_TAG_LENGTH;
-    private static boolean isJumpLink = true;
     private static String stamp = null;
     private static Application.ActivityLifecycleCallbacks activityLifecycleCallback = null;
 
@@ -99,12 +79,17 @@ public class Log {
     /**
      * Enabled auto log messages for activity lifecycle.
      *
-     * @param application   the application instance
      * @param commonMessage common message called when activities lifecycle events come.
+     * @param application   the application instance
      */
     @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-    public static void enableActivityLifecycleAutoLogger(Application application, final String commonMessage) {
-
+    public static void enableActivityLifecycleAutoLogger(@NonNull Application application, final String commonMessage) {
+        if (application == null) {
+            Log.w("Can't enable Activity auto logger, application=null");
+        }
+        if (isDisabled) {
+            return;
+        }
         if (activityLifecycleCallback == null) {
             activityLifecycleCallback = new Application.ActivityLifecycleCallbacks() {
 
@@ -155,17 +140,15 @@ public class Log {
      * @param application the application instance
      */
     @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-    public static void disableActivityLifecycleAutoLogger(Application application) {
-        application.unregisterActivityLifecycleCallbacks(activityLifecycleCallback);
-    }
-
-    /**
-     * Set active jump link in log cat.
-     *
-     * @param isActive set active/inactive
-     */
-    public static void setJumpLinkActive(boolean isActive) {
-        isJumpLink = isActive;
+    public static void disableActivityLifecycleAutoLogger(@NonNull Application application) {
+        if (isDisabled) {
+            return;
+        }
+        if (application == null) {
+            Log.w("Can't disable Activity auto logger, application=null");
+        } else {
+            application.unregisterActivityLifecycleCallbacks(activityLifecycleCallback);
+        }
     }
 
     /**
@@ -669,14 +652,14 @@ public class Log {
     // ==========================================================
 
     /**
-     * Loggedg the current Thread info
+     * Logged the current Thread info
      */
     public static void threadInfo() {
         threadInfo("");
     }
 
     /**
-     * Loggedg the current Thread info and an throwable
+     * Logged the current Thread info and an throwable
      *
      * @param throwable An throwable to log
      */
@@ -685,7 +668,7 @@ public class Log {
     }
 
     /**
-     * Loggedg the current Thread info and a message
+     * Logged the current Thread info and a message
      */
     public static void threadInfo(String detailMessage) {
         if (isDisabled) {
@@ -696,7 +679,7 @@ public class Log {
     }
 
     /**
-     * Loggedg the current Thread info and a message and an throwable
+     * Logged the current Thread info and a message and an throwable
      *
      * @param detailMessage The message you would like logged.
      * @param throwable     An throwable to log
@@ -710,9 +693,9 @@ public class Log {
     }
 
     /**
-     * Loggedg the current Thread info and a message and an throwable
+     * Logged the current Thread info and a message and an throwable
      *
-     * @param thread    for Loggedg info.
+     * @param thread    for Logged info.
      * @param throwable An throwable to log
      */
     public static void threadInfo(Thread thread, Throwable throwable) {
@@ -723,194 +706,36 @@ public class Log {
         android.util.Log.e(THREAD + getTag(), sb.toString(), throwable);
     }
 
-    // ==========================================================
-
     /**
-     * Return String representation of map. Each item in new line.
+     * Logged stack trace at this time.
      *
-     * @param map a Map
-     * @return String representation of map
+     * @param msg a custom message
      */
-    public static String map(Map<?, ?> map) {
-        int max = 0;
-        for (Map.Entry<?, ?> item : map.entrySet()) {
-            int length = item.getKey().toString().length();
-            if (max < length) {
-                max = length;
-            }
+    public static void stackTrace(String msg) {
+        if (isDisabled) {
+            return;
         }
-        StringBuilder sb = new StringBuilder();
-        String formatString = "%-" + max + "s = %s";
-        sb.append(MAP_LINE);
-        for (Map.Entry<?, ?> item : map.entrySet()) {
-            sb.append(String.format(formatString, item.getKey(), item.getValue()));
-            sb.append(NL);
-        }
-        sb.append(LINE);
-        return sb.toString();
+        Log.i(ForLog.stackTrace(msg));
     }
 
     /**
-     * Return String representation of list. Each item in new line.
-     *
-     * @param list a List
-     * @return String representation of map
+     * Logged stack trace at this time.
      */
-    public static String list(List<?> list) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(LIST_LINE);
-        for (Object item : list) {
-            sb.append(item.toString());
-            sb.append(NL);
+    public static void stackTrace() {
+        if (isDisabled) {
+            return;
         }
-        sb.append(LINE);
-        return sb.toString();
+        Log.i(ForLog.stackTrace());
     }
 
-    /**
-     * Return String representation of Object. Each field in new line.
-     *
-     * @param myObj a class for representation
-     * @return String representation of class
-     */
-    public static String objs(Object myObj) {
-        Class<?> cl = myObj.getClass();
-        int max = 0;
-        String formatString = PREFIX + "%-" + max + "s = %s" + NL;
-        StringBuilder sb = new StringBuilder();
-        Field[] fields = cl.getDeclaredFields();
-
-        for (Field field : fields) {
-            int length = field.getName().length();
-            if (max < length) {
-                max = length;
-            }
-        }
-        sb.append(HALF_LINE);
-        sb.append(cl.getSimpleName());
-        sb.append(HALF_LINE);
-        sb.append(NL);
-        for (Field field : fields) {
-            try {
-                Field myField = getField(cl, field.getName());
-                myField.setAccessible(true);
-                sb.append(String.format(formatString, field.getName(), myField.get(myObj)));
-            } catch (Exception e) {
-                sb.append(PREFIX);
-                sb.append("Can't access to field ");
-                sb.append(field.getName());
-            }
-        }
-        sb.append(LINE);
-        return sb.toString();
-    }
-
-    /**
-     * Return String representation of class. Each field in new line.
-     *
-     * @param myObj a class for representation
-     * @return String representation of class
-     */
-    public static String obj(Object myObj) {
-        Class<?> cl = myObj.getClass();
-        Field[] fields = cl.getDeclaredFields();
-        StringBuilder sb = new StringBuilder();
-        sb.append(cl.getSimpleName());
-        sb.append(" [");
-        for (int i = 0; i < fields.length; i++) {
-            try {
-                Field myField = getField(cl, fields[i].getName());
-                myField.setAccessible(true);
-                sb.append(fields[i].getName());
-                sb.append("=");
-                sb.append(myField.get(myObj));
-                if (fields.length != 1 && i < (fields.length - 1)) {
-                    sb.append(", ");
-                }
-            } catch (Exception e) {
-                sb.append(PREFIX);
-                sb.append("Can't access to the field ");
-                sb.append(fields[i].getName());
-            }
-        }
-        sb.append("]");
-        return sb.toString();
-    }
-
-    /**
-     * Print in log readable representation of bytes array data like 0F CD AD.... Each countPerLine bytes will print in new line
-     *
-     * @param data         your bytes array data
-     * @param countPerLine count byte per line
-     */
-    public static void hex(byte[] data, int countPerLine) {
-        StringBuilder sb = new StringBuilder(countPerLine * 3);
-        int count = 0;
-        for (byte element : data) {
-            count++;
-            sb.append(String.format(HEX_FORM, element));
-            if (count >= countPerLine) {
-                count = 0;
-                sb.trimToSize();
-                Log.v(sb.toString());
-                sb = new StringBuilder(countPerLine * 3);
-            }
-        }
-    }
-
-    /**
-     * Return readable representation of bytes array data like 0F CD AD....
-     *
-     * @param data your bytes array data
-     * @return readable representation
-     */
-    public static String hex(byte[] data) {
-        StringBuilder sb = new StringBuilder(data.length * 3);
-        for (byte element : data) {
-            sb.append(String.format(HEX_FORM, element));
-        }
-        sb.trimToSize();
-        return sb.toString();
-    }
-
-    /**
-     * Return readable representation of xml with indentation 2
-     *
-     * @param xmlStr your xml data
-     * @return readable representation
-     */
-    public String xml(String xmlStr) {
-        return xml(xmlStr, 2);
-    }
-
-    /**
-     * Return readable representation of xml
-     *
-     * @param xmlStr      your xml data
-     * @param indentation xml identetion
-     * @return readable representation
-     */
-    public String xml(String xmlStr, int indentation) {
-        try {
-            Source xmlInput = new StreamSource(new StringReader(xmlStr));
-            StreamResult xmlOutput = new StreamResult(new StringWriter());
-            Transformer transformer = TransformerFactory.newInstance().newTransformer();
-            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", String.valueOf(indentation));
-            transformer.transform(xmlInput, xmlOutput);
-            return xmlOutput.getWriter().toString().replaceFirst(">", ">\n");
-        } catch (TransformerException e) {
-            return xmlStr;
-        }
-    }
     // ==========================================================
 
     /**
      * @param detailMessage a message
-     * @param thread        thread for Loggedg
+     * @param thread        thread for Logged
      * @return filled StringBuilder for next filling
      */
-    private static StringBuilder getThreadInfoString(String detailMessage, Thread thread) {
+    static StringBuilder getThreadInfoString(String detailMessage, Thread thread) {
         long id = thread.getId();
         String name = thread.getName();
         long priority = thread.getPriority();
@@ -931,7 +756,7 @@ public class Log {
         return sb;
     }
 
-    private static Field getField(Class<?> clazz, String fieldName) throws NoSuchFieldException {
+    static Field getField(Class<?> clazz, String fieldName) throws NoSuchFieldException {
         try {
             return clazz.getDeclaredField(fieldName);
         } catch (NoSuchFieldException e) {
@@ -944,7 +769,7 @@ public class Log {
         }
     }
 
-    private static String getTag() {
+    static String getTag() {
         final String className = Log.class.getName();
         final StackTraceElement[] traces = Thread.currentThread().getStackTrace();
         StringBuilder sb = new StringBuilder();
@@ -957,8 +782,10 @@ public class Log {
         return sb.toString();
     }
 
-    private static String gatExtendedTag(Object obj) {
-
+    static String gatExtendedTag(Object obj) {
+        if (obj == null) {
+            Log.v("null");
+        }
         Class clazz = obj.getClass();
         String className = clazz.getName();
         String classSimpleName = clazz.getSimpleName();
@@ -975,15 +802,9 @@ public class Log {
         if (!clazz.isAnonymousClass()) {
             for (int i = 0; i < traces.length; i++) {
                 if (traces[i].getClassName().startsWith(className)) {
-//                    if (className.contains("$")) {
-//                        sb.append('(');
                     sb.append(classSimpleName);
                     sb.append(JAVA);
-//                        sb.append(')');
                     sb.append(' ');
-//                    } else {
-//                        addClassLink(sb, classSimpleName, traces[i].getLineNumber());
-//                    }
                     break;
                 }
             }
@@ -1001,8 +822,7 @@ public class Log {
         return sb.toString();
     }
 
-
-    private static String getActivityTag(Activity activity) {
+    static String getActivityTag(Activity activity) {
         String classSimpleName = activity.getClass().getSimpleName();
 
         final StackTraceElement[] traces = Thread.currentThread().getStackTrace();
@@ -1030,14 +850,14 @@ public class Log {
         return sb.toString();
     }
 
-    private static void addStamp(StringBuilder sb) {
+    static void addStamp(StringBuilder sb) {
         if (stamp != null && stamp.length() > 0) {
             sb.append(stamp);
             sb.append(' ');
         }
     }
 
-    private static void addLocation(String className, StackTraceElement[] traces, StringBuilder sb) {
+    static void addLocation(String className, StackTraceElement[] traces, StringBuilder sb) {
         boolean found = false;
         for (int i = 0; i < traces.length; i++) {
             try {
@@ -1057,7 +877,7 @@ public class Log {
         }
     }
 
-    private static void addClassLink(StringBuilder sb, String className, int lineNumber) {
+    static void addClassLink(StringBuilder sb, String className, int lineNumber) {
         sb.append('(');
         sb.append(className);
         sb.append(JAVA);
@@ -1067,7 +887,7 @@ public class Log {
         sb.append(' ');
     }
 
-    private static void addSpaces(StringBuilder sb) {
+    static void addSpaces(StringBuilder sb) {
         if (isAndroidStudioStyle) {
             sb.append(' ');
             int extraSpaceCount = maxTagLength - sb.length();
@@ -1082,7 +902,7 @@ public class Log {
         }
     }
 
-    private static String getClassName(Class<?> clazz) {
+    static String getClassName(Class<?> clazz) {
         if (clazz != null) {
             if (!TextUtils.isEmpty(clazz.getSimpleName())) {
                 if (clazz.getName().contains("$")) {
