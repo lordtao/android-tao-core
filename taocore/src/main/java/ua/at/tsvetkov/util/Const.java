@@ -40,11 +40,14 @@ public final class Const {
     public final static long MIN = 60 * SEC;
     public final static long HOUR = 60 * MIN;
     public final static long DAY = 24 * HOUR;
+    public final static long WEEK = 7 * DAY;
+    public final static long AVERAGE_MONTH = 30 * DAY;
     public final static long YEAR = 364 * DAY;
 
     public final static int KB = 1024;
     public final static int MB = KB * 1024;
     public final static int GB = MB * 1024;
+    public final static int TB = GB * 1024;
 
     public final static char AR_R = '\u2190';
     public final static char AR_L = '\u2192';
