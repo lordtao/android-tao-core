@@ -15,6 +15,18 @@ public class MainActivity extends AppCompatActivity {
       super.onCreate(savedInstanceState);
       setContentView(R.layout.activity_main);
 
+      // Code example
+
+      Log.v("Verbose");
+      Log.d("Debug");
+      Log.i("Info");
+      Log.e("Error");
+      try{
+         int i = 10/0;
+      } catch (Exception e) {
+         Log.e("Some exception", e);
+      }
+
       // Logging tests
 
       Exception ex = new Exception("Test Exception");
