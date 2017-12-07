@@ -37,7 +37,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import ua.at.tsvetkov.application.AppConfig;
 import ua.at.tsvetkov.util.Log;
 
 /**
@@ -47,7 +46,6 @@ import ua.at.tsvetkov.util.Log;
  */
 public final class FileIO {
 
-   private static final String CACHE = "cache/";
    private static final int BUFFER_SIZE = 8192;
 
    private FileIO() {
@@ -61,7 +59,7 @@ public final class FileIO {
     * @param dstFileName destination file path
     * @return true if success
     */
-   public static boolean copy(String srcFileName, String dstFileName) {
+   public static boolean copy(@NonNull String srcFileName, @NonNull String dstFileName) {
       if (srcFileName == null || srcFileName.length() == 0) {
          Log.e("Source file name is empty.");
          return false;
@@ -111,7 +109,7 @@ public final class FileIO {
     * @param dstFile     destination file
     * @return true if success
     */
-   public static boolean copy(String srcFileName, File dstFile) {
+   public static boolean copy(@NonNull String srcFileName, @NonNull File dstFile) {
       if (srcFileName == null || srcFileName.length() == 0) {
          Log.e("Source file name is empty.");
          return false;
@@ -130,7 +128,7 @@ public final class FileIO {
     * @param dstFileName destination file name
     * @return true if success
     */
-   public static boolean copy(File srcFile, String dstFileName) {
+   public static boolean copy(@NonNull File srcFile, @NonNull String dstFileName) {
       if (srcFile == null || !srcFile.exists()) {
          Log.e("Source file is null or not exist.");
          return false;
@@ -149,7 +147,7 @@ public final class FileIO {
     * @param dstFile destination file
     * @return true if success
     */
-   public static boolean copy(File srcFile, File dstFile) {
+   public static boolean copy(@NonNull File srcFile, @NonNull File dstFile) {
       if (srcFile == null || !srcFile.exists()) {
          Log.e("Source file is null or not exist.");
          return false;
@@ -169,7 +167,7 @@ public final class FileIO {
     * @param dstFileName    destination of copy
     * @return true if success
     */
-   public static boolean copyAsset(Context context, String assetsFileName, String dstFileName) {
+   public static boolean copyAsset(@NonNull Context context, @NonNull String assetsFileName, @NonNull String dstFileName) {
       BufferedInputStream in = null;
       BufferedOutputStream out = null;
       try {
@@ -212,7 +210,7 @@ public final class FileIO {
     * @param dstFile        destination of copy
     * @return true if success
     */
-   public static boolean copyAsset(Context context, String assetsFileName, File dstFile) {
+   public static boolean copyAsset(@NonNull Context context, @NonNull String assetsFileName, @NonNull File dstFile) {
       if (assetsFileName == null || assetsFileName.length() == 0) {
          Log.e("Assets file name is empty.");
          return false;
@@ -230,7 +228,7 @@ public final class FileIO {
     * @param fileName file for delete
     * @return true if success
     */
-   public static boolean delete(String fileName) {
+   public static boolean delete(@NonNull String fileName) {
       File file = new File(fileName);
       boolean result = file.delete();
       if (result) {
@@ -246,7 +244,7 @@ public final class FileIO {
     *
     * @param pathName path for delete a content
     */
-   public static void deleteDirContent(String pathName) {
+   public static void deleteDirContent(@NonNull String pathName) {
       File path = new File(pathName);
       String[] files = path.list();
       if (files != null) {
@@ -269,7 +267,7 @@ public final class FileIO {
     * @param dstFileName reamed file name
     * @return true if success
     */
-   public static boolean rename(String srcFileName, String dstFileName) {
+   public static boolean rename(@NonNull String srcFileName, @NonNull String dstFileName) {
       File src = new File(srcFileName);
       File dst = new File(dstFileName);
       boolean result = src.renameTo(dst);
@@ -282,65 +280,13 @@ public final class FileIO {
    }
 
    /**
-    * Default working dir with File.separatorChar at the end of string
-    *
-    * @return Default working dir
-    */
-   public static String getDir() {
-      return AppConfig.getApplicationWorkingDir();
-   }
-
-   /**
-    * Return default cache dir with File.separatorChar at the end of string.
-    *
-    * @return default cache dir
-    */
-   public static String getCacheDir() {
-      return createDir(CACHE);
-   }
-
-   /**
-    * Create cache dir in app package default directory
-    */
-   public static void createCacheDir() {
-      createDir(CACHE);
-   }
-
-   /**
-    * Return full path to cache file from given file name. If cache dir is not present then will be create.
-    *
-    * @param fileName file name without a path
-    * @return full path to cache file
-    */
-   public static String getCacheFileName(String fileName) {
-      return getCacheDir() + fileName;
-   }
-
-   /**
-    * Default working dir with subdir and File.separatorChar at the end of string
-    *
-    * @return full path with appended subdir
-    */
-   public static String getDir(String subdir) {
-      StringBuffer sb = new StringBuffer(subdir);
-      if (subdir.charAt(0) == File.separatorChar) {
-         sb.deleteCharAt(0);
-      }
-      if (subdir.charAt(subdir.length() - 1) != File.separatorChar) {
-         sb.append(File.separatorChar);
-      }
-      sb.insert(0, AppConfig.getApplicationWorkingDir());
-      return sb.toString();
-   }
-
-   /**
     * Return full path to file from given file name in work dir.
     *
     * @param fileName file name
     * @return full path to file
     */
-   public static String getFileName(String fileName) {
-      return getFileName(null, fileName);
+   public static String getFileName(@NonNull Context context, String fileName) {
+      return getFileName(context, fileName);
 
    }
 
@@ -351,12 +297,12 @@ public final class FileIO {
     * @param fileName file name
     * @return full path to file
     */
-   public static String getFileName(@NonNull String subdir, String fileName) {
+   public static String getFileName(@NonNull Context context, @NonNull String subdir, String fileName) {
       String dir;
       if (subdir != null && subdir.length() > 0) {
-         dir = getDir(subdir);
+         dir = context.getFilesDir() + subdir;
       } else {
-         dir = getDir();
+         dir = context.getFilesDir().getAbsolutePath();
       }
       return dir + fileName;
    }
@@ -385,8 +331,8 @@ public final class FileIO {
     * @param subDir sub directory
     * @return full path
     */
-   public static String createDir(@NonNull String subDir) {
-      String path = AppConfig.getApplicationWorkingDir() + subDir;
+   public static String createDir(@NonNull Context context, @NonNull String subDir) {
+      String path = context.getFilesDir() + subDir;
       File dir = new File(path);
       if (!dir.exists()) {
          boolean result = dir.mkdirs();
@@ -403,7 +349,7 @@ public final class FileIO {
    /**
     * Call this method to delete any cache created by app
     */
-   public static void clearCashedApplicationData(Context context) {
+   public static void clearCashedApplicationData(@NonNull Context context) {
       File cache = context.getCacheDir();
       File appDir = new File(cache.getParent());
       if (appDir.exists()) {
