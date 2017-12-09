@@ -25,8 +25,12 @@
  */
 package ua.at.tsvetkov.util;
 
-import android.app.Application;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 
+import java.io.ByteArrayInputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.reflect.Field;
@@ -34,22 +38,26 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathFactory;
 
 /**
- * Util which prepare formatted string from different objects for visual printing in {@link Log}
+ * Prepare formatted string from different objects for visual printing in {@link Log} class
  *
  * @author A.Tsvetkov 2010 http://tsvetkov.at.ua mailto:al@ukr.net
  */
-public class ForLog {
+public class LogFormatter {
 
-   private static final int MAX_TAG_LENGTH = 40;
    private static final String HEX_FORM = "%02X ";
    private static final char PREFIX = '|';
    private static final String NL = "\n";
@@ -57,17 +65,9 @@ public class ForLog {
    private static final String MAP_LINE = "-------------------------- Map ---------------------------" + NL;
    private static final String LIST_LINE = "-------------------------- List --------------------------" + NL;
    private static final String OBJECT_ARRAY_LINE = "----------------------- Objects Array ---------------------" + NL;
-   private static final String LINE =              "----------------------------------------------------------" + NL;
+   private static final String LINE = "----------------------------------------------------------" + NL;
 
-
-   private static boolean isDisabled = false;
-   private static boolean isAndroidStudioStyle = true;
-   private static int maxTagLength = MAX_TAG_LENGTH;
-   private static boolean isJumpLink = true;
-   private static String stamp = null;
-   private static Application.ActivityLifecycleCallbacks activityLifecycleCallback = null;
-
-   private ForLog() {
+   private LogFormatter() {
    }
 
    /**
@@ -262,37 +262,40 @@ public class ForLog {
    /**
     * Return String representation of Object. Each field in new line.
     *
-    * @param myObj a class for representation
+    * @param objs a class for representation
     * @return String representation of class
     */
-   public static String objs(Object myObj) {
-      if (myObj == null) {
+   public static String objn(Object objs) {
+      if (objs == null) {
          return "null";
       }
-      Class<?> cl = myObj.getClass();
-      int max = 0;
-      String formatString = PREFIX + "%-" + max + "s = %s" + NL;
+      Class<?> cl = objs.getClass();
       StringBuilder sb = new StringBuilder();
       Field[] fields = cl.getDeclaredFields();
 
+      int max = 0;
       for (Field field : fields) {
          int length = field.getName().length();
          if (max < length) {
             max = length;
          }
       }
+      String formatString = PREFIX + "%-" + max + "s = %s" + NL;
+
       sb.append(HALF_LINE);
+      sb.append(' ');
       sb.append(cl.getSimpleName());
+      sb.append(' ');
       sb.append(HALF_LINE);
       sb.append(NL);
       for (Field field : fields) {
          try {
             Field myField = Log.getField(cl, field.getName());
             myField.setAccessible(true);
-            sb.append(String.format(formatString, field.getName(), myField.get(myObj)));
+            sb.append(String.format(formatString, field.getName(), myField.get(objs)));
          } catch (Exception e) {
             sb.append(PREFIX);
-            sb.append("Can't access to field ");
+            sb.append(e.getMessage());
             sb.append(field.getName());
          }
       }
@@ -301,12 +304,12 @@ public class ForLog {
    }
 
    /**
-    * Return String representation of class. Each field in new line.
+    * Return String representation of class.
     *
     * @param myObj a class for representation
     * @return String representation of class
     */
-   public static String obj(Object myObj) {
+   public static String objl(Object myObj) {
       if (myObj == null) {
          return "null";
       }
@@ -327,7 +330,7 @@ public class ForLog {
             }
          } catch (Exception e) {
             sb.append(PREFIX);
-            sb.append("Can't access to the field ");
+            sb.append(sb.append(e.getMessage()));
             sb.append(fields[i].getName());
          }
       }
@@ -336,27 +339,27 @@ public class ForLog {
    }
 
    /**
-    * Print in log readable representation of bytes array data like 0F CD AD.... Each countPerLine bytes will print in new line
+    * Return readable representation of bytes array data like 0F CD AD.... Each countPerLine bytes will print in new line
     *
     * @param data         your bytes array data
     * @param countPerLine count byte per line
+    * @return readable representation
     */
-   public static void hex(byte[] data, int countPerLine) {
+   public static String hex(byte[] data, int countPerLine) {
       if (data == null) {
          Log.v("null");
       }
-      StringBuilder sb = new StringBuilder(countPerLine * 3);
+      StringBuilder sb = new StringBuilder();
       int count = 0;
       for (byte element : data) {
          count++;
          sb.append(String.format(HEX_FORM, element));
          if (count >= countPerLine) {
             count = 0;
-            sb.trimToSize();
-            Log.v(sb.toString());
-            sb = new StringBuilder(countPerLine * 3);
+            sb.append(NL);
          }
       }
+      return sb.toString();
    }
 
    /**
@@ -391,24 +394,48 @@ public class ForLog {
     * Return readable representation of xml
     *
     * @param xmlStr      your xml data
-    * @param indentation xml identetion
+    * @param indent xml identetion
     * @return readable representation
     */
-   public static String xml(String xmlStr, int indentation) {
+   public static String xml(String xmlStr, int indent) {
       if (xmlStr == null) {
          Log.v("null");
       }
       try {
-         Source xmlInput = new StreamSource(new StringReader(xmlStr));
-         StreamResult xmlOutput = new StreamResult(new StringWriter());
-         Transformer transformer = TransformerFactory.newInstance().newTransformer();
+         // Turn xml string into a document
+         Document document = DocumentBuilderFactory.newInstance()
+                 .newDocumentBuilder()
+                 .parse(new InputSource(new ByteArrayInputStream(xmlStr.getBytes("utf-8"))));
+
+         // Remove whitespaces outside tags
+         document.normalize();
+         XPath xPath = XPathFactory.newInstance().newXPath();
+         NodeList nodeList = (NodeList) xPath.evaluate("//text()[normalize-space()='']",
+                 document,
+                 XPathConstants.NODESET);
+
+         for (int i = 0; i < nodeList.getLength(); ++i) {
+            Node node = nodeList.item(i);
+            node.getParentNode().removeChild(node);
+         }
+
+         // Setup pretty print options
+         TransformerFactory transformerFactory = TransformerFactory.newInstance();
+//         transformerFactory.setAttribute("indent-number", indent);
+         Transformer transformer = transformerFactory.newTransformer();
+         transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", String.valueOf(indent));
+         transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+         transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
          transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-         transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", String.valueOf(indentation));
-         transformer.transform(xmlInput, xmlOutput);
-         return xmlOutput.getWriter().toString().replaceFirst(">", ">\n");
-      } catch (TransformerException e) {
-         return xmlStr;
+
+         // Return pretty print xml string
+         StringWriter stringWriter = new StringWriter();
+         transformer.transform(new DOMSource(document), new StreamResult(stringWriter));
+         return stringWriter.toString();
+      } catch (Exception e) {
+         return e.getMessage();
       }
+
    }
 
 }

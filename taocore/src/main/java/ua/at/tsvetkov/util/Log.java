@@ -35,6 +35,8 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import java.lang.reflect.Field;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Extended logger. Allows you to automatically adequately logged class, method and line call in the log. Makes it easy to write logs. For
@@ -47,7 +49,6 @@ public class Log {
    private static final int MAX_TAG_LENGTH = 65;
    private static final char COLON = ':';
    private static final String PREFIX_MAIN_STRING = " ▪ ";
-   private static final String STRING_MORE = "▪ ";
    private static final String GROUP = "|Group:";
    private static final String PRIORITY = "|Priority:";
    private static final String ID = "|Id:";
@@ -440,7 +441,7 @@ public class Log {
 
    /**
     * Send a <b>VERBOSE</b> log message. Using when you extend any Class and wont to receive full info in LogCat tag. Usually you can use
-    * "this" in "obj" parameter. As result you receive tag string
+    * "this" in "objl" parameter. As result you receive tag string
     * "<b>(Called Main Class) LoggedClass:MethodInLoggedClass:lineNumberClass:lineNumber</b>"
     *
     * @param obj     main class
@@ -455,7 +456,7 @@ public class Log {
 
    /**
     * Send a <b>DEBUG</b> log message. Using when you extend any Class and wont to receive full info in LogCat tag. Usually you can use
-    * "this" in "obj" parameter. As result you receive tag string "<b>(Called Main Class) LoggedClass:MethodInLoggedClass:lineNumber</b>"
+    * "this" in "objl" parameter. As result you receive tag string "<b>(Called Main Class) LoggedClass:MethodInLoggedClass:lineNumber</b>"
     *
     * @param obj     main class
     * @param message The message you would like logged.
@@ -469,7 +470,7 @@ public class Log {
 
    /**
     * Send a <b>INFO</b> log message. Using when you extend any Class and wont to receive full info in LogCat tag. Usually you can use
-    * "this" in "obj" parameter. As result you receive tag string "<b>(Called Main Class) LoggedClass:MethodInLoggedClass:lineNumber</b>"
+    * "this" in "objl" parameter. As result you receive tag string "<b>(Called Main Class) LoggedClass:MethodInLoggedClass:lineNumber</b>"
     *
     * @param obj     main class
     * @param message The message you would like logged.
@@ -483,7 +484,7 @@ public class Log {
 
    /**
     * Send a <b>WARN</b> log message. Using when you extend any Class and wont to receive full info in LogCat tag. Usually you can use
-    * "this" in "obj" parameter. As result you receive tag string "<b>(Called Main Class) LoggedClass:MethodInLoggedClass:lineNumber</b>"
+    * "this" in "objl" parameter. As result you receive tag string "<b>(Called Main Class) LoggedClass:MethodInLoggedClass:lineNumber</b>"
     *
     * @param obj     main class
     * @param message The message you would like logged.
@@ -497,7 +498,7 @@ public class Log {
 
    /**
     * Send a <b>ERROR</b> log message. Using when you extend any Class and wont to receive full info in LogCat tag. Usually you can use
-    * "this" in "obj" parameter. As result you receive tag string
+    * "this" in "objl" parameter. As result you receive tag string
     * "<b>(Called Main Class) LoggedClass:MethodInLoggedClass:lineNumber</b>"
     *
     * @param obj     main class
@@ -512,7 +513,7 @@ public class Log {
 
    /**
     * Send a <b>What a Terrible Failure: Report a condition that should never happen</b> log message. Using when you extend any Class and
-    * wont to receive full info in LogCat tag. Usually you can use "this" in "obj" parameter. As result you receive tag string
+    * wont to receive full info in LogCat tag. Usually you can use "this" in "objl" parameter. As result you receive tag string
     * "<b>(Called Main Class) LoggedClass:MethodInLoggedClass:lineNumber</b>"
     *
     * @param obj     main class
@@ -529,7 +530,7 @@ public class Log {
 
    /**
     * Send a <b>VERBOSE</b> log message and log the throwable. Using when you extend any Class and wont to receive full info in LogCat tag.
-    * Usually you can use "this" in "obj" parameter. As result you receive tag string
+    * Usually you can use "this" in "objl" parameter. As result you receive tag string
     * "<b>(Called Main Class) LoggedClass:MethodInLoggedClass:lineNumber</b>"
     *
     * @param obj     main class
@@ -545,7 +546,7 @@ public class Log {
 
    /**
     * Send a <b>DEBUG</b> log message and log the throwable. Using when you extend any Class and wont to receive full info in LogCat tag.
-    * Usually you can use "this" in "obj" parameter. As result you receive tag string
+    * Usually you can use "this" in "objl" parameter. As result you receive tag string
     * "<b>(Called Main Class) LoggedClass:MethodInLoggedClass:lineNumber</b>"
     *
     * @param obj     main class
@@ -561,7 +562,7 @@ public class Log {
 
    /**
     * Send a <b>INFO</b> log message and log the throwable. Using when you extend any Class and wont to receive full info in LogCat tag.
-    * Usually you can use "this" in "obj" parameter. As result you receive tag string
+    * Usually you can use "this" in "objl" parameter. As result you receive tag string
     * "<b>(Called Main Class) LoggedClass:MethodInLoggedClass:lineNumber</b>"
     *
     * @param obj     main class
@@ -577,7 +578,7 @@ public class Log {
 
    /**
     * Send a <b>WARN</b> log message and log the throwable. Using when you extend any Class and wont to receive full info in LogCat tag.
-    * Usually you can use "this" in "obj" parameter. As result you receive tag string
+    * Usually you can use "this" in "objl" parameter. As result you receive tag string
     * "<b>(Called Main Class) LoggedClass:MethodInLoggedClass:lineNumber</b>"
     *
     * @param obj     main class
@@ -593,7 +594,7 @@ public class Log {
 
    /**
     * Send a <b>ERROR</b> log message and log the throwable. Using when you extend any Class and wont to receive full info in LogCat tag.
-    * Usually you can use "this" in "obj" parameter. As result you receive tag string
+    * Usually you can use "this" in "objl" parameter. As result you receive tag string
     * "<b>(Called Main Class) LoggedClass:MethodInLoggedClass:lineNumber</b>"
     *
     * @param obj     main class
@@ -609,7 +610,7 @@ public class Log {
 
    /**
     * Send a <b>What a Terrible Failure: Report a condition that should never happen</b> log message and log the throwable. Using when you
-    * extend any Class and wont to receive full info in LogCat tag. Usually you can use "this" in "obj" parameter. As result you receive tag
+    * extend any Class and wont to receive full info in LogCat tag. Usually you can use "this" in "objl" parameter. As result you receive tag
     * string "<b>(Called Main Class) LoggedClass:MethodInLoggedClass:lineNumber</b>"
     *
     * @param obj     main class
@@ -623,7 +624,147 @@ public class Log {
       android.util.Log.wtf(gatExtendedTag(obj), getFormattedThrowable(message, tr));
    }
 
-   // ==========================================================
+   // =========================== Collections, arrays and objects ===============================
+
+   /**
+    * Logged String representation of map. Each item in new line.
+    *
+    * @param map a Map
+    */
+   public static void map(Map<?, ?> map) {
+      Log.i(LogFormatter.map(map));
+   }
+
+   /**
+    * Logged String representation of list. Each item in new line.
+    *
+    * @param list a List
+    */
+   public static void list(List<?> list) {
+      Log.i(LogFormatter.list(list));
+   }
+
+   /**
+    * Logged String representation of Objects array. Each item in new line.
+    *
+    * @param array an array
+    */
+   public static <T> void array(T[] array) {
+      Log.i(LogFormatter.array(array));
+   }
+
+   /**
+    * Logged String representation of array.
+    *
+    * @param array an array
+    */
+   public static void array(int[] array) {
+      Log.i(LogFormatter.array(array));
+   }
+
+   /**
+    * Logged String representation of array.
+    *
+    * @param array an array
+    */
+   public static void array(float[] array) {
+      Log.i(LogFormatter.array(array));
+   }
+
+   /**
+    * Logged String representation of array.
+    *
+    * @param array an array
+    */
+   public static void array(boolean[] array) {
+      Log.i(LogFormatter.array(array));
+   }
+
+   /**
+    * Logged String representation of array.
+    *
+    * @param array an array
+    */
+   public static void array(char[] array) {
+      Log.i(LogFormatter.array(array));
+   }
+
+   /**
+    * Logged String representation of array.
+    *
+    * @param array an array
+    */
+   public static void array(double[] array) {
+      Log.i(LogFormatter.array(array));
+   }
+
+   /**
+    * Logged String representation of array.
+    *
+    * @param array an array
+    */
+   public static void array(long[] array) {
+      Log.i(LogFormatter.array(array));
+   }
+
+   /**
+    * Logged String representation of class.
+    *
+    * @param obj a class for representation
+    */
+   public static void objl(Object obj) {
+      Log.i(LogFormatter.objl(obj));
+   }
+
+   /**
+    * Logged String representation of Object. Each field in new line.
+    *
+    * @param obj a class for representation
+    */
+   public static void objn(Object obj) {
+      Log.i(LogFormatter.objn(obj));
+   }
+
+   /**
+    * Logged readable representation of bytes array data like 0F CD AD.... Each countPerLine bytes will print in new line
+    *
+    * @param data         your bytes array data
+    * @param countPerLine count byte per line
+    */
+   public static void hex(byte[] data, int countPerLine) {
+      Log.i(LogFormatter.hex(data, countPerLine));
+   }
+
+   /**
+    * Logged readable representation of bytes array data like 0F CD AD....
+    *
+    * @param data your bytes array data
+    */
+   public static void hex(byte[] data) {
+      Log.i(LogFormatter.hex(data));
+   }
+
+   /**
+    * Logged readable representation of xml with indentation 2
+    *
+    * @param xmlStr your xml data
+    */
+   public static void xml(String xmlStr) {
+      Log.i(LogFormatter.xml(xmlStr));
+   }
+
+   /**
+    * Logged readable representation of xml
+    *
+    * @param xmlStr      your xml data
+    * @param indentation xml identetion
+    */
+   public static void xml(String xmlStr, int indentation) {
+      Log.i(LogFormatter.xml(xmlStr, indentation));
+   }
+
+
+   // =========================== Thread and stack trace ===============================
 
    /**
     * Logged the current Thread info
@@ -744,8 +885,6 @@ public class Log {
       }
    }
 
-   // ==========================================================
-
    /**
     * @param thread thread for Logged
     * @return filled StringBuilder for next filling
@@ -781,6 +920,8 @@ public class Log {
       }
    }
 
+   // ============================ Private common methods ==============================
+
    static Field getField(Class<?> clazz, String fieldName) throws NoSuchFieldException {
       try {
          return clazz.getDeclaredField(fieldName);
@@ -794,7 +935,7 @@ public class Log {
       }
    }
 
-   static String getTag() {
+   private static String getTag() {
       final String className = Log.class.getName();
       final StackTraceElement[] traces = Thread.currentThread().getStackTrace();
       StringBuilder sb = new StringBuilder();
@@ -806,7 +947,7 @@ public class Log {
       return sb.toString();
    }
 
-   static String gatExtendedTag(Object obj) {
+   private static String gatExtendedTag(Object obj) {
       if (obj == null) {
          Log.v("null");
       }
@@ -846,7 +987,7 @@ public class Log {
       return sb.toString();
    }
 
-   static String getActivityTag(Activity activity) {
+   private static String getActivityTag(Activity activity) {
       String className = activity.getClass().getCanonicalName();
       String classSimpleName = activity.getClass().getSimpleName();
 
@@ -872,7 +1013,7 @@ public class Log {
       return sb.toString();
    }
 
-   static String getActivityMethodInfo(Activity activity) {
+   private static String getActivityMethodInfo(Activity activity) {
       String className = activity.getClass().getCanonicalName();
       String classSimpleName = activity.getClass().getSimpleName();
 
@@ -908,14 +1049,14 @@ public class Log {
       return sb.toString();
    }
 
-   static void addStamp(StringBuilder sb) {
+   private static void addStamp(StringBuilder sb) {
       if (stamp != null && stamp.length() > 0) {
          sb.append(stamp);
          sb.append(' ');
       }
    }
 
-   static void addLocation(String className, StackTraceElement[] traces, StringBuilder sb) {
+   private static void addLocation(String className, StackTraceElement[] traces, StringBuilder sb) {
       boolean found = false;
       for (int i = 0; i < traces.length; i++) {
          try {
@@ -935,7 +1076,7 @@ public class Log {
       }
    }
 
-   static void addClassLink(StringBuilder sb, String className, int lineNumber) {
+   private static void addClassLink(StringBuilder sb, String className, int lineNumber) {
       sb.append('(');
       sb.append(className);
       sb.append(JAVA);
@@ -945,7 +1086,7 @@ public class Log {
       sb.append(' ');
    }
 
-   static void addSpaces(StringBuilder sb) {
+   private static void addSpaces(StringBuilder sb) {
       sb.append(' ');
       int extraSpaceCount = maxTagLength - sb.length();
       if (extraSpaceCount < 0) {
@@ -958,7 +1099,7 @@ public class Log {
       sb.append('\u21DB');
    }
 
-   static String getClassName(Class<?> clazz) {
+   private static String getClassName(Class<?> clazz) {
       if (clazz != null) {
          if (!TextUtils.isEmpty(clazz.getSimpleName())) {
             if (clazz.getName().contains("$")) {
@@ -972,7 +1113,7 @@ public class Log {
       return "";
    }
 
-   static StackTraceElement findStackTraceElement(StackTraceElement[] traces, String startsFrom) {
+   private static StackTraceElement findStackTraceElement(StackTraceElement[] traces, String startsFrom) {
       StackTraceElement trace = null;
       for (int i = 0; i < traces.length; i++) {
          if (traces[i].getClassName().startsWith(startsFrom)) {

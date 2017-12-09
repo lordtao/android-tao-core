@@ -3,7 +3,10 @@ package ua.at.tsvetkov.taocoredemo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
-import ua.at.tsvetkov.util.ForLog;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
 import ua.at.tsvetkov.util.Log;
 
 public class MainActivity extends AppCompatActivity {
@@ -21,8 +24,8 @@ public class MainActivity extends AppCompatActivity {
       Log.d("Debug");
       Log.i("Info");
       Log.e("Error");
-      try{
-         int i = 10/0;
+      try {
+         int i = 10 / 0;
       } catch (Exception e) {
          Log.e("Some exception", e);
       }
@@ -92,19 +95,46 @@ public class MainActivity extends AppCompatActivity {
       }
 
       int[] ints = new int[]{472834, 4235, 657, -1728, 0};
-      Log.i(ForLog.array(ints));
+      Log.array(ints);
       double[] doubles = new double[]{472834, 4235, 657, -1728, 0};
-      Log.i(ForLog.array(doubles));
+      Log.array(doubles);
       long[] longs = new long[]{472834, 4235, 657, -1728, 0};
-      Log.i(ForLog.array(longs));
+      Log.array(longs);
       float[] floats = new float[]{645.0f, 235, 57, -128, 0};
-      Log.i(ForLog.array(floats));
+      Log.array(floats);
       boolean[] bools = new boolean[]{true, false, true};
-      Log.i(ForLog.array(bools));
-      char[] chars = new char[]{'c','h','a','r','s'};
-      Log.i(ForLog.array(chars));
-      Object[] objects = new Object[]{"String object",new Object(),'a',new Object(),'s'};
-      Log.i(ForLog.array(objects));
+      Log.array(bools);
+      char[] chars = new char[]{'c', 'h', 'a', 'r', 's'};
+      Log.array(chars);
+      Object[] objects = new Object[]{"String object", new Object(), 'a', new Object(), 's'};
+      Log.array(objects);
 
+      Map<Integer, String> map = new HashMap<>();
+      map.put(1, "First");
+      map.put(2, "Second");
+      map.put(3, "Fird");
+      Log.map(map);
+
+      ArrayList<String> list = new ArrayList<>();
+      list.add("First");
+      list.add("Second");
+      list.add("Fird");
+      Log.list(list);
+
+      Log.objl(list);
+      Log.objn(map);
+
+      byte[] data = new byte[]{5, 65, 23, 34, 32, 12, 45, 35, 66, 120, 100, 93, 31, 111};
+      Log.hex(data);
+      Log.hex(data, 5);
+
+      String xml = "<note>\n" +
+              "<to>Tove</to>\n" +
+              "<from>Jani</from>\n" +
+              "<heading>Reminder</heading>\n" +
+              "<body>Don't forget me this weekend!</body>\n" +
+              "</note>";
+      Log.xml(xml);
+      Log.xml(xml,3);
    }
 }

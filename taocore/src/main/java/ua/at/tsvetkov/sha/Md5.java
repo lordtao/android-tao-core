@@ -1,7 +1,7 @@
 /**
  *
  */
-package ua.at.tsvetkov.security;
+package ua.at.tsvetkov.sha;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
