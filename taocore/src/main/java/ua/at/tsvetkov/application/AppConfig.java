@@ -237,14 +237,14 @@ public final class AppConfig {
       }
       android.util.Log.i(LINE, LINE_DOUBLE);
 
-      android.util.Log.i(LINE_EMPTY, PREFIX + "Application name:      " + mAppName);
-      android.util.Log.i(LINE_EMPTY, PREFIX + "Android  device ID:    " + mAndroidId);
-      android.util.Log.i(LINE_EMPTY, PREFIX + "Application package:   " + mPackageName);
-      android.util.Log.i(LINE_EMPTY, PREFIX + "Signature Fingerprint: " + mAppSignatureFingerprint);
-      android.util.Log.i(LINE_EMPTY, PREFIX + "Signature SHA-1:       " + mAppSignatureKeyHash);
-      android.util.Log.i(LINE_EMPTY, PREFIX + "Diagonal:              " + mDiagonal);
-      android.util.Log.i(LINE_EMPTY, PREFIX + "First installation:    " + isNewVersion);
-      android.util.Log.i(LINE_EMPTY, PREFIX + "Strict mode:           " + isStrictMode);
+      android.util.Log.i(LINE_EMPTY, PREFIX + "Application name:            " + mAppName);
+      android.util.Log.i(LINE_EMPTY, PREFIX + "Android  device ID:          " + mAndroidId);
+      android.util.Log.i(LINE_EMPTY, PREFIX + "Application package:         " + mPackageName);
+      android.util.Log.i(LINE_EMPTY, PREFIX + "Signature Fingerprint SHA-1: " + mAppSignatureFingerprint);
+      android.util.Log.i(LINE_EMPTY, PREFIX + "Signature Key Hash:          " + mAppSignatureKeyHash);
+      android.util.Log.i(LINE_EMPTY, PREFIX + "Diagonal:                    " + mDiagonal);
+      android.util.Log.i(LINE_EMPTY, PREFIX + "First installation:          " + isNewVersion);
+      android.util.Log.i(LINE_EMPTY, PREFIX + "Strict mode:                 " + isStrictMode);
       android.util.Log.i(LINE_EMPTY, LINE_DOUBLE);
       android.util.Log.i(LINE_EMPTY, DEFAULT_SETTINGS_STRING);
       android.util.Log.i(LINE_EMPTY, LINE_DOUBLE);
