@@ -8,23 +8,23 @@ import android.widget.CheckBox;
  */
 public class CheckBoxValidator extends AbstractValidator {
 
-    private boolean mIsMustChecked;
+   private boolean mIsMustChecked;
 
-    public CheckBoxValidator(CheckBox checkBox, boolean isMustChecked, String errMsg) {
-        super(checkBox, errMsg);
-        mIsMustChecked = isMustChecked;
-    }
+   public CheckBoxValidator(CheckBox checkBox, boolean isMustChecked, String errMsg) {
+      super(checkBox, errMsg);
+      mIsMustChecked = isMustChecked;
+   }
 
-    @Override
-    public boolean isValid() {
-        CheckBox checkBox = (CheckBox) getView();
-        return checkBox.isChecked() == mIsMustChecked;
-    }
+   @Override
+   public boolean isValid() {
+      CheckBox checkBox = (CheckBox) getView();
+      return checkBox.isChecked() == mIsMustChecked;
+   }
 
-    @Override
-    public String getContentString() {
-        CheckBox checkBox = (CheckBox) getView();
-        return String.valueOf(checkBox.isChecked());
-    }
+   @Override
+   public String getContentString() {
+      CheckBox checkBox = (CheckBox) getView();
+      return String.valueOf(checkBox.isChecked());
+   }
 
 }

@@ -31,13 +31,16 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.pm.Signature;
+import android.support.annotation.NonNull;
 import android.util.Base64;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.List;
 
 import ua.at.tsvetkov.util.Log;
+import ua.at.tsvetkov.util.LogFormatter;
 
 /**
  * Return an informations about another applications
@@ -46,117 +49,102 @@ import ua.at.tsvetkov.util.Log;
  */
 public final class Apps {
 
-    private Apps() {
+   private Apps() {
 
-    }
+   }
 
-    /**
-     * Return info about installed on this device apps with CATEGORY_LAUNCHER (usual apps)
-     *
-     * @param context the application Context
-     * @return List<ResolveInfo>
-     */
-    public static List<ResolveInfo> getAllActivitiesInfo(Context context) {
-        Intent intent = new Intent(Intent.ACTION_MAIN, null);
-        intent.addCategory(Intent.CATEGORY_LAUNCHER);
-        PackageManager pm = context.getPackageManager();
-        return pm.queryIntentActivities(intent, 0);
-    }
+   /**
+    * Return info about installed on this device apps with CATEGORY_LAUNCHER (usual apps)
+    *
+    * @param context the application Context
+    * @return List<ResolveInfo>
+    */
+   public static List<ResolveInfo> getInstalledAppsInfo(Context context) {
+      Intent intent = new Intent(Intent.ACTION_MAIN, null);
+      intent.addCategory(Intent.CATEGORY_LAUNCHER);
+      PackageManager pm = context.getPackageManager();
+      return pm.queryIntentActivities(intent, 0);
+   }
 
-    /**
-     * Print installed apps classes names
-     *
-     * @param context the application Context
-     */
-    public static void printInstalledAppsPackageAndClass(Context context) {
-        for (ResolveInfo info : getAllActivitiesInfo(context)) {
-            Log.d("Package: " + info.activityInfo.packageName + " Class: " + info.activityInfo.name);
-        }
-    }
+   /**
+    * Print installed apps classes names
+    *
+    * @param context the application Context
+    */
+   public static void printInstalledAppsPackageAndClass(Context context) {
+      List<String> appListStrs = new ArrayList<>();
+      for (ResolveInfo info : getInstalledAppsInfo(context)) {
+         appListStrs.add("NAME:" + info.loadLabel(context.getPackageManager()) + ", PACKAGE: " + info.activityInfo.packageName + ", LAUNCHER CLASS: " + info.activityInfo.name);
+      }
+      Log.list("Installed application", appListStrs);
+   }
 
-    /**
-     * Checks for an installed application
-     *
-     * @param packageName app package name
-     * @param context     the application Context
-     * @return is an installed application
-     * @throws IllegalAccessException if AppConfig is not initialized
-     */
-    public static boolean isApplicationInstalled(Context context, String packageName) throws IllegalAccessException {
-        for (ResolveInfo info : getAllActivitiesInfo(context)) {
-            if (info.activityInfo.packageName.equals(packageName)) {
-                return true;
-            }
-        }
-        return false;
-    }
+   /**
+    * Checks for an installed application
+    *
+    * @param packageName app package name
+    * @param context     the application Context
+    * @return is an installed application
+    * @throws IllegalAccessException if AppConfig is not initialized
+    */
+   public static boolean isApplicationInstalled(Context context, String packageName) throws IllegalAccessException {
+      for (ResolveInfo info : getInstalledAppsInfo(context)) {
+         if (info.activityInfo.packageName.equals(packageName)) {
+            return true;
+         }
+      }
+      return false;
+   }
 
-    /**
-     * Return the KeyHash for the application
-     *
-     * @param context     the application Context
-     * @param packageName a package name
-     */
-    public static String getApplicationSignatureKeyHash(Context context, String packageName) {
-        try {
-            PackageInfo info = context.getPackageManager().getPackageInfo(packageName, PackageManager.GET_SIGNATURES);
-            for (Signature signature : info.signatures) {
-                MessageDigest md = MessageDigest.getInstance("SHA");
-                md.update(signature.toByteArray());
-                return Base64.encodeToString(md.digest(), Base64.DEFAULT);
-            }
-        } catch (Exception e) {
-            Log.e(e);
-        }
-        return "";
-    }
+   /**
+    * Return the KeyHash for the application
+    *
+    * @param context     the application Context
+    * @param packageName a package name
+    */
+   public static String getApplicationSignatureKeyHash(Context context, String packageName) {
+      try {
+         PackageInfo info = context.getPackageManager().getPackageInfo(packageName, PackageManager.GET_SIGNATURES);
+         for (Signature signature : info.signatures) {
+            MessageDigest md = MessageDigest.getInstance("SHA");
+            md.update(signature.toByteArray());
+            return Base64.encodeToString(md.digest(), Base64.DEFAULT);
+         }
+      } catch (Exception e) {
+         Log.e(e);
+      }
+      return "";
+   }
 
-    /**
-     * Return the app certificate's fingerprint
-     *
-     * @param context     the application Context
-     * @param packageName a package name
-     * @return certificate's fingerprint
-     */
-    public static String getSignatureFingerprint(Context context, String packageName) {
-        try {
-            MessageDigest md = MessageDigest.getInstance("SHA-1");
-            Signature sig = context.getPackageManager().getPackageInfo(packageName, PackageManager.GET_SIGNATURES).signatures[0];
-            return (toHexStringWithColons(md.digest(sig.toByteArray())));
-        } catch (NoSuchAlgorithmException e) {
-            Log.e(e);
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-        return "ERROR calculate the app certificate's fingerprint";
-    }
+   /**
+    * Return the app certificate's fingerprint
+    *
+    * @param context     the application Context
+    * @param packageName a package name
+    * @return certificate's fingerprint
+    */
+   public static String getSignatureFingerprint(@NonNull Context context, @NonNull String packageName) {
+      try {
+         MessageDigest md = MessageDigest.getInstance("SHA-1");
+         Signature sig = context.getPackageManager().getPackageInfo(packageName, PackageManager.GET_SIGNATURES).signatures[0];
+         return (LogFormatter.hexWithColons(md.digest(sig.toByteArray())));
+      } catch (NoSuchAlgorithmException e) {
+         Log.e(e);
+      } catch (PackageManager.NameNotFoundException e) {
+         Log.e(e);
+      }
+      return "ERROR calculate the app certificate's fingerprint";
+   }
 
-    /**
-     * Return the app certificate's fingerprint
-     *
-     * @param packageName a package name
-     * @return certificate's fingerprint
-     */
-    @Deprecated
-    public static String getSignatureFingerprint(String packageName) {
-        throw new UnsupportedOperationException("Use getSignatureFingerprint(Context context) instead getSignatureFingerprint().");
-    }
+   /**
+    * Return the app certificate's fingerprint
+    *
+    * @param packageName a package name
+    * @return certificate's fingerprint
+    */
+   @Deprecated
+   public static String getSignatureFingerprint(String packageName) {
+      throw new UnsupportedOperationException("Use getSignatureFingerprint(Context context) instead getSignatureFingerprint().");
+   }
 
-    private static String toHexStringWithColons(byte[] bytes) {
-        char[] hexArray = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
-        char[] hexChars = new char[(bytes.length * 3) - 1];
-        int v;
-
-        for (int j = 0; j < bytes.length; j++) {
-            v = bytes[j] & 0xFF;
-            hexChars[j * 3] = hexArray[v / 16];
-            hexChars[j * 3 + 1] = hexArray[v % 16];
-
-            if (j < bytes.length - 1) {
-                hexChars[j * 3 + 2] = ':';
-            }
-        }
-
-        return new String(hexChars);
-    }
 }

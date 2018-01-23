@@ -31,7 +31,6 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
 import java.io.ByteArrayInputStream;
-import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.reflect.Field;
 import java.util.Arrays;
@@ -40,13 +39,10 @@ import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
@@ -62,8 +58,6 @@ public class LogFormatter {
    private static final char PREFIX = '|';
    private static final String NL = "\n";
    private static final String HALF_LINE = "---------------------";
-   private static final String MAP_LINE = "-------------------------- Map ---------------------------" + NL;
-   private static final String LIST_LINE = "-------------------------- List --------------------------" + NL;
    private static final String OBJECT_ARRAY_LINE = "----------------------- Objects Array ---------------------" + NL;
    private static final String LINE = "----------------------------------------------------------" + NL;
 
@@ -77,6 +71,17 @@ public class LogFormatter {
     * @return String representation of map
     */
    public static String map(Map<?, ?> map) {
+      return map("Map", map);
+   }
+
+   /**
+    * Return String representation of map. Each item in new line.
+    *
+    * @param title a String
+    * @param map   a Map
+    * @return String representation of map
+    */
+   public static String map(String title, Map<?, ?> map) {
       if (map == null) {
          return "null";
       }
@@ -89,7 +94,7 @@ public class LogFormatter {
       }
       StringBuilder sb = new StringBuilder();
       String formatString = "%-" + max + "s = %s";
-      sb.append(MAP_LINE);
+      putTitle(title, sb);
       for (Map.Entry<?, ?> item : map.entrySet()) {
          sb.append(String.format(formatString, item.getKey(), item.getValue()));
          sb.append(NL);
@@ -105,11 +110,22 @@ public class LogFormatter {
     * @return String representation of map
     */
    public static String list(List<?> list) {
+      return list("List", list);
+   }
+
+   /**
+    * Return String representation of list. Each item in new line.
+    *
+    * @param title a String
+    * @param list  a List
+    * @return String representation of map
+    */
+   public static String list(String title, List<?> list) {
       if (list == null) {
          return "null";
       }
       StringBuilder sb = new StringBuilder();
-      sb.append(LIST_LINE);
+      putTitle(title, sb);
       for (Object item : list) {
          sb.append(item.toString());
          sb.append(NL);
@@ -125,12 +141,23 @@ public class LogFormatter {
     * @return String representation of array
     */
    public static <T> String array(T[] array) {
+      return array("Objects Array", array);
+   }
+
+   /**
+    * Return String representation of Objects array. Each item in new line.
+    *
+    * @param title a String
+    * @param array an array
+    * @return String representation of array
+    */
+   public static <T> String array(String title, T[] array) {
       if (array == null) {
          return "null";
       }
       List<T> list = Arrays.asList(array);
       StringBuilder sb = new StringBuilder();
-      sb.append(OBJECT_ARRAY_LINE);
+      putTitle(title, sb);
       for (Object item : list) {
          sb.append(item.toString());
          sb.append(NL);
@@ -282,12 +309,7 @@ public class LogFormatter {
       }
       String formatString = PREFIX + "%-" + max + "s = %s" + NL;
 
-      sb.append(HALF_LINE);
-      sb.append(' ');
-      sb.append(cl.getSimpleName());
-      sb.append(' ');
-      sb.append(HALF_LINE);
-      sb.append(NL);
+      putTitle(cl.getSimpleName(), sb);
       for (Field field : fields) {
          try {
             Field myField = Log.getField(cl, field.getName());
@@ -381,6 +403,30 @@ public class LogFormatter {
    }
 
    /**
+    * Return readable representation of bytes array data with colons like 0F:CD:AD....
+    *
+    * @param bytes
+    * @return
+    */
+   public static String hexWithColons(byte[] bytes) {
+      char[] hexArray = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
+      char[] hexChars = new char[(bytes.length * 3) - 1];
+      int v;
+
+      for (int j = 0; j < bytes.length; j++) {
+         v = bytes[j] & 0xFF;
+         hexChars[j * 3] = hexArray[v / 16];
+         hexChars[j * 3 + 1] = hexArray[v % 16];
+
+         if (j < bytes.length - 1) {
+            hexChars[j * 3 + 2] = ':';
+         }
+      }
+
+      return new String(hexChars);
+   }
+
+   /**
     * Return readable representation of xml with indentation 2
     *
     * @param xmlStr your xml data
@@ -393,7 +439,7 @@ public class LogFormatter {
    /**
     * Return readable representation of xml
     *
-    * @param xmlStr      your xml data
+    * @param xmlStr your xml data
     * @param indent xml identetion
     * @return readable representation
     */
@@ -436,6 +482,15 @@ public class LogFormatter {
          return e.getMessage();
       }
 
+   }
+
+   private static void putTitle(String title, StringBuilder sb) {
+      sb.append(HALF_LINE);
+      sb.append(' ');
+      sb.append(title);
+      sb.append(' ');
+      sb.append(HALF_LINE);
+      sb.append(NL);
    }
 
 }

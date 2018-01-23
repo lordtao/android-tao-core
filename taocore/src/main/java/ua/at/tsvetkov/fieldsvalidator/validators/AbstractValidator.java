@@ -9,7 +9,7 @@ import android.widget.TextView;
 public abstract class AbstractValidator {
 
    protected TextView mView;
-   protected String   mErrMsg;
+   protected String mErrMsg;
 
    public AbstractValidator(TextView view, String errMsg) {
       if (view == null || errMsg == null) {
@@ -47,6 +47,7 @@ public abstract class AbstractValidator {
 
    /**
     * Return string representation of field
+    *
     * @return content string
     */
    public abstract String getContentString();
