@@ -23,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
       Log.v("Verbose");
       Log.d("Debug");
       Log.i("Info");
+      Log.w("Warning");
       Log.e("Error");
       try {
          int i = 10 / 0;
