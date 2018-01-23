@@ -626,6 +626,7 @@ public class Log {
 
    // =========================== Collections, arrays and objects ===============================
 
+
    /**
     * Logged String representation of map. Each item in new line.
     *
@@ -633,6 +634,16 @@ public class Log {
     */
    public static void map(Map<?, ?> map) {
       Log.i(LogFormatter.map(map));
+   }
+
+   /**
+    * Logged String representation of map. Each item in new line.
+    *
+    * @param title a String
+    * @param map   a Map
+    */
+   public static void map(String title, Map<?, ?> map) {
+      Log.i(LogFormatter.map(title, map));
    }
 
    /**
@@ -645,12 +656,32 @@ public class Log {
    }
 
    /**
+    * Logged String representation of list. Each item in new line.
+    *
+    * @param title a String
+    * @param list  a List
+    */
+   public static void list(String title, List<?> list) {
+      Log.i(LogFormatter.list(title, list));
+   }
+
+   /**
     * Logged String representation of Objects array. Each item in new line.
     *
     * @param array an array
     */
    public static <T> void array(T[] array) {
       Log.i(LogFormatter.array(array));
+   }
+
+   /**
+    * Logged String representation of Objects array. Each item in new line.
+    * <p>
+    * * @param title a String
+    * * @param array an array
+    */
+   public static <T> void array(String title, T[] array) {
+      Log.i(LogFormatter.array(title, array));
    }
 
    /**
@@ -742,6 +773,15 @@ public class Log {
     */
    public static void hex(byte[] data) {
       Log.i(LogFormatter.hex(data));
+   }
+
+   /**
+    * Logged readable representation of bytes array data with colons like 0F:CD:AD....
+    *
+    * @param data your bytes array data
+    */
+   public static void hexWithColons(byte[] data) {
+      Log.i(LogFormatter.hexWithColons(data));
    }
 
    /**
