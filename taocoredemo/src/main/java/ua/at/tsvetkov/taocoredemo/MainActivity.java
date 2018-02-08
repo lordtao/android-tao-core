@@ -1,13 +1,18 @@
 package ua.at.tsvetkov.taocoredemo;
 
+import android.content.pm.ResolveInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import ua.at.tsvetkov.application.Apps;
 import ua.at.tsvetkov.util.Log;
+
+import static ua.at.tsvetkov.application.Apps.getSignatureFingerprint;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -18,11 +23,14 @@ public class MainActivity extends AppCompatActivity {
       super.onCreate(savedInstanceState);
       setContentView(R.layout.activity_main);
 
-      // Code example
+      // Log code example
+
+      Log.v("-------- Log class code example --------");
 
       Log.v("Verbose");
       Log.d("Debug");
       Log.i("Info");
+      Log.w("Warning");
       Log.e("Error");
       try {
          int i = 10 / 0;
@@ -127,14 +135,32 @@ public class MainActivity extends AppCompatActivity {
       byte[] data = new byte[]{5, 65, 23, 34, 32, 12, 45, 35, 66, 120, 100, 93, 31, 111};
       Log.hex(data);
       Log.hex(data, 5);
+      Log.hexWithColons(data);
 
       String xml = "<note>\n" +
-              "<to>Tove</to>\n" +
-              "<from>Jani</from>\n" +
-              "<heading>Reminder</heading>\n" +
-              "<body>Don't forget me this weekend!</body>\n" +
-              "</note>";
+            "<to>Tove</to>\n" +
+            "<from>Jani</from>\n" +
+            "<heading>Reminder</heading>\n" +
+            "<body>Don't forget me this weekend!</body>\n" +
+            "</note>";
       Log.xml(xml);
-      Log.xml(xml,3);
+      Log.xml(xml, 3);
+
+      Log.v("-------- Apps class code example --------");
+
+      Apps.printInstalledAppsPackageAndClass(this);
+
+      List<ResolveInfo> appsInfo = Apps.getInstalledAppsInfo(this);
+      List<String> appListStrs = new ArrayList<>();
+      for (int i = 0; i < appsInfo.size(); i++) {
+         ResolveInfo firstInstalledApp = appsInfo.get(i);
+         String appName = (String) firstInstalledApp.loadLabel(getPackageManager());
+         String packageName = firstInstalledApp.activityInfo.packageName;
+         String keyHash = Apps.getApplicationSignatureKeyHash(this, packageName);
+         String signatureFingerprint = Apps.getSignatureFingerprint(this, packageName);
+         appListStrs.add(appName + "\nKeyHash: " + keyHash + "SignatureFingerprint: " + signatureFingerprint);
+      }
+      Log.list("SignatureFingerprint and KeyHash for installed applications", appListStrs);
+
    }
 }

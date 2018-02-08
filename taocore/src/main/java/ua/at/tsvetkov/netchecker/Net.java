@@ -38,42 +38,42 @@ import ua.at.tsvetkov.util.Log;
  */
 public class Net {
 
-    private Net() {
+   private Net() {
 
-    }
+   }
 
-    /**
-     * Reports the current coarse-grained state of the network.
-     *
-     * @param context the application Context
-     * @return coarse-grained state or if no default network is currently active
-     */
-    public static NetworkInfo.State getState(Context context) {
-        NetworkInfo netInfo = getNetworkInfo(context);
-        if (netInfo == null)
-            return null;
-        else
-            return netInfo.getState();
-    }
+   /**
+    * Reports the current coarse-grained state of the network.
+    *
+    * @param context the application Context
+    * @return coarse-grained state or if no default network is currently active
+    */
+   public static NetworkInfo.State getState(Context context) {
+      NetworkInfo netInfo = getNetworkInfo(context);
+      if (netInfo == null) {
+         return null;
+      } else {
+         return netInfo.getState();
+      }
+   }
 
-    /**
-     * Check net connection
-     *
-     * @param context the application Context
-     * @return is network is active
-     */
-    public static boolean isConnected(Context context) {
-        NetworkInfo netInfo = getNetworkInfo(context);
-        return netInfo != null && netInfo.isConnected();
-    }
+   /**
+    * Check net connection
+    *
+    * @param context the application Context
+    * @return is network is active
+    */
+   public static boolean isConnected(Context context) {
+      NetworkInfo netInfo = getNetworkInfo(context);
+      return netInfo != null && netInfo.isConnected();
+   }
 
-    public static void printState(Context context) {
-        Log.v("Network state: " + getState(context));
+   public static void printState(Context context) {
+      Log.v("Network state: " + getState(context));
+   }
 
-    }
-
-    public static NetworkInfo getNetworkInfo(Context context) {
-        return ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo();
-    }
+   public static NetworkInfo getNetworkInfo(Context context) {
+      return ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo();
+   }
 
 }
