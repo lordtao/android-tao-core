@@ -1144,7 +1144,6 @@ public class Log {
    }
 
    private static String getFormattedThrowable(String message, Throwable throwable) {
-      StackTraceElement[] st = throwable.getStackTrace();
       StringBuilder sb = new StringBuilder();
       sb.append(THROWABLE_DELIMITER);
       sb.append(NL);
@@ -1152,11 +1151,19 @@ public class Log {
       sb.append(THROWABLE_DELIMITER_START);
       sb.append(throwable.toString());
       sb.append(NL);
-      for (int i = 0; i < st.length; i++) {
+      if (throwable == null) {
          sb.append(THROWABLE_DELIMITER_START);
          sb.append(THROWABLE_DELIMITER_PREFIX);
-         sb.append(st[i].toString());
+         sb.append("throwable == null");
          sb.append(NL);
+      } else {
+         StackTraceElement[] st = throwable.getStackTrace();
+         for (int i = 0; i < st.length; i++) {
+            sb.append(THROWABLE_DELIMITER_START);
+            sb.append(THROWABLE_DELIMITER_PREFIX);
+            sb.append(st[i].toString());
+            sb.append(NL);
+         }
       }
       sb.append(' ');
       sb.append(THROWABLE_DELIMITER);
