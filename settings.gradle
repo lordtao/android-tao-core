@@ -1,1 +1,1 @@
-include ':taocore', ':taocoredemo'
+include ':taocore'
