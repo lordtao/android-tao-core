@@ -5,32 +5,49 @@ Android App Configurator, Screen dimensions calculator, Units measures converter
 
 Download from Bintray: [ ![Download](https://api.bintray.com/packages/lordtao/maven/android-tao-core/images/download.svg) ](https://bintray.com/lordtao/maven/android-tao-core/_latestVersion)
 
-##AppConfig:
-Easy access to the basic parameters of the application. Print to log detailed app info. Give information about device type (tablet or phone).
+### AppConfig
+Easy access to the basic information about your device and the application. Shows in the log the detailed information.
 
 ```java
 AppConfig.init(this);
 AppConfig.printInfo();
 ```
 
-you received in log:
-
 ![Image of App info example](log_app_info.png)
 
-Store some data in Shared preferences:
+Easy work with default Shared preferences:
 ```java
 AppConfig.putSetting(key, isGood);
-```
-Restore data in Shared preferences:
-```java
+...
 AppConfig.getBoolean(key, true);
 ```
 
-##Screen:
+### Md5:
+Calculate Md5 from InputStream, files. Generate a hash String for different data sources.
+
+### Apps
+Return installed applications information (Fingerprint, SignatureKeyHash, etc.)
+
+UI utils
+--------
+
+### Screen:
 Static methods for different screen parameters
 
-##Converter:
+### Converter:
 Units measures converter
+
+Files utils
+-----------
+
+### FileDownloader
+Simple file downloader
+
+### FileOperations
+Operations with files, assets and dirs - copy/rename/delete/create. Clear the app data.
+
+### FileNameUtil
+Operations with file name - extracting, adding, modifying path parts and file extensions.
 
 Add android-tao-core to your project
 ----------------------------
@@ -68,5 +85,10 @@ add to your module build.gradle
 
 Changelog
 ---------
+#### 1.4.0 -- refactoring
+* refactoring.
+* fields validator moved in the separate project.
+* convert to Kotlin.
+
 #### 1.3.5 -- removed Log module
 * removed Log module. [See separate project - android-tao-log](https://github.com/lordtao/android-tao-log)

@@ -1,19 +1,23 @@
 /**
  * ****************************************************************************
- * Copyright (c) 2010 Alexandr Tsvetkov.
+ * Copyright (c) 2014 Alexandr Tsvetkov.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Lesser General Public License
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/lgpl.html
- * <p/>
+ *
+ *
  * Contributors:
  * Alexandr Tsvetkov - initial API and implementation
- * <p/>
+ *
+ *
  * Project:
  * TAO Core
- * <p/>
+ *
+ *
  * License agreement:
- * <p/>
+ *
+ *
  * 1. This code is published AS IS. Author is not responsible for any damage that can be
  * caused by any application that uses this code.
  * 2. Author does not give a garantee, that this code is error free.
@@ -23,35 +27,22 @@
  * this license agreement will remain unchanged.
  * ****************************************************************************
  */
-package ua.at.tsvetkov.util;
+package ua.at.tsvetkov.application
 
-/**
- * Frequently used constants
- *
- * @author lordtao
- */
-public final class Const {
+enum class Diagonal {
 
-    private Const() {
-
-    }
-
-    public final static long SEC = 1000;
-    public final static long MIN = 60 * SEC;
-    public final static long HOUR = 60 * MIN;
-    public final static long DAY = 24 * HOUR;
-    public final static long WEEK = 7 * DAY;
-    public final static long AVERAGE_MONTH = 30 * DAY;
-    public final static long YEAR = 364 * DAY;
-
-    public final static int KB = 1024;
-    public final static int MB = KB * 1024;
-    public final static int GB = MB * 1024;
-    public final static int TB = GB * 1024;
-
-    public final static char AR_R = '\u2190';
-    public final static char AR_L = '\u2192';
-    public final static char NL = '\n';
-    public final static char TAB = '\t';
+    SMALL_PHONE_OR_WATCH,
+    PHONE_2,
+    PHONE_3,
+    PHONE_4,
+    PHONE_5,
+    PHONE_6,
+    TABLET_7,
+    TABLET_8,
+    TABLET_9,
+    TABLET_10,
+    TABLET_11,
+    TABLET_12,
+    TABLET_BIG
 
 }

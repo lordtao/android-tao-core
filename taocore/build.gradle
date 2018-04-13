@@ -1,10 +1,11 @@
 apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
 apply plugin: 'com.jfrog.bintray'
 apply plugin: 'com.github.dcendents.android-maven'
 
 def versionMajor = 1
-def versionMinor = 3
-def versionPatch = 5
+def versionMinor = 4
+def versionPatch = 0
 
 version = "${versionMajor}.${versionMinor}.${versionPatch}"
 group = "ua.at.tsvetkov"
@@ -19,7 +20,7 @@ android {
     buildToolsVersion '27.0.3'
 
     defaultConfig {
-        minSdkVersion 8
+        minSdkVersion 9
         targetSdkVersion 27
         versionName version
         versionCode versionMajor * 10000 + versionMinor * 100 + versionPatch
@@ -41,6 +42,7 @@ android {
 dependencies {
     implementation 'com.android.support:support-annotations:27.1.1'
     implementation 'ua.at.tsvetkov:taolog:1.4.1@aar'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
 
 // Hide properties from ext users
@@ -113,4 +115,7 @@ artifacts {
 
 task findConventions << {
     println project.getConvention()
+}
+repositories {
+    mavenCentral()
 }
