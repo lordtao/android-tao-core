@@ -271,18 +271,18 @@ object AppConfig {
         val df = DecimalFormat("##.##")
         df.roundingMode = RoundingMode.DOWN
 
-        android.util.Log.i(LINE, LINE_DOUBLE)
-        android.util.Log.i(LINE_EMPTY, PREFIX + "Application name:            " + appName)
-        android.util.Log.i(LINE_EMPTY, PREFIX + "Android  device ID:          " + androidId)
-        android.util.Log.i(LINE_EMPTY, PREFIX + "Application package:         " + packageName)
-        android.util.Log.i(LINE_EMPTY, PREFIX + "Signature Fingerprint SHA-1: " + signatureFingerprint)
-        android.util.Log.i(LINE_EMPTY, PREFIX + "Signature Key Hash:          " + applicationSignatureKeyHash)
-        android.util.Log.i(LINE_EMPTY, PREFIX + "Diagonal:                    " + deviceDiagonal + " - " + df.format(mDiagonalInInch.toDouble()) + '\"'.toString())
-        android.util.Log.i(LINE_EMPTY, PREFIX + "First installation:          " + isNewVersion)
-        android.util.Log.i(LINE_EMPTY, PREFIX + "Strict mode:                 " + isStrictModeEnabled)
-        android.util.Log.i(LINE_EMPTY, LINE_DOUBLE)
-        android.util.Log.i(LINE_EMPTY, DEFAULT_SETTINGS_STRING)
-        android.util.Log.i(LINE_EMPTY, LINE_DOUBLE)
+        val head: StringBuilder = StringBuilder(" \n" + LINE_DOUBLE + "\n"
+                + PREFIX + "Application name:            " + appName + "\n"
+                + PREFIX + "Android  device ID:          " + androidId + "\n"
+                + PREFIX + "Application package:         " + packageName + "\n"
+                + PREFIX + "Signature Fingerprint SHA-1: " + signatureFingerprint + "\n"
+                + PREFIX + "Signature Key Hash:          " + applicationSignatureKeyHash
+                + PREFIX + "Diagonal:                    " + deviceDiagonal + " - " + df.format(mDiagonalInInch.toDouble()) + '\"'.toString() + "\n"
+                + PREFIX + "First installation:          " + isNewVersion + "\n"
+                + PREFIX + "Strict mode:                 " + isStrictModeEnabled + "\n"
+                + LINE_DOUBLE + "\n"
+                + DEFAULT_SETTINGS_STRING + "\n"
+                + LINE_DOUBLE + "\n")
         var max = 0
         for ((key) in mPreferences!!.all) {
             val length = key.length
@@ -292,9 +292,11 @@ object AppConfig {
         }
         val formatString = PREFIX + "%-" + max + "s = %s"
         for ((key, value) in mPreferences!!.all) {
-            android.util.Log.i(LINE_EMPTY, String.format(formatString, key, value))
+            head.append(String.format(formatString, key, value))
+            head.append("\n")
         }
-        android.util.Log.i(LINE, LINE_DOUBLE)
+        head.append(LINE_DOUBLE + "\n ")
+        android.util.Log.i(appName + " Info", head.toString())
     }
 
     /**

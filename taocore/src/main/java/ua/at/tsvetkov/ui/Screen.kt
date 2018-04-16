@@ -340,29 +340,29 @@ object Screen {
     fun getDiagonal(context: Context): Diagonal {
         val size = Screen.getDiagonalInInch(context)
         val diagonal: Diagonal
-        if (size < 3) {
+        if (size < 2) {
             diagonal = Diagonal.SMALL_PHONE_OR_WATCH
-        } else if (size >= 2 && size < 3) {
+        } else if (size >= 2 && size < 2.5) {
             diagonal = Diagonal.PHONE_2
-        } else if (size >= 3 && size < 4) {
+        } else if (size >= 2.5 && size < 3.5) {
             diagonal = Diagonal.PHONE_3
-        } else if (size >= 4 && size < 5) {
+        } else if (size >= 3.5 && size < 4.5) {
             diagonal = Diagonal.PHONE_4
-        } else if (size >= 5 && size < 6) {
+        } else if (size >= 4.5 && size < 5.5) {
             diagonal = Diagonal.PHONE_5
-        } else if (size >= 6 && size < 7) {
+        } else if (size >= 5.5 && size < 6.5) {
             diagonal = Diagonal.PHONE_6
-        } else if (size >= 7 && size < 8) {
+        } else if (size >= 6.5 && size < 7.5) {
             diagonal = Diagonal.TABLET_7
-        } else if (size >= 8 && size < 9) {
+        } else if (size >= 7.5 && size < 8.5) {
             diagonal = Diagonal.TABLET_8
-        } else if (size >= 9 && size < 10) {
+        } else if (size >= 8.5 && size < 9.5) {
             diagonal = Diagonal.TABLET_9
-        } else if (size >= 10 && size < 11) {
+        } else if (size >= 9.5 && size < 10.5) {
             diagonal = Diagonal.TABLET_10
-        } else if (size >= 11 && size < 12) {
+        } else if (size >= 10.5 && size < 11.5) {
             diagonal = Diagonal.TABLET_11
-        } else if (size >= 12 && size < 13) {
+        } else if (size >= 11.5 && size < 112.5) {
             diagonal = Diagonal.TABLET_12
         } else {
             diagonal = Diagonal.TABLET_BIG
