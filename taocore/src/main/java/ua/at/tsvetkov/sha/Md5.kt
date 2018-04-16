@@ -3,15 +3,10 @@
  */
 package ua.at.tsvetkov.sha
 
-import java.io.File
-import java.io.FileDescriptor
-import java.io.FileInputStream
-import java.io.FileNotFoundException
-import java.io.InputStream
+import ua.at.tsvetkov.util.Log
+import java.io.*
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
-
-import ua.at.tsvetkov.util.Log
 import kotlin.experimental.and
 
 /**
@@ -33,7 +28,7 @@ object Md5 {
             var byteCount: Int
             while (true) {
                 byteCount = inp.read(bytes)
-                if(byteCount<0) break
+                if (byteCount < 0) break
                 digester.update(bytes, 0, byteCount)
             }
             return digester.digest()
@@ -52,7 +47,7 @@ object Md5 {
      */
     fun fromFile(fileName: String): ByteArray? {
         try {
-            val inp= FileInputStream(fileName)
+            val inp = FileInputStream(fileName)
             return fromInputStream(inp)
         } catch (e: FileNotFoundException) {
             Log.e(e)

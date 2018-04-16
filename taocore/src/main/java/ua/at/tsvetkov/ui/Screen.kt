@@ -35,9 +35,7 @@ import android.graphics.Point
 import android.graphics.PointF
 import android.os.Build
 import android.util.DisplayMetrics
-import android.view.Display
 import android.view.WindowManager
-
 import ua.at.tsvetkov.application.Diagonal
 
 /**

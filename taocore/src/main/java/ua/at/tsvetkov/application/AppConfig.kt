@@ -44,13 +44,11 @@ import android.os.StrictMode
 import android.preference.PreferenceManager
 import android.provider.Settings
 import android.widget.Toast
-
-import java.math.RoundingMode
-import java.text.DecimalFormat
-import java.util.Date
-
 import ua.at.tsvetkov.ui.Screen
 import ua.at.tsvetkov.util.Log
+import java.math.RoundingMode
+import java.text.DecimalFormat
+import java.util.*
 
 /**
  * Return the basic parameters of the application. Initialize and restoration of essential parameters for the app. Data saves and loads in

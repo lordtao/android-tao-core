@@ -31,17 +31,13 @@ package ua.at.tsvetkov.application
 
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.content.pm.ResolveInfo
-import android.content.pm.Signature
 import android.util.Base64
-
+import ua.at.tsvetkov.util.Log
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
-import java.util.ArrayList
-
-import ua.at.tsvetkov.util.Log
+import java.util.*
 
 /**
  * Return an information about another applications

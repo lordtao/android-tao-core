@@ -30,10 +30,8 @@
 package ua.at.tsvetkov.files
 
 import android.content.Context
-
-import java.io.File
-
 import ua.at.tsvetkov.util.Log
+import java.io.File
 
 /**
  * Methods for dismantling the filename
