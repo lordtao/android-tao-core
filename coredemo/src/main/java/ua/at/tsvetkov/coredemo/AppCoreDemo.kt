@@ -2,6 +2,7 @@ package ua.at.tsvetkov.coredemo
 
 import android.app.Application
 import ua.at.tsvetkov.application.AppConfig
+import ua.at.tsvetkov.application.Apps
 
 /**
  * Created by lordtao on 30.10.2017.
@@ -13,6 +14,7 @@ class AppCoreDemo : Application() {
 
         AppConfig.init(this)
         AppConfig.printInfo(this)
+        Apps.printInstalledAppsPackageAndClass(this)
 
     }
 

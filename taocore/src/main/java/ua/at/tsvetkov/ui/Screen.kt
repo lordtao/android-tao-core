@@ -362,7 +362,7 @@ object Screen {
             diagonal = Diagonal.TABLET_10
         } else if (size >= 10.5 && size < 11.5) {
             diagonal = Diagonal.TABLET_11
-        } else if (size >= 11.5 && size < 112.5) {
+        } else if (size >= 11.5 && size < 12.5) {
             diagonal = Diagonal.TABLET_12
         } else {
             diagonal = Diagonal.TABLET_BIG

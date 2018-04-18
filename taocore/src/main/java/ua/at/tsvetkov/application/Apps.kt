@@ -67,7 +67,7 @@ object Apps {
     fun printInstalledAppsPackageAndClass(context: Context) {
         val appListStrs = ArrayList<String>()
         for (info in getInstalledAppsInfo(context)) {
-            appListStrs.add("NAME:" + info.loadLabel(context.packageManager) + ", PACKAGE: " + info.activityInfo.packageName + ", LAUNCHER CLASS: " + info.activityInfo.name)
+            appListStrs.add("${info.loadLabel(context.packageManager).padEnd(35)}${info.activityInfo.packageName.padEnd(45)}${info.activityInfo.name}")
         }
         Log.list(appListStrs, "Installed application")
     }
@@ -123,9 +123,7 @@ object Apps {
             val md = MessageDigest.getInstance("SHA-1")
             val sig = context.packageManager.getPackageInfo(packageName, PackageManager.GET_SIGNATURES).signatures[0]
             return hex(md.digest(sig.toByteArray()))
-        } catch (e: NoSuchAlgorithmException) {
-            Log.e(e)
-        } catch (e: PackageManager.NameNotFoundException) {
+        } catch (e: Exception) {
             Log.e(e)
         }
 

@@ -59,24 +59,21 @@ import java.util.*
  */
 object AppConfig {
 
-    val APP_NAME = "APP_NAME"
-    val APP_VERSION_NAME = "APP_VERSION_NAME"
-    val APP_VERSION_CODE = "APP_VERSION_CODE"
-    val APP_PACKAGE_NAME = "APP_PACKAGE_NAME"
-    val ANDROID_ID = "APP_ANDROID_ID"
-    val NEW_VERSION = "NEW_VERSION"
-    val NEW_INSTALL = "NEW_INSTALL"
-    val SAVE = true
-    val NOT_SAVE = false
+    const val APP_VERSION_NAME = "APP_VERSION_NAME"
+    const val APP_VERSION_CODE = "APP_VERSION_CODE"
+    const val SAVE = true
+    const val NOT_SAVE = false
 
-    private val PREFIX = "| "
-    private val LINE = "▪=====================▪"
-    private val LINE_EMPTY = "▪                     ▪"
-    private val LINE_DOUBLE = "=========================================================================================="
-    private val DEFAULT_SETTINGS_STRING = "|                             Default Shared Preferences Data"
-    private val TRIAL_IS_EXPIRED = "Sorry, the trial version has expired "
-    private val DIV_LEFT = "▪ "
-    private val DIV_RIGHT = " ▪"
+    //    private val PREFIX = "| "
+    private const val LINE_DOUBLE = "=============================================================================================="
+    private const val DEFAULT_SETTINGS_STRING = "|                             Default Shared Preferences Data"
+    private const val TRIAL_IS_EXPIRED = "Sorry, the trial version has expired "
+    private const val MAX_LENGTH = 93
+
+    private var mPreferences: SharedPreferences? = null
+    private lateinit var mEditor: Editor
+    private var isInitialized = false
+
 
     /**
      * Return the app name without spaces.
@@ -85,14 +82,19 @@ object AppConfig {
      */
     var appName: String? = null
         private set
-    private var mPreferences: SharedPreferences? = null
-    private var mEditor: Editor? = null
     /**
      * Return device Diagonal enum constant
      *
      * @return Diagonal
      */
     var deviceDiagonal: Diagonal? = null
+        private set
+    /**
+     * Return device diagonal in inches
+     *
+     * @return inches
+     */
+    var diagonalInInch: Float = 0f
         private set
     /**
      * Whether the app is debuggable or not
@@ -113,7 +115,7 @@ object AppConfig {
      *
      * @return is the app is absolutely new
      */
-    var isNewApplication = false
+    var isFreshInstallation = false
         private set
     /**
      * Return true if new version of the app is started
@@ -129,7 +131,6 @@ object AppConfig {
      */
     var isStrictModeEnabled = false
         private set
-    private var isInitialized = false
     /**
      * Return the app signature KeyHash for this application
      *
@@ -149,7 +150,7 @@ object AppConfig {
      *
      * @return the package name
      */
-    lateinit var packageName: String
+    var packageName: String? = null
         private set
     /**
      * The version name of this package, as specified by the <manifest> tag's versionName attribute.
@@ -188,9 +189,7 @@ object AppConfig {
      */
     var isTablet: Boolean = false
         private set
-    private var mDiagonalInInch: Float = 0.toFloat()
-
-    /**
+      /**
      * Checking the initializing of this class and print error stack trace otherwise.
      *
      * @return true if initiated
@@ -220,38 +219,32 @@ object AppConfig {
         mPreferences = PreferenceManager.getDefaultSharedPreferences(application)
         mEditor = mPreferences!!.edit()
         appName = application.getString(appData!!.applicationInfo.labelRes)
-        isNewApplication = mPreferences!!.getInt(APP_VERSION_CODE, -1) < 0
+        isFreshInstallation = mPreferences!!.getInt(APP_VERSION_CODE, -1) < 0
         if (appData.versionCode > mPreferences!!.getInt(APP_VERSION_CODE, 0)) {
             isNewVersion = true
         }
 
         deviceDiagonal = Screen.getDiagonal(application)
-        mDiagonalInInch = Screen.getDiagonalInInch(application).toFloat()
+        diagonalInInch = Screen.getDiagonalInInch(application).toFloat()
         isPhone = Screen.isPhone(application)
         isTablet = Screen.isTablet(application)
 
-        applicationSignatureKeyHash = Apps.getApplicationSignatureKeyHash(application, packageName)
+        applicationSignatureKeyHash = Apps.getApplicationSignatureKeyHash(application, packageName!!)
         signatureFingerprint = Apps.getSignatureFingerprint(application, packageName!!)
 
         appVersionName = appData.versionName
         appVersionCode = appData.versionCode
         androidId = Settings.Secure.getString(application.contentResolver, Settings.Secure.ANDROID_ID)
 
-        mEditor!!.putString(ANDROID_ID, androidId)
-        mEditor!!.putString(APP_NAME, appName)
         mEditor!!.putString(APP_VERSION_NAME, appVersionName)
-        mEditor!!.putString(APP_PACKAGE_NAME, packageName)
         mEditor!!.putInt(APP_VERSION_CODE, appVersionCode)
-        mEditor!!.putBoolean(NEW_VERSION, isNewVersion)
-        mEditor!!.putBoolean(NEW_INSTALL, isNewApplication)
+
         save()
 
         isDebuggable = 0 != application.applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE
         isBeingDebugged = android.os.Debug.isDebuggerConnected()
-        if (isDebuggable) {
-            android.util.Log.i(DIV_LEFT + appName + DIV_RIGHT, "➧ Log enabled.")
-        } else {
-            android.util.Log.w(DIV_LEFT + appName + DIV_RIGHT, "➧ Log is prohibited because debug mode is disabled.")
+        if (!isDebuggable) {
+            android.util.Log.w("▪ $appName ▪", "➧ Log is prohibited because debug mode is disabled.")
             Log.setDisabled(true)
         }
 
@@ -268,35 +261,36 @@ object AppConfig {
             return
         }
 
+        var max = mPreferences!!.all.keys.maxBy { it.length }!!.length
+        max = if (max < 31) 31 else max
+        val formatPref = "| %-${max}s%s"
+
+
         val df = DecimalFormat("##.##")
         df.roundingMode = RoundingMode.DOWN
+        val realDiagonal = df.format(diagonalInInch)
 
-        val head: StringBuilder = StringBuilder(" \n" + LINE_DOUBLE + "\n"
-                + PREFIX + "Application name:            " + appName + "\n"
-                + PREFIX + "Android  device ID:          " + androidId + "\n"
-                + PREFIX + "Application package:         " + packageName + "\n"
-                + PREFIX + "Signature Fingerprint SHA-1: " + signatureFingerprint + "\n"
-                + PREFIX + "Signature Key Hash:          " + applicationSignatureKeyHash
-                + PREFIX + "Diagonal:                    " + deviceDiagonal + " - " + df.format(mDiagonalInInch.toDouble()) + '\"'.toString() + "\n"
-                + PREFIX + "First installation:          " + isNewVersion + "\n"
-                + PREFIX + "Strict mode:                 " + isStrictModeEnabled + "\n"
-                + LINE_DOUBLE + "\n"
-                + DEFAULT_SETTINGS_STRING + "\n"
-                + LINE_DOUBLE + "\n")
-        var max = 0
-        for ((key) in mPreferences!!.all) {
-            val length = key.length
-            if (max < length) {
-                max = length
-            }
+        val sb = StringBuilder(" \n$LINE_DOUBLE\n"
+                + "| Application name               $appName".padEnd(MAX_LENGTH, ' ').plus("|\n")
+                + "| Android  device ID             $androidId".padEnd(MAX_LENGTH, ' ').plus("|\n")
+                + "| Application package            $packageName".padEnd(MAX_LENGTH, ' ').plus("|\n")
+                + "| Signature Fingerprint SHA-1    $signatureFingerprint".padEnd(MAX_LENGTH, ' ').plus("|\n")
+                + "| Signature Key Hash             $applicationSignatureKeyHash".dropLast(1).padEnd(MAX_LENGTH, ' ').plus("|\n")
+                + "| Diagonal                       $deviceDiagonal - $realDiagonal\"".padEnd(MAX_LENGTH, ' ').plus("|\n")
+                + "| New app version                $isNewVersion".padEnd(MAX_LENGTH, ' ').plus("|\n")
+                + "| Fresh installation             $isFreshInstallation".padEnd(MAX_LENGTH, ' ').plus("|\n")
+                + "| Strict mode                    $isStrictModeEnabled".padEnd(MAX_LENGTH, ' ').plus("|\n")
+                + "$LINE_DOUBLE\n"
+                + "$DEFAULT_SETTINGS_STRING".padEnd(MAX_LENGTH, ' ').plus("|\n")
+                + "$LINE_DOUBLE\n")
+
+
+        val prefs = mPreferences!!.all.entries.sortedBy { it.key }
+        for ((key, value) in prefs) {
+            sb.append(String.format(formatPref, key, value).padEnd(MAX_LENGTH, ' ').plus("|\n"))
         }
-        val formatString = PREFIX + "%-" + max + "s = %s"
-        for ((key, value) in mPreferences!!.all) {
-            head.append(String.format(formatString, key, value))
-            head.append("\n")
-        }
-        head.append(LINE_DOUBLE + "\n ")
-        android.util.Log.i(appName + " Info", head.toString())
+        sb.append("$LINE_DOUBLE\n ")
+        android.util.Log.i("▪ $appName ▪", sb.toString())
     }
 
     /**
