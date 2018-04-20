@@ -80,7 +80,7 @@ allprojects {
 ```
 add to your module build.gradle
 ```
-    compile 'ua.at.tsvetkov:taocore:1.3.5'
+    compile 'ua.at.tsvetkov:taocore:1.4.2'
 ```
 
 Changelog
