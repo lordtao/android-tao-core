@@ -59,6 +59,7 @@ class FileDownloader {
          * @param url url path to file
          * @return the value of the response header field content-length
          */
+        @JvmStatic
         fun getFileLength(url: String): Int {
             var conn: HttpURLConnection? = null
             var length = 0
@@ -86,6 +87,7 @@ class FileDownloader {
          * @param rewrite         If TRUE and file exist - rewrite the file. If FALSE and file exist and his length > 0 - not download and rewrite the
          * file.
          */
+        @JvmStatic
         fun download(url: String, pathAndFileName: String, rewrite: Boolean, listener: CompleteListener) {
             Thread(Runnable {
                 val result = download(url, pathAndFileName, rewrite)
@@ -158,10 +160,3 @@ class FileDownloader {
         }
     }
 }
-/**
- * Downloads a remote file and stores it locally. If file exist - rewrite the file.
- *
- * @param url             Remote URL of the file to download
- * @param pathAndFileName Local path with file name where to store the file
- * @return true if success
- */

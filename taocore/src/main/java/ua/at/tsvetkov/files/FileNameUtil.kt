@@ -38,149 +38,160 @@ import java.io.File
  *
  * @author Alexandr Tsvetkov 2015
  */
-object FileNameUtil {
+class FileNameUtil {
 
-    /**
-     * Return file name with extension without directories.
-     *
-     * @param fullPath full path to file
-     * @return file name or empty string if fullPath have not include the correct filename.
-     */
-    fun getFileName(fullPath: String?): String {
-        var fileName = ""
-        if (fullPath == null) {
-            Log.w("The path to file is null")
+    companion object {
+
+        /**
+         * Return file name with extension without directories.
+         *
+         * @param fullPath full path to file
+         * @return file name or empty string if fullPath have not include the correct filename.
+         */
+        @JvmStatic
+        fun getFileName(fullPath: String?): String {
+            var fileName = ""
+            if (fullPath == null) {
+                Log.w("The path to file is null")
+                return fileName
+            }
+            if (fullPath.length == 0) {
+                Log.w("The path to file is empty")
+                return fileName
+            }
+            val indexOf = fullPath.lastIndexOf(File.separator)
+            if (indexOf == -1) {
+                return fullPath
+            }
+            try {
+                fileName = fullPath.substring(indexOf + 1, fullPath.length)
+            } catch (e: IndexOutOfBoundsException) {
+                Log.wtf("IndexOutOfBoundsException in $fullPath")
+            }
+
             return fileName
         }
-        if (fullPath.length == 0) {
-            Log.w("The path to file is empty")
+
+        /**
+         * Return file name without extension.
+         *
+         * @param fullPath full path to file
+         * @return file name without extension or empty string if fullPath have not include the correct filename or have empty extension.
+         */
+        @JvmStatic
+        fun getFileNameWithoutExtension(fullPath: String): String {
+            var fileName = getFileName(fullPath)
+            if (fileName.length == 0) {
+                Log.w("The file name is empty")
+                return ""
+            }
+            val pos = fileName.lastIndexOf(".")
+            if (pos != -1) {
+                fileName = fileName.substring(0, pos)
+            }
             return fileName
         }
-        val indexOf = fullPath.lastIndexOf(File.separator)
-        if (indexOf == -1) {
-            return fullPath
-        }
-        try {
-            fileName = fullPath.substring(indexOf + 1, fullPath.length)
-        } catch (e: IndexOutOfBoundsException) {
-            Log.wtf("IndexOutOfBoundsException in $fullPath")
+
+        /**
+         * Return file extension
+         *
+         * @param fullPath full path to file
+         * @return file extension or empty string if fullPath have not include the correct filename or have empty extension.
+         */
+        @JvmStatic
+        fun getFileExtension(fullPath: String?): String {
+            var fileName = ""
+            if (fullPath == null) {
+                Log.w("The path to file is null")
+                return fileName
+            }
+            if (fullPath.length == 0) {
+                Log.w("The path to file is empty")
+                return fileName
+            }
+            val pos = fullPath.lastIndexOf(".")
+            if (pos != -1) {
+                fileName = fullPath.substring(pos + 1, fullPath.length)
+            }
+            return fileName
         }
 
-        return fileName
-    }
-
-    /**
-     * Return file name without extension.
-     *
-     * @param fullPath full path to file
-     * @return file name without extension or empty string if fullPath have not include the correct filename or have empty extension.
-     */
-    fun getFileNameWithoutExtension(fullPath: String): String {
-        var fileName = getFileName(fullPath)
-        if (fileName.length == 0) {
-            Log.w("The file name is empty")
+        /**
+         * Return path for this file without file name
+         *
+         * @param fullPath full path to file
+         * @return path without file name
+         */
+        @JvmStatic
+        fun getFilePath(fullPath: String?): String {
+            var fileName = ""
+            if (fullPath == null) {
+                Log.w("The path to file is null")
+                return fileName
+            }
+            if (fullPath.length == 0) {
+                Log.w("The path to file is empty")
+                return fileName
+            }
+            val pos = fullPath.lastIndexOf(File.separator)
+            if (pos != -1) {
+                fileName = fullPath.substring(0, pos + 1)
+                return fileName
+            }
             return ""
         }
-        val pos = fileName.lastIndexOf(".")
-        if (pos != -1) {
-            fileName = fileName.substring(0, pos)
-        }
-        return fileName
-    }
-
-    /**
-     * Return file extension
-     *
-     * @param fullPath full path to file
-     * @return file extension or empty string if fullPath have not include the correct filename or have empty extension.
-     */
-    fun getFileExtension(fullPath: String?): String {
-        var fileName = ""
-        if (fullPath == null) {
-            Log.w("The path to file is null")
-            return fileName
-        }
-        if (fullPath.length == 0) {
-            Log.w("The path to file is empty")
-            return fileName
-        }
-        val pos = fullPath.lastIndexOf(".")
-        if (pos != -1) {
-            fileName = fullPath.substring(pos + 1, fullPath.length)
-        }
-        return fileName
-    }
-
-    /**
-     * Return path for this file without file name
-     *
-     * @param fullPath full path to file
-     * @return path without file name
-     */
-    fun getFilePath(fullPath: String?): String {
-        var fileName = ""
-        if (fullPath == null) {
-            Log.w("The path to file is null")
-            return fileName
-        }
-        if (fullPath.length == 0) {
-            Log.w("The path to file is empty")
-            return fileName
-        }
-        val pos = fullPath.lastIndexOf(File.separator)
-        if (pos != -1) {
-            fileName = fullPath.substring(0, pos + 1)
-            return fileName
-        }
-        return ""
-    }
 
 
-    /**
-     * Return full path to file from given file name in work dir.
-     *
-     * @param fileName file name
-     * @return full path to file
-     */
-    fun getFileName(context: Context, fileName: String): String {
-        return getFileName(context, fileName)
+        /**
+         * Return full path to file from given file name in work dir.
+         *
+         * @param fileName file name
+         * @return full path to file
+         */
+        @JvmStatic
+        fun getFileName(context: Context, fileName: String): String {
+            return getFileName(context, fileName)
 
-    }
-
-    /**
-     * Return full path to file from given file name in work dir.
-     *
-     * @param subdir   subdir in work dir, possible to be empty or null.
-     * @param fileName file name
-     * @return full path to file
-     */
-    fun getFileName(context: Context, subdir: String, fileName: String): String {
-        val dir: String
-        if (subdir != null && subdir.length > 0) {
-            dir = context.filesDir.toString() + subdir
-        } else {
-            dir = context.filesDir.absolutePath
-        }
-        return dir + fileName
-    }
-
-    /**
-     * Return file name without extension
-     *
-     * @param path full path to file
-     * @return file name without extension
-     */
-    fun getFileNameNoExtension(path: String): String {
-        var name = ""
-        try {
-            val pos = path.lastIndexOf(File.separator) + 1
-            val dotPos = path.lastIndexOf(".") + 1
-            name = path.substring(pos, dotPos)
-        } catch (e: Exception) {
-            Log.e(e)
         }
 
-        return name
+        /**
+         * Return full path to file from given file name in work dir.
+         *
+         * @param subdir   subdir in work dir, possible to be empty or null.
+         * @param fileName file name
+         * @return full path to file
+         */
+        @JvmStatic
+        fun getFileName(context: Context, subdir: String, fileName: String): String {
+            val dir: String
+            if (subdir != null && subdir.length > 0) {
+                dir = context.filesDir.toString() + subdir
+            } else {
+                dir = context.filesDir.absolutePath
+            }
+            return dir + fileName
+        }
+
+        /**
+         * Return file name without extension
+         *
+         * @param path full path to file
+         * @return file name without extension
+         */
+        @JvmStatic
+        fun getFileNameNoExtension(path: String): String {
+            var name = ""
+            try {
+                val pos = path.lastIndexOf(File.separator) + 1
+                val dotPos = path.lastIndexOf(".") + 1
+                name = path.substring(pos, dotPos)
+            } catch (e: Exception) {
+                Log.e(e)
+            }
+
+            return name
+        }
+
     }
 
 }

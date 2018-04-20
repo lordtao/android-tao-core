@@ -43,100 +43,107 @@ import java.util.*
  *
  * @author Alexandr Tsvetkov 2015
  */
-object Apps {
-
-    /**
-     * Return info about installed on this device apps with CATEGORY_LAUNCHER (usual apps)
-     *
-     * @param context the application Context
-     * @return List<ResolveInfo>
-    </ResolveInfo> */
-    fun getInstalledAppsInfo(context: Context): List<ResolveInfo> {
-        val intent = Intent(Intent.ACTION_MAIN, null)
-        intent.addCategory(Intent.CATEGORY_LAUNCHER)
-        val pm = context.packageManager
-        return pm.queryIntentActivities(intent, 0)
-    }
-
-    /**
-     * Print installed apps classes names
-     *
-     * @param context the application Context
-     */
-    fun printInstalledAppsPackageAndClass(context: Context) {
-        val appListStrs = ArrayList<String>()
-        for (info in getInstalledAppsInfo(context)) {
-            appListStrs.add("${info.loadLabel(context.packageManager).padEnd(35)}${info.activityInfo.packageName.padEnd(45)}${info.activityInfo.name}")
+class Apps {
+    companion object {
+        /**
+         * Return info about installed on this device apps with CATEGORY_LAUNCHER (usual apps)
+         *
+         * @param context the application Context
+         * @return List<ResolveInfo>
+        </ResolveInfo> */
+        @JvmStatic
+        fun getInstalledAppsInfo(context: Context): List<ResolveInfo> {
+            val intent = Intent(Intent.ACTION_MAIN, null)
+            intent.addCategory(Intent.CATEGORY_LAUNCHER)
+            val pm = context.packageManager
+            return pm.queryIntentActivities(intent, 0)
         }
-        Log.list(appListStrs, "Installed application")
-    }
 
-    /**
-     * Checks for an installed application
-     *
-     * @param packageName app package name
-     * @param context     the application Context
-     * @return is an installed application
-     * @throws IllegalAccessException if AppConfig is not initialized
-     */
-    @Throws(IllegalAccessException::class)
-    fun isApplicationInstalled(context: Context, packageName: String): Boolean {
-        for (info in getInstalledAppsInfo(context)) {
-            if (info.activityInfo.packageName == packageName) {
-                return true
+        /**
+         * Print installed apps classes names
+         *
+         * @param context the application Context
+         */
+        @JvmStatic
+        fun printInstalledAppsPackageAndClass(context: Context) {
+            val appListStrs = ArrayList<String>()
+            for (info in getInstalledAppsInfo(context)) {
+                appListStrs.add("${info.loadLabel(context.packageManager).padEnd(35)}${info.activityInfo.packageName.padEnd(45)}${info.activityInfo.name}")
             }
+            Log.list(appListStrs, "Installed application")
         }
-        return false
-    }
 
-    /**
-     * Return the KeyHash for the application
-     *
-     * @param context     the application Context
-     * @param packageName a package name
-     */
-    fun getApplicationSignatureKeyHash(context: Context, packageName: String): String {
-        try {
-            val info = context.packageManager.getPackageInfo(packageName, PackageManager.GET_SIGNATURES)
-            for (signature in info.signatures) {
-                val md = MessageDigest.getInstance("SHA")
-                md.update(signature.toByteArray())
-                return Base64.encodeToString(md.digest(), Base64.DEFAULT)
+        /**
+         * Checks for an installed application
+         *
+         * @param packageName app package name
+         * @param context     the application Context
+         * @return is an installed application
+         * @throws IllegalAccessException if AppConfig is not initialized
+         */
+        @Throws(IllegalAccessException::class)
+        @JvmStatic
+        fun isApplicationInstalled(context: Context, packageName: String): Boolean {
+            for (info in getInstalledAppsInfo(context)) {
+                if (info.activityInfo.packageName == packageName) {
+                    return true
+                }
             }
-        } catch (e: Exception) {
-            Log.e(e)
+            return false
         }
 
-        return ""
-    }
+        /**
+         * Return the KeyHash for the application
+         *
+         * @param context     the application Context
+         * @param packageName a package name
+         */
+        @JvmStatic
+        fun getApplicationSignatureKeyHash(context: Context, packageName: String): String {
+            try {
+                val info = context.packageManager.getPackageInfo(packageName, PackageManager.GET_SIGNATURES)
+                for (signature in info.signatures) {
+                    val md = MessageDigest.getInstance("SHA")
+                    md.update(signature.toByteArray())
+                    return Base64.encodeToString(md.digest(), Base64.DEFAULT)
+                }
+            } catch (e: Exception) {
+                Log.e(e)
+            }
 
-    /**
-     * Return the app certificate's fingerprint
-     *
-     * @param context     the application Context
-     * @param packageName a package name
-     * @return certificate's fingerprint
-     */
-    fun getSignatureFingerprint(context: Context, packageName: String, devider: Char): String {
-        try {
-            val md = MessageDigest.getInstance("SHA-1")
-            val sig = context.packageManager.getPackageInfo(packageName, PackageManager.GET_SIGNATURES).signatures[0]
-            return hex(md.digest(sig.toByteArray()), devider)
-        } catch (e: Exception) {
-            Log.e(e)
+            return ""
         }
 
-        return "ERROR calculate the app certificate's fingerprint"
-    }
+        /**
+         * Return the app certificate's fingerprint
+         *
+         * @param context     the application Context
+         * @param packageName a package name
+         * @return certificate's fingerprint
+         */
+        @JvmStatic
+        fun getSignatureFingerprint(context: Context, packageName: String, devider: Char): String {
+            try {
+                val md = MessageDigest.getInstance("SHA-1")
+                val sig = context.packageManager.getPackageInfo(packageName, PackageManager.GET_SIGNATURES).signatures[0]
+                return hex(md.digest(sig.toByteArray()), devider)
+            } catch (e: Exception) {
+                Log.e(e)
+            }
 
-    private fun hex(data: ByteArray, devider: Char): String {
-        val sb = StringBuilder(data.size * 3)
-
-        for (byte in data) {
-            sb.append(String.format("%02X$devider", byte))
+            return "ERROR calculate the app certificate's fingerprint"
         }
 
-        return sb.dropLast(1).toString()
-    }
+        @JvmStatic
+        private fun hex(data: ByteArray, devider: Char): String {
+            val sb = StringBuilder(data.size * 3)
 
+            for (byte in data) {
+                sb.append(String.format("%02X$devider", byte))
+            }
+
+            return sb.dropLast(1).toString()
+        }
+
+    }
 }
