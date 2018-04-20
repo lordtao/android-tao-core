@@ -146,6 +146,13 @@ object AppConfig {
     var signatureFingerprint: String? = null
         private set
     /**
+     * Return the app signature fingerprint for this application separated by ':'
+     *
+     * @return the app signature fingerprint
+     */
+    var signatureFingerprintColon: String? = null
+        private set
+    /**
      * Name of the app package.
      *
      * @return the package name
@@ -189,7 +196,7 @@ object AppConfig {
      */
     var isTablet: Boolean = false
         private set
-      /**
+    /**
      * Checking the initializing of this class and print error stack trace otherwise.
      *
      * @return true if initiated
@@ -230,7 +237,8 @@ object AppConfig {
         isTablet = Screen.isTablet(application)
 
         applicationSignatureKeyHash = Apps.getApplicationSignatureKeyHash(application, packageName!!)
-        signatureFingerprint = Apps.getSignatureFingerprint(application, packageName!!)
+        signatureFingerprint = Apps.getSignatureFingerprint(application, packageName!!, ' ')
+        signatureFingerprintColon = Apps.getSignatureFingerprint(application, packageName!!, ':')
 
         appVersionName = appData.versionName
         appVersionCode = appData.versionCode
@@ -270,27 +278,28 @@ object AppConfig {
         df.roundingMode = RoundingMode.DOWN
         val realDiagonal = df.format(diagonalInInch)
 
-        val sb = StringBuilder(" \n$LINE_DOUBLE\n"
-                + "| Application name               $appName".padEnd(MAX_LENGTH, ' ').plus("|\n")
-                + "| Android  device ID             $androidId".padEnd(MAX_LENGTH, ' ').plus("|\n")
-                + "| Application package            $packageName".padEnd(MAX_LENGTH, ' ').plus("|\n")
-                + "| Signature Fingerprint SHA-1    $signatureFingerprint".padEnd(MAX_LENGTH, ' ').plus("|\n")
-                + "| Signature Key Hash             $applicationSignatureKeyHash".dropLast(1).padEnd(MAX_LENGTH, ' ').plus("|\n")
-                + "| Diagonal                       $deviceDiagonal - $realDiagonal\"".padEnd(MAX_LENGTH, ' ').plus("|\n")
-                + "| New app version                $isNewVersion".padEnd(MAX_LENGTH, ' ').plus("|\n")
-                + "| Fresh installation             $isFreshInstallation".padEnd(MAX_LENGTH, ' ').plus("|\n")
-                + "| Strict mode                    $isStrictModeEnabled".padEnd(MAX_LENGTH, ' ').plus("|\n")
-                + "$LINE_DOUBLE\n"
-                + "$DEFAULT_SETTINGS_STRING".padEnd(MAX_LENGTH, ' ').plus("|\n")
-                + "$LINE_DOUBLE\n")
+        var infoString = " \n$LINE_DOUBLE\n" +
+                "| Application name               $appName".padEnd(MAX_LENGTH, ' ').plus("|\n") +
+                "| Android  device ID             $androidId".padEnd(MAX_LENGTH, ' ').plus("|\n") +
+                "| Application package            $packageName".padEnd(MAX_LENGTH, ' ').plus("|\n") +
+                "| Signature Fingerprint SHA-1    $signatureFingerprintColon".padEnd(MAX_LENGTH, ' ').plus("|\n") +
+                "| Signature Fingerprint SHA-1    $signatureFingerprint".padEnd(MAX_LENGTH, ' ').plus("|\n") +
+                "| Signature Key Hash             $applicationSignatureKeyHash".dropLast(1).padEnd(MAX_LENGTH, ' ').plus("|\n") +
+                "| Diagonal                       $deviceDiagonal - $realDiagonal\"".padEnd(MAX_LENGTH, ' ').plus("|\n") +
+                "| New app version                $isNewVersion".padEnd(MAX_LENGTH, ' ').plus("|\n") +
+                "| Fresh installation             $isFreshInstallation".padEnd(MAX_LENGTH, ' ').plus("|\n") +
+                "| Strict mode                    $isStrictModeEnabled".padEnd(MAX_LENGTH, ' ').plus("|\n") +
+                "$LINE_DOUBLE\n" +
+                "$DEFAULT_SETTINGS_STRING".padEnd(MAX_LENGTH, ' ').plus("|\n") +
+                "$LINE_DOUBLE\n"
 
 
         val prefs = mPreferences!!.all.entries.sortedBy { it.key }
         for ((key, value) in prefs) {
-            sb.append(String.format(formatPref, key, value).padEnd(MAX_LENGTH, ' ').plus("|\n"))
+            infoString = infoString.plus(String.format(formatPref, key, value).padEnd(MAX_LENGTH, ' ').plus("|\n"))
         }
-        sb.append("$LINE_DOUBLE\n ")
-        android.util.Log.i("▪ $appName ▪", sb.toString())
+        infoString = infoString.plus("$LINE_DOUBLE\n ")
+        android.util.Log.i("▪ $appName ▪", infoString)
     }
 
     /**

@@ -29,20 +29,22 @@
  */
 package ua.at.tsvetkov.application
 
-enum class Diagonal {
+enum class Diagonal(val min: Double, val max: Double) {
 
-    SMALL_PHONE_OR_WATCH,
-    PHONE_2,
-    PHONE_3,
-    PHONE_4,
-    PHONE_5,
-    PHONE_6,
-    TABLET_7,
-    TABLET_8,
-    TABLET_9,
-    TABLET_10,
-    TABLET_11,
-    TABLET_12,
-    TABLET_BIG
+    SMALL_PHONE_OR_WATCH(0.0, 2.0),
+    PHONE_2(2.0, 2.5),
+    PHONE_3(2.5, 3.5),
+    PHONE_4(3.5, 4.5),
+    PHONE_5(4.5, 5.5),
+    PHONE_6(5.5, 6.5),
+    TABLET_7(6.5, 7.5),
+    TABLET_8(7.5, 8.5),
+    TABLET_9(8.5, 9.5),
+    TABLET_10(9.5, 10.5),
+    TABLET_11(10.5, 11.5),
+    TABLET_12(11.5, 12.5),
+    TABLET_BIG(12.5, Double.MAX_VALUE);
+
+    fun isThis(size: Double): Boolean = (size >= min) && (size < max)
 
 }

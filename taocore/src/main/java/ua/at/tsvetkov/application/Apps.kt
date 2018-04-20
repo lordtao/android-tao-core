@@ -36,7 +36,6 @@ import android.content.pm.ResolveInfo
 import android.util.Base64
 import ua.at.tsvetkov.util.Log
 import java.security.MessageDigest
-import java.security.NoSuchAlgorithmException
 import java.util.*
 
 /**
@@ -118,11 +117,11 @@ object Apps {
      * @param packageName a package name
      * @return certificate's fingerprint
      */
-    fun getSignatureFingerprint(context: Context, packageName: String): String {
+    fun getSignatureFingerprint(context: Context, packageName: String, devider: Char): String {
         try {
             val md = MessageDigest.getInstance("SHA-1")
             val sig = context.packageManager.getPackageInfo(packageName, PackageManager.GET_SIGNATURES).signatures[0]
-            return hex(md.digest(sig.toByteArray()))
+            return hex(md.digest(sig.toByteArray()), devider)
         } catch (e: Exception) {
             Log.e(e)
         }
@@ -130,22 +129,14 @@ object Apps {
         return "ERROR calculate the app certificate's fingerprint"
     }
 
-    private fun hex(data: ByteArray?): String {
-        if (data == null) {
-            Log.v("null")
+    private fun hex(data: ByteArray, devider: Char): String {
+        val sb = StringBuilder(data.size * 3)
+
+        for (byte in data) {
+            sb.append(String.format("%02X$devider", byte))
         }
 
-        val sb = StringBuilder(data!!.size * 3)
-        val var2 = data
-        val var3 = data.size
-
-        for (var4 in 0 until var3) {
-            val element = var2[var4]
-            sb.append(String.format("%02X ", element))
-        }
-
-        sb.trimToSize()
-        return sb.toString()
+        return sb.dropLast(1).toString()
     }
 
 }

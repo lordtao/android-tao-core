@@ -305,7 +305,7 @@ object Screen {
      * @return diagonal
      */
     fun getDiagonalInInch(context: Context): Double {
-        val pf = Screen.getSizeInInch(context)
+        val pf = getSizeInInch(context)
         return Math.sqrt((pf.x * pf.x + pf.y * pf.y).toDouble())
     }
 
@@ -316,7 +316,7 @@ object Screen {
      * @return diagonal
      */
     fun getDiagonalInMm(context: Context): Double {
-        val pf = Screen.getSizeInMm(context)
+        val pf = getSizeInMm(context)
         return Math.sqrt((pf.x * pf.x + pf.y * pf.y).toDouble())
     }
 
@@ -327,7 +327,7 @@ object Screen {
      * @return diagonal
      */
     fun getDiagonalInPixels(context: Context): Double {
-        val pf = Screen.getSizeInPixels(context)
+        val pf = getSizeInPixels(context)
         return Math.sqrt((pf.x * pf.x + pf.y * pf.y).toDouble())
     }
 
@@ -337,37 +337,25 @@ object Screen {
      * @param context
      * @return Diagonal
      */
-    fun getDiagonal(context: Context): Diagonal {
-        val size = Screen.getDiagonalInInch(context)
-        val diagonal: Diagonal
-        if (size < 2) {
-            diagonal = Diagonal.SMALL_PHONE_OR_WATCH
-        } else if (size >= 2 && size < 2.5) {
-            diagonal = Diagonal.PHONE_2
-        } else if (size >= 2.5 && size < 3.5) {
-            diagonal = Diagonal.PHONE_3
-        } else if (size >= 3.5 && size < 4.5) {
-            diagonal = Diagonal.PHONE_4
-        } else if (size >= 4.5 && size < 5.5) {
-            diagonal = Diagonal.PHONE_5
-        } else if (size >= 5.5 && size < 6.5) {
-            diagonal = Diagonal.PHONE_6
-        } else if (size >= 6.5 && size < 7.5) {
-            diagonal = Diagonal.TABLET_7
-        } else if (size >= 7.5 && size < 8.5) {
-            diagonal = Diagonal.TABLET_8
-        } else if (size >= 8.5 && size < 9.5) {
-            diagonal = Diagonal.TABLET_9
-        } else if (size >= 9.5 && size < 10.5) {
-            diagonal = Diagonal.TABLET_10
-        } else if (size >= 10.5 && size < 11.5) {
-            diagonal = Diagonal.TABLET_11
-        } else if (size >= 11.5 && size < 12.5) {
-            diagonal = Diagonal.TABLET_12
-        } else {
-            diagonal = Diagonal.TABLET_BIG
+    fun getDiagonal(context: Context): Diagonal? {
+        val size = getDiagonalInInch(context)
+        for (diagonal in Diagonal.values()) {
+            if (diagonal.isThis(size)) {
+                return diagonal
+            }
         }
-        return diagonal
+        return null
+    }
+
+    /**
+     * Checks whether the device is a watch or a small phone
+     *
+     * @param context
+     * @return is the device is a telephone
+     */
+    fun isWatchOrSmallPhone(context: Context): Boolean {
+        val diagonal = getDiagonalInInch(context)
+        return diagonal <= Diagonal.SMALL_PHONE_OR_WATCH.max
     }
 
     /**
@@ -377,8 +365,8 @@ object Screen {
      * @return is the device is a telephone
      */
     fun isPhone(context: Context): Boolean {
-        val diagonal = Screen.getDiagonalInInch(context)
-        return diagonal >= 2 && diagonal < 7
+        val diagonal = getDiagonalInInch(context)
+        return diagonal >= Diagonal.PHONE_2.min && diagonal <= Diagonal.PHONE_6.max
     }
 
     /**
@@ -388,8 +376,8 @@ object Screen {
      * @return is the device is a tablet
      */
     fun isTablet(context: Context): Boolean {
-        val diagonal = Screen.getDiagonalInInch(context)
-        return diagonal >= 7
+        val diagonal = getDiagonalInInch(context)
+        return diagonal >= Diagonal.TABLET_7.min
     }
 
 }

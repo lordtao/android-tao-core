@@ -85,6 +85,14 @@ add to your module build.gradle
 
 Changelog
 ---------
+#### 1.4.2 -- Kotlin refactoring
+* Kotlin refactoring
+* fixed hashString for HashUtils
+
+#### 1.4.1 -- Added Demo
+* refactoring.
+* added Demo
+
 #### 1.4.0 -- refactoring
 * refactoring.
 * fields validator moved in the separate project.
