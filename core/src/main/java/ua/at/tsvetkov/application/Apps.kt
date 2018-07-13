@@ -67,7 +67,8 @@ class Apps {
         @JvmStatic
         fun printInstalledAppsPackageAndClass(context: Context) {
             val appListStrs = ArrayList<String>()
-            for (info in getInstalledAppsInfo(context)) {
+            val appsInfo = getInstalledAppsInfo(context)
+            for (info in appsInfo) {
                 appListStrs.add("${info.loadLabel(context.packageManager).padEnd(35)}${info.activityInfo.packageName.padEnd(45)}${info.activityInfo.name}")
             }
             Log.list(appListStrs, "Installed application")
