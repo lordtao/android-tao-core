@@ -255,7 +255,7 @@ class AppConfig {
             isBeingDebugged = android.os.Debug.isDebuggerConnected()
             if (!isDebuggable) {
                 android.util.Log.w("▪ $appName ▪", "➧ Log is prohibited because debug mode is disabled.")
-                Log.setDisabled(true)
+                Log.setDisabled()
             }
 
             isInitialized = true
