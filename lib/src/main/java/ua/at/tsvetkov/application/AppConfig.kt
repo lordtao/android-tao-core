@@ -81,6 +81,7 @@ class AppConfig {
          *
          * @return the app name without spaces.
          */
+        @JvmStatic
         var appName: String? = null
             private set
         /**
@@ -88,6 +89,7 @@ class AppConfig {
          *
          * @return Diagonal
          */
+        @JvmStatic
         var deviceDiagonal: Diagonal? = null
             private set
         /**
@@ -95,6 +97,7 @@ class AppConfig {
          *
          * @return inches
          */
+        @JvmStatic
         var diagonalInInch: Float = 0f
             private set
         /**
@@ -102,6 +105,7 @@ class AppConfig {
          *
          * @return is debuggable
          */
+        @JvmStatic
         var isDebuggable = true
             private set
         /**
@@ -109,6 +113,7 @@ class AppConfig {
          *
          * @return is being debugged
          */
+        @JvmStatic
         var isBeingDebugged = true
             private set
         /**
@@ -116,6 +121,7 @@ class AppConfig {
          *
          * @return is the app is absolutely new
          */
+        @JvmStatic
         var isFreshInstallation = false
             private set
         /**
@@ -123,6 +129,7 @@ class AppConfig {
          *
          * @return is new version of app is started
          */
+        @JvmStatic
         var isNewVersion = false
             private set
         /**
@@ -130,6 +137,7 @@ class AppConfig {
          *
          * @return Return is StrictMode is enabled.
          */
+        @JvmStatic
         var isStrictModeEnabled = false
             private set
         /**
@@ -137,6 +145,7 @@ class AppConfig {
          *
          * @return the app signature KeyHash
          */
+        @JvmStatic
         var applicationSignatureKeyHash: String? = null
             private set
         /**
@@ -144,6 +153,7 @@ class AppConfig {
          *
          * @return the app signature fingerprint
          */
+        @JvmStatic
         var signatureFingerprint: String? = null
             private set
         /**
@@ -151,6 +161,7 @@ class AppConfig {
          *
          * @return the app signature fingerprint
          */
+        @JvmStatic
         var signatureFingerprintColon: String? = null
             private set
         /**
@@ -158,6 +169,7 @@ class AppConfig {
          *
          * @return the package name
          */
+        @JvmStatic
         var packageName: String? = null
             private set
         /**
@@ -165,6 +177,7 @@ class AppConfig {
          *
          * @return the app version name
         </manifest> */
+        @JvmStatic
         var appVersionName: String? = null
             private set
         /**
@@ -172,6 +185,7 @@ class AppConfig {
          *
          * @return the app version code
         </manifest> */
+        @JvmStatic
         var appVersionCode = 0
             private set
         /**
@@ -181,6 +195,7 @@ class AppConfig {
          *
          * @return the android id
          */
+        @JvmStatic
         var androidId: String? = null
             private set
         /**
@@ -188,6 +203,7 @@ class AppConfig {
          *
          * @return is the device is a telephone
          */
+        @JvmStatic
         var isPhone: Boolean = false
             private set
         /**
@@ -195,6 +211,7 @@ class AppConfig {
          *
          * @return is the device is a tablet
          */
+        @JvmStatic
         var isTablet: Boolean = false
             private set
         /**
@@ -202,6 +219,7 @@ class AppConfig {
          *
          * @return true if initiated
          */
+        @JvmStatic
         val isInitializing: Boolean
             get() = if (isInitialized) {
                 true

@@ -104,6 +104,7 @@ class FileDownloader {
          * @return true if success
          */
         @JvmOverloads
+        @JvmStatic
         fun download(url: String, pathAndFileName: String, rewrite: Boolean = true): Boolean {
             var urlEnc: String? = null
             var conn: HttpURLConnection? = null

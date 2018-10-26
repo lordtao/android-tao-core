@@ -80,14 +80,15 @@ allprojects {
 ```
 add to your module build.gradle
 ```
-    compile 'ua.at.tsvetkov:taocore:1.4.2'
+    compile 'ua.at.tsvetkov:taocore:1.4.5'
 ```
 
 Changelog
 ---------
-#### 1.4.2 -- Kotlin refactoring
-* Kotlin refactoring
-* fixed hashString for HashUtils
+
+
+#### 1.4.5 -- Fixed Kotlin access to some methods
+* fixing
 
 #### 1.4.1 -- Added Demo
 * refactoring.

@@ -35,6 +35,7 @@ import android.content.pm.PackageManager
 import android.content.pm.ResolveInfo
 import android.util.Base64
 import ua.at.tsvetkov.util.Log
+import ua.at.tsvetkov.util.LongLog
 import java.security.MessageDigest
 import java.util.*
 
@@ -70,7 +71,7 @@ class Apps {
             for (info in getInstalledAppsInfo(context)) {
                 appListStrs.add("${info.loadLabel(context.packageManager).padEnd(35)}${info.activityInfo.packageName.padEnd(45)}${info.activityInfo.name}")
             }
-            Log.list(appListStrs, "Installed application")
+            LongLog.list(appListStrs, "Installed application")
         }
 
         /**
