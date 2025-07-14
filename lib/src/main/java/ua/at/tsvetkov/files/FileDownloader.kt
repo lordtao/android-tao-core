@@ -6,17 +6,13 @@
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/lgpl.html
  *
- *
  * Contributors:
  * Alexandr Tsvetkov - initial API and implementation
- *
  *
  * Project:
  * TAO Core
  *
- *
  * License agreement:
- *
  *
  * 1. This code is published AS IS. Author is not responsible for any damage that can be
  * caused by any application that uses this code.
@@ -29,7 +25,7 @@
  */
 package ua.at.tsvetkov.files
 
-import ua.at.tsvetkov.util.Log
+import ua.at.tsvetkov.util.logger.Log
 import java.io.*
 import java.net.HttpURLConnection
 import java.net.URL
@@ -50,8 +46,8 @@ class FileDownloader {
 
     companion object {
 
-        val TIMEOUT = 10000
-        val BUFFER = 8192
+        const val TIMEOUT = 10000
+        const val BUFFER = 8192
 
         /**
          * Returns the content length in bytes specified by the response header field content-length or -1 if this field is not set.
@@ -73,8 +69,7 @@ class FileDownloader {
             } catch (e: Exception) {
                 Log.e(e)
             } finally {
-                if (conn != null)
-                    conn.disconnect()
+                conn?.disconnect()
             }
             return length
         }
@@ -123,6 +118,8 @@ class FileDownloader {
                 return true
             }
 
+            var isSuccess = false
+
             try {
                 conn = URL(urlEnc).openConnection() as HttpURLConnection
                 conn.setRequestProperty("keep-alive", "false")
@@ -145,19 +142,18 @@ class FileDownloader {
                 output.flush()
             } catch (e: IOException) {
                 Log.w("Download error $url", e)
-                return false
             } finally {
-                if (conn != null)
-                    conn.disconnect()
+                conn?.disconnect()
                 try {
-                    output!!.close()
+                    output?.close()
+                    isSuccess = true
                 } catch (e: IOException) {
                     Log.e("Error closing file > $pathAndFileName", e)
-                    return false
                 }
-
             }
-            return true
+
+            return isSuccess
         }
     }
+
 }

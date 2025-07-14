@@ -31,21 +31,74 @@ package ua.at.tsvetkov.ui
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.pm.PackageManager
+import android.content.res.Configuration
 import android.graphics.Point
-import android.graphics.PointF
+import android.graphics.Rect
 import android.os.Build
+import android.telephony.TelephonyManager
 import android.util.DisplayMetrics
 import android.view.WindowManager
-import ua.at.tsvetkov.application.Diagonal
+import android.view.WindowMetrics
+import ua.at.tsvetkov.application.DeviceType
+import kotlin.math.sqrt
 
 /**
  * Return screen dimensions
  *
- * @author Alexandr Tsvetkov 2014
+ * @author Alexandr Tsvetkov 2014-2025
  */
 class Screen {
 
+    data class ScreenDpi(val xdpi: Float, val ydpi: Float)
+    data class ScreenBounds(val width: Float, val height: Float)
+
     companion object {
+
+        const val PHONE_MAX_DIAGONAL_FOR_DETERMINATION = 7.5f
+
+        lateinit var dpi: ScreenDpi
+            private set
+        lateinit var deviceType: DeviceType
+            private set
+        var diagonalInch: Double = 0.0
+            private set
+        var diagonalMm: Double = 0.0
+            private set
+        var diagonalPixels: Double = 0.0
+            private set
+
+        fun init(context: Context) {
+            dpi = getScreenDpi(context)
+            deviceType = getDeviceType(context)
+            diagonalInch = getDiagonalInInch(context)
+            diagonalMm = getDiagonalInMm(context)
+            diagonalPixels = getDiagonalInPixels(context)
+        }
+
+        fun getScreenDpi(context: Context): ScreenDpi {
+            val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) { // API Level 30 (Android 11) 
+                val dm = DisplayMetrics()
+                @Suppress("DEPRECATION")
+                context.display.getMetrics(dm)
+
+                val xdpi = if (dm.xdpi > 0) dm.xdpi else context.resources.configuration.densityDpi.toFloat()
+                val ydpi = if (dm.ydpi > 0) dm.ydpi else context.resources.configuration.densityDpi.toFloat()
+
+                return ScreenDpi(xdpi = xdpi, ydpi = ydpi)
+            } else { // API Level 28 (Android 9) and 29 (Android 10)
+                @Suppress("DEPRECATION")
+                val dm = DisplayMetrics()
+
+                @Suppress("DEPRECATION")
+                val display = windowManager.defaultDisplay
+                @Suppress("DEPRECATION")
+                display.getRealMetrics(dm) // getRealMetrics() для получения полных метрик, включая DPI
+                return ScreenDpi(xdpi = dm.xdpi, ydpi = dm.ydpi)
+            }
+        }
 
         /**
          * The exact physical pixels per inch of the screen in the X dimension.
@@ -55,11 +108,7 @@ class Screen {
          */
         @JvmStatic
         fun getXdpi(context: Context): Float {
-            val dm = DisplayMetrics()
-            val wm = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
-            val display = wm.defaultDisplay
-            display.getMetrics(dm)
-            return dm.xdpi
+            return dpi.xdpi
         }
 
         /**
@@ -70,11 +119,7 @@ class Screen {
          */
         @JvmStatic
         fun getYdpi(context: Context): Float {
-            val dm = DisplayMetrics()
-            val wm = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
-            val display = wm.defaultDisplay
-            display.getMetrics(dm)
-            return dm.ydpi
+            return dpi.ydpi
         }
 
         /**
@@ -85,7 +130,7 @@ class Screen {
          */
         @JvmStatic
         fun getWidth(context: Context): Int {
-            return getSizeInPixels(context).x
+            return getSizeInPixels(context).width.toInt()
         }
 
         /**
@@ -96,7 +141,7 @@ class Screen {
          */
         @JvmStatic
         fun getHeight(context: Context): Int {
-            return getSizeInPixels(context).y
+            return getSizeInPixels(context).height.toInt()
         }
 
         /**
@@ -107,17 +152,22 @@ class Screen {
          */
         @SuppressLint("NewApi")
         @JvmStatic
-        fun getSizeInPixels(context: Context): Point {
-            val size = Point()
-            val wm = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
-            val display = wm.defaultDisplay
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-                display.getSize(size)
-            } else {
-                size.x = display.width
-                size.y = display.height
+        fun getSizeInPixels(context: Context): ScreenBounds {
+            val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) { // API Level 30 (Android 11)
+                val windowMetrics: WindowMetrics = windowManager.currentWindowMetrics
+                val bounds: Rect = windowMetrics.bounds
+                return ScreenBounds(width = bounds.width().toFloat(), height = bounds.height().toFloat())
+            } else { // API Level 28 (Android 9) and 29 (Android 10)
+                @Suppress("DEPRECATION")
+                val display = windowManager.defaultDisplay
+                @Suppress("DEPRECATION")
+                val sizePoint = Point()
+                @Suppress("DEPRECATION")
+                display.getRealSize(sizePoint)
+                return ScreenBounds(width = sizePoint.x.toFloat(), height = sizePoint.y.toFloat())
             }
-            return size
         }
 
         /**
@@ -127,15 +177,46 @@ class Screen {
          * @return PointF with x and y dimensions as width and height in inch
          */
         @JvmStatic
-        fun getSizeInInch(context: Context): PointF {
-            val dm = DisplayMetrics()
-            val wm = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
-            val display = wm.defaultDisplay
-            display.getMetrics(dm)
-            val size = PointF()
-            size.x = dm.widthPixels / dm.xdpi
-            size.y = dm.heightPixels / dm.ydpi
-            return size
+        fun getSizeInInch(context: Context): ScreenBounds {
+            var width: Float
+            var height: Float
+            val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) { // API Level 30 (Android 11) и выше
+                val windowMetrics: WindowMetrics = windowManager.currentWindowMetrics
+                val bounds: Rect = windowMetrics.bounds
+
+                val dm = DisplayMetrics()
+                @Suppress("DEPRECATION")
+                context.display.getMetrics(dm)
+
+                val xdpi = if (dm.xdpi > 0) dm.xdpi else context.resources.configuration.densityDpi.toFloat()
+                val ydpi = if (dm.ydpi > 0) dm.ydpi else context.resources.configuration.densityDpi.toFloat()
+
+                width = bounds.width() / xdpi
+                height = bounds.height() / ydpi
+
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) { // API Level 29 (Android 10)
+                val dm = DisplayMetrics()
+                @Suppress("DEPRECATION")
+                windowManager.defaultDisplay.getRealMetrics(dm)
+
+                width = dm.widthPixels / dm.xdpi
+                height = dm.heightPixels / dm.ydpi
+
+            } else { // API Level 28 (Android 9)
+                @Suppress("DEPRECATION")
+                val dm = DisplayMetrics()
+
+                @Suppress("DEPRECATION")
+                val display = windowManager.defaultDisplay
+                @Suppress("DEPRECATION")
+                display.getRealMetrics(dm)
+
+                width = dm.widthPixels / dm.xdpi
+                height = dm.heightPixels / dm.ydpi
+            }
+            return ScreenBounds(width, height)
         }
 
         /**
@@ -145,11 +226,11 @@ class Screen {
          * @return PointF with x and y dimensions as width and height in mm
          */
         @JvmStatic
-        fun getSizeInMm(context: Context): PointF {
-            val size = getSizeInInch(context)
-            size.x = Converter.inchToMm(size.x)
-            size.y = Converter.inchToMm(size.y)
-            return size
+        fun getSizeInMm(context: Context): ScreenBounds {
+            val bounds = getSizeInInch(context)
+            val width = Converter.inchToMm(bounds.width)
+            val height = Converter.inchToMm(bounds.height)
+            return ScreenBounds(width, height)
         }
 
         /**
@@ -161,11 +242,11 @@ class Screen {
         @JvmStatic
         fun getBiggestSizeInPixels(context: Context): Int {
             val size = getSizeInPixels(context)
-            return if (size.x > size.y) {
-                size.x
+            return if (size.width > size.height) {
+                size.width
             } else {
-                size.y
-            }
+                size.height
+            }.toInt()
         }
 
         /**
@@ -177,10 +258,10 @@ class Screen {
         @JvmStatic
         fun getBiggestSizeInMm(context: Context): Float {
             val size = getSizeInMm(context)
-            return if (size.x > size.y) {
-                size.x
+            return if (size.width > size.height) {
+                size.width
             } else {
-                size.y
+                size.height
             }
         }
 
@@ -193,10 +274,10 @@ class Screen {
         @JvmStatic
         fun getBiggestSizeInInch(context: Context): Float {
             val size = getSizeInInch(context)
-            return if (size.x > size.y) {
-                size.x
+            return if (size.width > size.height) {
+                size.width
             } else {
-                size.y
+                size.height
             }
         }
 
@@ -329,7 +410,7 @@ class Screen {
         @JvmStatic
         fun getDiagonalInInch(context: Context): Double {
             val pf = getSizeInInch(context)
-            return Math.sqrt((pf.x * pf.x + pf.y * pf.y).toDouble())
+            return sqrt((pf.width * pf.width + pf.height * pf.height).toDouble())
         }
 
         /**
@@ -341,7 +422,7 @@ class Screen {
         @JvmStatic
         fun getDiagonalInMm(context: Context): Double {
             val pf = getSizeInMm(context)
-            return Math.sqrt((pf.x * pf.x + pf.y * pf.y).toDouble())
+            return sqrt((pf.width * pf.width + pf.height * pf.height).toDouble())
         }
 
         /**
@@ -353,60 +434,30 @@ class Screen {
         @JvmStatic
         fun getDiagonalInPixels(context: Context): Double {
             val pf = getSizeInPixels(context)
-            return Math.sqrt((pf.x * pf.x + pf.y * pf.y).toDouble())
+            return sqrt((pf.width * pf.width + pf.height * pf.height).toDouble())
         }
 
-        /**
-         * Return device Diagonal enum constant
-         *
-         * @param context
-         * @return Diagonal
-         */
-        @JvmStatic
-        fun getDiagonal(context: Context): Diagonal? {
-            val size = getDiagonalInInch(context)
-            for (diagonal in Diagonal.values()) {
-                if (diagonal.isThis(size)) {
-                    return diagonal
-                }
+        private fun getDeviceType(context: Context): DeviceType {
+            val uiMode = context.resources.configuration.uiMode and Configuration.UI_MODE_TYPE_MASK
+            if (uiMode == Configuration.UI_MODE_TYPE_WATCH ||
+                context.packageManager.hasSystemFeature(PackageManager.FEATURE_WATCH)
+            ) {
+                return DeviceType.WATCH
             }
-            return null
-        }
 
-        /**
-         * Checks whether the device is a watch or a small phone
-         *
-         * @param context
-         * @return is the device is a telephone
-         */
-        @JvmStatic
-        fun isWatchOrSmallPhone(context: Context): Boolean {
-            val diagonal = getDiagonalInInch(context)
-            return diagonal <= Diagonal.SMALL_PHONE_OR_WATCH.max
-        }
+            val telephonyManager = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
+            val hasTelephony = telephonyManager.phoneType != TelephonyManager.PHONE_TYPE_NONE
 
-        /**
-         * Checks whether the device is a telephone
-         *
-         * @param context
-         * @return is the device is a telephone
-         */
-        @JvmStatic
-        fun isPhone(context: Context): Boolean {
-            val diagonal = getDiagonalInInch(context)
-            return diagonal >= Diagonal.PHONE_2.min && diagonal <= Diagonal.PHONE_6.max
-        }
+            val screenSize = getSizeInInch(context)
+            val diagonalInches = sqrt(
+                (screenSize.width * screenSize.width) + (screenSize.height * screenSize.height)
+            )
 
-        /**
-         * Checks whether the device is a tablet
-         *
-         * @param context
-         * @return is the device is a tablet
-         */
-        @JvmStatic
-        fun isTablet(context: Context): Boolean {
-            val diagonal = getDiagonalInInch(context)
-            return diagonal >= Diagonal.TABLET_7.min
+            return when {
+                diagonalInches > PHONE_MAX_DIAGONAL_FOR_DETERMINATION -> DeviceType.TABLET
+                hasTelephony -> DeviceType.PHONE
+                else -> DeviceType.UNKNOWN
+            }
         }
 
     }

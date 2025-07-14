@@ -41,59 +41,72 @@ class Converter {
         /**
          * One inch in mm
          */
-        val INCH_IN_MM = 25.4f
+        const val INCH_IN_MM = 25.4f
+
         /**
          * One mm in inches
          */
-        val MM_IN_INCH = 1f / INCH_IN_MM
+        const val MM_IN_INCH = 1f / INCH_IN_MM
+
         /**
          * One inch in cm
          */
-        val INCH_IN_CM = 2.54f
+        const val INCH_IN_CM = 2.54f
+
         /**
          * One cm in inch
          */
-        val CM_IN_INCH = 1f / INCH_IN_CM
+        const val CM_IN_INCH = 1f / INCH_IN_CM
+
         /**
          * One inch in twip
          */
-        val INCH_IN_TWIP = 1440f
+        const val INCH_IN_TWIP = 1440f
+
         /**
          * One twip in inch
          */
-        val TWIP_IN_INCH = 1f / INCH_IN_TWIP
+        const val TWIP_IN_INCH = 1f / INCH_IN_TWIP
+
         /**
          * One mm in twip
          */
-        val MM_IN_TWIP = 56.6925562674f
+        const val MM_IN_TWIP = 56.6925562674f
+
         /**
          * One twip in mm
          */
-        val TWIP_IN_MM = 1f / MM_IN_TWIP
+        const val TWIP_IN_MM = 1f / MM_IN_TWIP
+
         /**
          * One pt in twips
          */
-        val PT_IN_TWIP = 20f
+        const val PT_IN_TWIP = 20f
+
         /**
          * One twip in pts
          */
-        val TWIP_IN_PT = 1 / PT_IN_TWIP
+        const val TWIP_IN_PT = 1 / PT_IN_TWIP
+
         /**
          * One inch in pt
          */
-        val INCH_IN_PT = 72f
+        const val INCH_IN_PT = 72f
+
         /**
          * One pt in inch
          */
-        val PT_IN_INCH = 1f / INCH_IN_PT
+        const val PT_IN_INCH = 1f / INCH_IN_PT
+
         /**
          * One mm in pt
          */
-        val MM_IN_PT = INCH_IN_MM / INCH_IN_PT
+        const val MM_IN_PT = INCH_IN_MM / INCH_IN_PT
+
         /**
          * One pt in mm
          */
-        val PT_IN_MM = 1f / MM_IN_PT
+        const val PT_IN_MM = 1f / MM_IN_PT
 
         @JvmStatic
         fun inchToMm(inch: Float): Float {
@@ -170,4 +183,5 @@ class Converter {
             return dp * (dpi / 160)
         }
     }
+
 }

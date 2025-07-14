@@ -30,7 +30,7 @@
 package ua.at.tsvetkov.files
 
 import android.content.Context
-import ua.at.tsvetkov.util.Log
+import ua.at.tsvetkov.util.logger.Log
 import java.io.File
 
 /**
@@ -55,7 +55,7 @@ class FileNameUtil {
                 Log.w("The path to file is null")
                 return fileName
             }
-            if (fullPath.length == 0) {
+            if (fullPath.isEmpty()) {
                 Log.w("The path to file is empty")
                 return fileName
             }
@@ -81,7 +81,7 @@ class FileNameUtil {
         @JvmStatic
         fun getFileNameWithoutExtension(fullPath: String): String {
             var fileName = getFileName(fullPath)
-            if (fileName.length == 0) {
+            if (fileName.isEmpty()) {
                 Log.w("The file name is empty")
                 return ""
             }
@@ -105,7 +105,7 @@ class FileNameUtil {
                 Log.w("The path to file is null")
                 return fileName
             }
-            if (fullPath.length == 0) {
+            if (fullPath.isEmpty()) {
                 Log.w("The path to file is empty")
                 return fileName
             }
@@ -129,7 +129,7 @@ class FileNameUtil {
                 Log.w("The path to file is null")
                 return fileName
             }
-            if (fullPath.length == 0) {
+            if (fullPath.isEmpty()) {
                 Log.w("The path to file is empty")
                 return fileName
             }
@@ -162,9 +162,9 @@ class FileNameUtil {
          * @return full path to file
          */
         @JvmStatic
-        fun getFileName(context: Context, subdir: String, fileName: String): String {
+        fun getFileName(context: Context, subdir: String?, fileName: String): String {
             val dir: String
-            if (subdir != null && subdir.length > 0) {
+            if (subdir != null && subdir.isNotEmpty()) {
                 dir = context.filesDir.toString() + subdir
             } else {
                 dir = context.filesDir.absolutePath

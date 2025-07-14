@@ -6,17 +6,13 @@
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/lgpl.html
  *
- *
  * Contributors:
  * Alexandr Tsvetkov - initial API and implementation
- *
  *
  * Project:
  * TAO Core
  *
- *
  * License agreement:
- *
  *
  * 1. This code is published AS IS. Author is not responsible for any damage that can be
  * caused by any application that uses this code.
@@ -30,7 +26,7 @@
 package ua.at.tsvetkov.files
 
 import android.content.Context
-import ua.at.tsvetkov.util.Log
+import ua.at.tsvetkov.util.logger.Log
 import java.io.*
 
 /**
@@ -42,7 +38,7 @@ class FileOperations {
 
     companion object {
 
-        private val BUFFER_SIZE = 8192
+        private const val BUFFER_SIZE = 8192
 
         /**
          * Copy file from source to destination
@@ -53,16 +49,13 @@ class FileOperations {
          */
         @JvmStatic
         fun copy(srcFileName: String, dstFileName: String): Boolean {
-            if (srcFileName == null || srcFileName.length == 0) {
+            if (srcFileName.isEmpty()) {
                 Log.e("Source file name is empty.")
-                return false
-            }
-            if (dstFileName == null) {
-                Log.e("Destination file name is empty.")
                 return false
             }
             var inp: InputStream? = null
             var out: OutputStream? = null
+            var isSuccess = false
             try {
                 inp = BufferedInputStream(FileInputStream(srcFileName))
                 out = BufferedOutputStream(FileOutputStream(dstFileName))
@@ -76,27 +69,21 @@ class FileOperations {
                 out.flush()
             } catch (e: IOException) {
                 Log.e("Can't copy file $srcFileName to $dstFileName", e)
-                return false
             } finally {
                 try {
-                    if (inp != null)
-                        inp.close()
+                    inp?.close()
+                    try {
+                        out?.close()
+                        isSuccess = true
+                        Log.v("Success copied file $srcFileName to $dstFileName")
+                    } catch (e: IOException) {
+                        Log.e(e)
+                    }
                 } catch (e: IOException) {
                     Log.e(e)
-                    return false
                 }
-
-                try {
-                    if (out != null)
-                        out.close()
-                } catch (e: IOException) {
-                    Log.e(e)
-                    return false
-                }
-
             }
-            Log.v("Success copied file $srcFileName to $dstFileName")
-            return true
+            return isSuccess
         }
 
         /**
@@ -108,12 +95,8 @@ class FileOperations {
          */
         @JvmStatic
         fun copy(srcFileName: String, dstFile: File): Boolean {
-            if (srcFileName == null || srcFileName.length == 0) {
+            if (srcFileName.isEmpty()) {
                 Log.e("Source file name is empty.")
-                return false
-            }
-            if (dstFile == null) {
-                Log.e("Destination file is null.")
                 return false
             }
             return copy(srcFileName, dstFile.absoluteFile)
@@ -128,12 +111,8 @@ class FileOperations {
          */
         @JvmStatic
         fun copy(srcFile: File, dstFileName: String): Boolean {
-            if (srcFile == null || !srcFile.exists()) {
+            if (!srcFile.exists()) {
                 Log.e("Source file is null or not exist.")
-                return false
-            }
-            if (dstFileName == null) {
-                Log.e("Destination file name is empty.")
                 return false
             }
             return copy(srcFile.absoluteFile, dstFileName)
@@ -148,12 +127,8 @@ class FileOperations {
          */
         @JvmStatic
         fun copy(srcFile: File, dstFile: File): Boolean {
-            if (srcFile == null || !srcFile.exists()) {
+            if (!srcFile.exists()) {
                 Log.e("Source file is null or not exist.")
-                return false
-            }
-            if (dstFile == null) {
-                Log.e("Destination file is null.")
                 return false
             }
             return copy(srcFile.absoluteFile, dstFile.absoluteFile)
@@ -171,6 +146,7 @@ class FileOperations {
         fun copyAsset(context: Context, assetsFileName: String, dstFileName: String): Boolean {
             var inp: BufferedInputStream? = null
             var out: BufferedOutputStream? = null
+            var isSuccess = false
             try {
                 inp = BufferedInputStream(context.assets.open(assetsFileName))
                 out = BufferedOutputStream(FileOutputStream(dstFileName))
@@ -187,24 +163,20 @@ class FileOperations {
                 return false
             } finally {
                 try {
-                    if (inp != null)
-                        inp.close()
+                    inp?.close()
+                    try {
+                        out?.close()
+                        isSuccess = true
+                        Log.v("Success copy file $assetsFileName to $dstFileName")
+                    } catch (e: IOException) {
+                        Log.e(e)
+                    }
                 } catch (e: IOException) {
                     Log.e(e)
-                    return false
-                }
-
-                try {
-                    if (out != null)
-                        out.close()
-                } catch (e: IOException) {
-                    Log.e(e)
-                    return false
                 }
 
             }
-            Log.v("Success copy file $assetsFileName to $dstFileName")
-            return true
+            return isSuccess
         }
 
         /**
@@ -217,12 +189,8 @@ class FileOperations {
          */
         @JvmStatic
         fun copyAsset(context: Context, assetsFileName: String, dstFile: File): Boolean {
-            if (assetsFileName == null || assetsFileName.length == 0) {
+            if (assetsFileName.isEmpty()) {
                 Log.e("Assets file name is empty.")
-                return false
-            }
-            if (dstFile == null) {
-                Log.e("Destination file is null.")
                 return false
             }
             return copyAsset(context, assetsFileName, dstFile.absolutePath)
@@ -315,14 +283,14 @@ class FileOperations {
          */
         @JvmStatic
         fun clearCashedApplicationData(context: Context) {
-            val cache = context.cacheDir
-            val appDir = File(cache.parent)
-            if (appDir.exists()) {
-                val children = appDir.list()
-                for (s in children) {
-                    val f = File(appDir, s)
-                    if (deleteDir(f)) {
-                        Log.i(String.format("**************** DELETED -> (%s) *******************", f.absolutePath))
+            context.cacheDir.parent?.let {
+                val appDir = File(it)
+                if (appDir.exists()) {
+                    appDir.list()?.forEach { child ->
+                        val file = File(appDir, child)
+                        if (deleteDir(file)) {
+                            Log.i(String.format("**************** DELETED -> (%s) *******************", file.absolutePath))
+                        }
                     }
                 }
             }
@@ -335,16 +303,10 @@ class FileOperations {
          * @return tue if success
          */
         @JvmStatic
-        fun deleteDir(dir: File?): Boolean {
-            if (dir == null) {
-                Log.e("Directory eq null - can't delete.")
-                return false
-            }
+        fun deleteDir(dir: File): Boolean {
             if (dir.isDirectory) {
-                val children = dir.list()
-                for (element in children) {
-                    val success = deleteDir(File(dir, element))
-                    if (!success) {
+                dir.list()?.forEach { child ->
+                    if (!deleteDir(File(dir, child))) {
                         return false
                     }
                 }

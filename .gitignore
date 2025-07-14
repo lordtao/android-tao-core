@@ -31,3 +31,6 @@ gen
 bin
 project.properties
 out
+
+/aar
+/aar/*.*

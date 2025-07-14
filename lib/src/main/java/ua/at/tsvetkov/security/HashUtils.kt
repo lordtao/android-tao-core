@@ -3,10 +3,11 @@
  */
 package ua.at.tsvetkov.security
 
-import ua.at.tsvetkov.util.Log
+import ua.at.tsvetkov.util.logger.Log
 import java.io.*
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
+
 
 /**
  * @author Alexandr Tsvetkov 2015
@@ -14,6 +15,9 @@ import java.security.NoSuchAlgorithmException
 class HashUtils {
 
     companion object {
+
+        private const val HEX_CHARS = "0123456789ABCDEF"
+        private const val MD_5 = "MD5"
 
         /**
          * Calculate and returns the final hash value for an InputStream data
@@ -23,7 +27,7 @@ class HashUtils {
          * @return the array of bytes for the resulting hash value.
          */
         @JvmStatic
-        fun getHash(inp: InputStream, algorithm: String = "MD5"): ByteArray {
+        fun getHash(inp: InputStream, algorithm: String = MD_5): ByteArray {
             try {
                 val digester = MessageDigest.getInstance(algorithm)
                 val bytes = ByteArray(8192)
@@ -49,7 +53,7 @@ class HashUtils {
          * @return the array of bytes for the resulting hash value.
          */
         @JvmStatic
-        fun getHash(fileName: String, algorithm: String = "MD5"): ByteArray {
+        fun getHash(fileName: String, algorithm: String = MD_5): ByteArray {
             try {
                 val inp = FileInputStream(fileName)
                 return getHash(inp, algorithm)
@@ -69,7 +73,7 @@ class HashUtils {
          * @return the array of bytes for the resulting hash value.
          */
         @JvmStatic
-        fun getHash(file: File, algorithm: String = "MD5"): ByteArray {
+        fun getHash(file: File, algorithm: String = MD_5): ByteArray {
             try {
                 val inp = FileInputStream(file)
                 return getHash(inp, algorithm)
@@ -90,7 +94,7 @@ class HashUtils {
          * @return the array of bytes for the resulting hash value.
          */
         @JvmStatic
-        fun getHash(fd: FileDescriptor, algorithm: String = "MD5"): ByteArray {
+        fun getHash(fd: FileDescriptor, algorithm: String = MD_5): ByteArray {
             val inp = FileInputStream(fd)
             return getHash(inp, algorithm)
 
@@ -104,7 +108,7 @@ class HashUtils {
          * @return the array of bytes for the resulting hash value.
          */
         @JvmStatic
-        fun getHash(data: ByteArray, algorithm: String = "MD5"): ByteArray {
+        fun getHash(data: ByteArray, algorithm: String = MD_5): ByteArray {
             val inp = data.inputStream()
             return getHash(inp, algorithm)
         }
@@ -118,7 +122,7 @@ class HashUtils {
          * @return hash String
          */
         @JvmStatic
-        fun getHashString(data: ByteArray, algorithm: String = "MD5"): String {
+        fun getHashString(data: ByteArray, algorithm: String = MD_5): String {
             val digest = getHash(data, algorithm)
             return hexString(digest)
         }
@@ -130,7 +134,7 @@ class HashUtils {
          * @return hash String
          */
         @JvmStatic
-        fun getHashString(fileName: String, algorithm: String = "MD5"): String {
+        fun getHashString(fileName: String, algorithm: String = MD_5): String {
             val digest = getHash(fileName, algorithm)
             return hexString(digest)
         }
@@ -142,7 +146,7 @@ class HashUtils {
          * @return hash String
          */
         @JvmStatic
-        fun getHashString(inp: InputStream, algorithm: String = "MD5"): String {
+        fun getHashString(inp: InputStream, algorithm: String = MD_5): String {
             val digest = getHash(inp, algorithm)
             return hexString(digest)
         }
@@ -154,7 +158,7 @@ class HashUtils {
          * @return hash String
          */
         @JvmStatic
-        fun getHashString(file: File, algorithm: String = "MD5"): String {
+        fun getHashString(file: File, algorithm: String = MD_5): String {
             val digest = getHash(file, algorithm)
             return hexString(digest)
         }
@@ -167,7 +171,6 @@ class HashUtils {
          */
         @JvmStatic
         private fun hexString(bytes: ByteArray): String {
-            val HEX_CHARS = "0123456789ABCDEF"
             val sb = StringBuilder(bytes.size * 2)
             bytes.forEach {
                 val i = it.toInt()
@@ -177,4 +180,5 @@ class HashUtils {
             return sb.toString()
         }
     }
+
 }

@@ -1,14 +1,17 @@
 android-tao-core
 ================
 
-Android App Configurator, Screen dimensions calculator, Units measures converter (mm - cm - inch - pix - pt - twip).
+App utility: App Info (Fingerprint, SignatureKeyHash, etc.), Screen dimensions, Units converter (mm/cm/inch/pix/pt/twip), MD5, File utils.
 
 Download from Bintray: [ ![Download](https://api.bintray.com/packages/lordtao/maven/android-tao-core/images/download.svg) ](https://bintray.com/lordtao/maven/android-tao-core/_latestVersion)
+
+Application utils
+-----------------
 
 ### AppConfig
 Easy access to the basic information about your device and the application. Shows in the log the detailed information.
 
-```java
+```
 AppConfig.init(this);
 AppConfig.printInfo();
 ```
@@ -16,25 +19,25 @@ AppConfig.printInfo();
 ![Image of App info example](log_app_info.png)
 
 Easy work with default Shared preferences:
-```java
+```
 AppConfig.putSetting(key, isGood);
 ...
 AppConfig.getBoolean(key, true);
 ```
 
+### Apps
+Returns information about applications installed on the device (Fingerprint, SignatureKeyHash, etc.)
+
 ### Md5:
 Calculate Md5 from InputStream, files. Generate a hash String for different data sources.
-
-### Apps
-Return installed applications information (Fingerprint, SignatureKeyHash, etc.)
 
 UI utils
 --------
 
-### Screen:
+### Screen
 Static methods for different screen parameters
 
-### Converter:
+### Converter
 Units measures converter
 
 Files utils
@@ -57,18 +60,6 @@ Gradle dependency for your Android app:
 
 add to general build.gradle
 ```
-buildscript {
-    repositories {
-        jcenter()
-        maven {
-            url  "http://dl.bintray.com/lordtao/maven"
-        }
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:2.0.0-alpha8'
-    }
-}
-
 allprojects {
     repositories {
         jcenter()
@@ -80,12 +71,16 @@ allprojects {
 ```
 add to your module build.gradle
 ```
-    compile 'ua.at.tsvetkov:taocore:1.4.5'
+    compile 'ua.at.tsvetkov:taocore:1.5.0'
 ```
 
 Changelog
 ---------
 
+#### 1.5.0 -- Refactoring
+* Gradle version update
+* Kotlin version update
+* fixing
 
 #### 1.4.5 -- Fixed Kotlin access to some methods
 * fixing
