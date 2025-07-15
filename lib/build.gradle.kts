@@ -59,7 +59,11 @@ fun TaskContainer.registerCopyAarTask(variant: String) {
         from(aarFile)
         outputs.upToDateWhen { false }
         into("../aar")
-        rename { "taocore-$variant.aar" }
+        if(variant == "release") {
+            rename { "taocore.aar" }
+        } else {
+            rename { "taocore-$variant.aar" }
+        }
         doLast {
             val versionFile = file("../aar/README.txt")
             versionFile.writeText("Library: taocore\nVersion: $versionName\nCreated: ${Date()}")
@@ -103,7 +107,7 @@ kotlin {
 
 dependencies {
     debugImplementation(mapOf("name" to "taolog-debug", "ext" to "aar"))
-    releaseImplementation(mapOf("name" to "taolog-release", "ext" to "aar"))
+    releaseImplementation(mapOf("name" to "taolog", "ext" to "aar"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.work.runtime.ktx)
     implementation(libs.androidx.annotation)
