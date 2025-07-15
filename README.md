@@ -77,6 +77,10 @@ add to your module build.gradle
 Changelog
 ---------
 
+#### 1.6.119 -- Refactoring
+* fixing
+* added extensions and bindings classes 
+
 #### 1.5.0 -- Refactoring
 * Gradle version update
 * Kotlin version update
