@@ -19,8 +19,8 @@ plugins {
 //extra["gitUrl"] = "https://github.com/${extra["gitUser"]}/${extra["gitProject"]}.git"
 
 val skipCommitsCount = 0
-val versionMajor = 2
-val versionMinor = 2
+val versionMajor = 1
+val versionMinor = 6
 val versionPatch = providers
     .exec {
         commandLine("git", "rev-list", "--count", "HEAD")
