@@ -3,7 +3,7 @@ android-tao-core
 
 App utility: App Info (Fingerprint, SignatureKeyHash, etc.), Screen dimensions, Units converter (mm/cm/inch/pix/pt/twip), MD5, File utils.
 
-Download from Bintray: [ ![Download](https://api.bintray.com/packages/lordtao/maven/android-tao-core/images/download.svg) ](https://bintray.com/lordtao/maven/android-tao-core/_latestVersion)
+[Download the latest release](https://github.com/lordtao/android-tao-core/releases/tag/v1.6.119)
 
 Application utils
 -----------------
@@ -76,6 +76,10 @@ add to your module build.gradle
 
 Changelog
 ---------
+
+#### 1.6.119 -- Refactoring
+* fixing
+* added extensions and bindings classes 
 
 #### 1.5.0 -- Refactoring
 * Gradle version update
