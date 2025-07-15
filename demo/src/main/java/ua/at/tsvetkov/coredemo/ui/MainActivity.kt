@@ -8,6 +8,7 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import ua.at.tsvetkov.coredemo.R
 import ua.at.tsvetkov.coredemo.databinding.ActivityMainBinding
+import ua.at.tsvetkov.ui.Screen
 
 class MainActivity : AppCompatActivity() {
 
@@ -21,6 +22,8 @@ class MainActivity : AppCompatActivity() {
 
         setSupportActionBar(binding.appBarMain.toolbar)
         setupDrawer()
+
+        Screen.init(this)
     }
 
     private fun setupDrawer() {

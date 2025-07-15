@@ -53,11 +53,11 @@ import java.text.DecimalFormat
 object AppConfig {
 
     const val APP_VERSION_NAME = "APP_VERSION_NAME"
-    const val APP_VERSION_CODE = "APP_VERSION_CODE"
+    const val APP_VERSION_CODE = "APP_VERSION_CODE_NEW"
     const val SAVE = true
     const val NOT_SAVE = false
 
-    private const val LINE_DOUBLE =
+    const val LINE_DOUBLE =
         "=============================================================================================="
     private const val DEFAULT_SETTINGS_STRING = "|                             Default Shared Preferences Data"
     private const val TRIAL_IS_EXPIRED = "Sorry, the trial version has expired "
@@ -78,23 +78,41 @@ object AppConfig {
     var appName: String = ""
         private set
 
-    /**
-     * Return device Diagonal enum constant
-     *
-     * @return Diagonal
-     */
-    @JvmStatic
-    var deviceDeviceType: DeviceType? = null
-        private set
-
-    /**
-     * Return device diagonal in inches
-     *
-     * @return inches
-     */
-    @JvmStatic
-    var diagonalInInch: Double = 0.0
-        private set
+//    /**
+//     * Return device Diagonal enum constant
+//     *
+//     * @return Diagonal
+//     */
+//    @JvmStatic
+//    var deviceDeviceType: DeviceType = DeviceType.UNKNOWN
+//        private set
+//
+//    /**
+//     * Return device diagonal in inches
+//     *
+//     * @return inches
+//     */
+//    @JvmStatic
+//    var diagonalInInch: Double = 0.0
+//        private set
+//
+//    /**
+//     * Checks whether the device is a telephone
+//     *
+//     * @return is the device is a telephone
+//     */
+//    @JvmStatic
+//    var isPhone: Boolean = false
+//        private set
+//
+//    /**
+//     * Checks whether the device is a tablet
+//     *
+//     * @return is the device is a tablet
+//     */
+//    @JvmStatic
+//    var isTablet: Boolean = false
+//        private set
 
     /**
      * Whether the app is debuggable or not
@@ -198,24 +216,6 @@ object AppConfig {
         private set
 
     /**
-     * Checks whether the device is a telephone
-     *
-     * @return is the device is a telephone
-     */
-    @JvmStatic
-    var isPhone: Boolean = false
-        private set
-
-    /**
-     * Checks whether the device is a tablet
-     *
-     * @return is the device is a tablet
-     */
-    @JvmStatic
-    var isTablet: Boolean = false
-        private set
-
-    /**
      * Checking the initializing of this class and print error stack trace otherwise.
      *
      * @return true if initiated
@@ -270,13 +270,6 @@ object AppConfig {
                 isNewVersion = true
             }
 
-            Screen.init(application)
-
-            deviceDeviceType = Screen.deviceType
-            diagonalInInch = Screen.diagonalInch
-            isPhone = Screen.deviceType == DeviceType.PHONE
-            isTablet = Screen.deviceType == DeviceType.TABLET
-
             applicationSignatureKeyHash = Apps.getApplicationSignatureKeyHash(application, packageName)
             signatureFingerprint = Apps.getSignatureFingerprint(application, packageName, ' ')
             signatureFingerprintColon = Apps.getSignatureFingerprint(application, packageName, ':')
@@ -309,10 +302,6 @@ object AppConfig {
         max = if (max < 31) 31 else max
         val formatPref = "| %-${max}s%s"
 
-        val df = DecimalFormat("##.##")
-        df.roundingMode = RoundingMode.DOWN
-        val realDiagonal = df.format(diagonalInInch)
-
         var infoString = " \n$LINE_DOUBLE\n" +
                 "| Application name               $appName".padEnd(MAX_LENGTH, ' ').plus("|\n") +
                 "| Android  device ID             $androidId".padEnd(MAX_LENGTH, ' ').plus("|\n") +
@@ -321,8 +310,6 @@ object AppConfig {
                 "| Signature Fingerprint SHA-1    $signatureFingerprintColon".padEnd(MAX_LENGTH, ' ').plus("|\n") +
                 "| Signature Fingerprint SHA-1    $signatureFingerprint".padEnd(MAX_LENGTH, ' ').plus("|\n") +
                 "| Signature Key Hash             $applicationSignatureKeyHash".dropLast(1).padEnd(MAX_LENGTH, ' ')
-                    .plus("|\n") +
-                "| Diagonal                       $deviceDeviceType - $realDiagonal\"".padEnd(MAX_LENGTH, ' ')
                     .plus("|\n") +
                 "| New app version                $isNewVersion".padEnd(MAX_LENGTH, ' ').plus("|\n") +
                 "| Fresh installation             $isFreshInstallation".padEnd(MAX_LENGTH, ' ').plus("|\n") +

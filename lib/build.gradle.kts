@@ -111,8 +111,11 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.work.runtime.ktx)
     implementation(libs.androidx.annotation)
+    implementation(libs.androidx.databinding.runtime)
     implementation(libs.constraintlayout)
     implementation(libs.cardview)
+    implementation(libs.navigation.fragment)
+    implementation(libs.navigation.ui)
 }
 
 afterEvaluate {
