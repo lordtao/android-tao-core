@@ -30,6 +30,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.pm.ResolveInfo
 import android.content.pm.Signature
+import android.os.Build
 import android.util.Base64
 import ua.at.tsvetkov.util.logger.Log
 import ua.at.tsvetkov.util.logger.LogLong
@@ -139,27 +140,37 @@ class Apps {
 
         fun getSignatures(context: Context, packageName: String, algorithm: String = SHA_1): List<Signature>? {
             try {
-                val packageInfo = context.packageManager.getPackageInfo(
-                    packageName,
-                    PackageManager.GET_SIGNING_CERTIFICATES
-                )
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    val packageInfo = context.packageManager.getPackageInfo(
+                        packageName,
+                        PackageManager.GET_SIGNING_CERTIFICATES
+                    )
 
-                val signingInfo = packageInfo.signingInfo ?: run {
-                    Log.e("SigningInfo is null for package: $packageName")
-                    return null
-                }
+                    val signingInfo = packageInfo.signingInfo ?: run {
+                        Log.e("SigningInfo is null for package: $packageName")
+                        return null
+                    }
 
-                val signatures: Array<Signature> = if (signingInfo.hasMultipleSigners()) {
-                    signingInfo.apkContentsSigners
+                    val signatures: Array<Signature> = if (signingInfo.hasMultipleSigners()) {
+                        signingInfo.apkContentsSigners
+                    } else {
+                        signingInfo.signingCertificateHistory
+                    }
+
+                    if (signatures.isEmpty()) {
+                        Log.e("No signatures found for package: $packageName")
+                    }
+
+                    return signatures.toList()
                 } else {
-                    signingInfo.signingCertificateHistory
+                    @Suppress("DEPRECATION")
+                    val packageInfo = context.packageManager.getPackageInfo(
+                        packageName,
+                        PackageManager.GET_SIGNATURES
+                    )
+                    @Suppress("DEPRECATION")
+                    return packageInfo.signatures?.toList() ?: emptyList()
                 }
-
-                if (signatures.isEmpty()) {
-                    Log.e("No signatures found for package: $packageName")
-                }
-
-                return signatures.toList()
             } catch (e: PackageManager.NameNotFoundException) {
                 Log.e("Package not found: $packageName", e)
             } catch (e: NoSuchAlgorithmException) {

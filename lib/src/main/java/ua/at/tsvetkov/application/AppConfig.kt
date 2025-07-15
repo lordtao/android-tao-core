@@ -34,6 +34,7 @@ import android.content.SharedPreferences.Editor
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.content.pm.PackageManager.NameNotFoundException
+import android.os.Build
 import android.provider.Settings
 import android.widget.Toast
 import ua.at.tsvetkov.ui.Screen
@@ -238,12 +239,25 @@ object AppConfig {
     fun init(application: Application) {
         packageName = application.applicationInfo.packageName
         try {
-            val appData = application.packageManager.getPackageInfo(
-                application.packageName,
-                PackageManager.GET_SIGNING_CERTIFICATES
-            )
+            val appData = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                application.packageManager.getPackageInfo(
+                    application.packageName,
+                    PackageManager.GET_SIGNING_CERTIFICATES
+                )
+            } else {
+                @Suppress("DEPRECATION")
+                application.packageManager.getPackageInfo(
+                    application.packageName,
+                    PackageManager.GET_SIGNATURES
+                )
+            }
             appVersionName = appData.versionName ?: "Unknown"
-            appVersionCode = appData.longVersionCode
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                appVersionCode = appData.longVersionCode
+            } else {
+                @Suppress("DEPRECATION")
+                appVersionCode = appData.versionCode.toLong()
+            }
             appData.applicationInfo?.labelRes?.let {
                 appName = application.getString(it)
             }
