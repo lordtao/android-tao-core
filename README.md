@@ -1,9 +1,9 @@
-android-tao-core
+taocore
 ================
 
 App utility: App Info (Fingerprint, SignatureKeyHash, etc.), Screen dimensions, Units converter (mm/cm/inch/pix/pt/twip), MD5, File utils.
 
-[Download the latest release](https://github.com/lordtao/android-tao-core/releases/tag/v1.6.119)
+[Download the latest release](https://github.com/lordtao/android-tao-core/releases)
 
 Application utils
 -----------------
