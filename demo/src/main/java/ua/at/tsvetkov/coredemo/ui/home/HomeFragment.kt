@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import ua.at.tsvetkov.coredemo.R
+import ua.at.tsvetkov.ui.Screen
 
 class HomeFragment : androidx.fragment.app.Fragment() {
 
@@ -26,6 +27,8 @@ class HomeFragment : androidx.fragment.app.Fragment() {
         homeViewModel.text.observe(viewLifecycleOwner, Observer {
             textView.text = it
         })
+
+        val c =Screen.getXdpi()
         return root
     }
 }

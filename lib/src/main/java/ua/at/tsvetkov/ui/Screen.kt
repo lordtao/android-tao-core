@@ -45,6 +45,7 @@ import ua.at.tsvetkov.application.DeviceType
 import ua.at.tsvetkov.util.logger.Log
 import java.math.RoundingMode
 import java.text.DecimalFormat
+import kotlin.isInitialized
 import kotlin.math.pow
 import kotlin.math.sqrt
 
@@ -79,9 +80,13 @@ class Screen {
         var screenBoundsPixels: ScreenBounds = ScreenBounds(0f, 0f)
             private set
 
-        var isInit = ::dpi.isInitialized && ::deviceType.isInitialized
+        var isInit = false
             private set
 
+        /**
+         * Must be initialized before use Screen class.
+         * To use a Screen method from a fragment, call this initialization from the activity's method onCreate before the fragment creation!
+         */
         fun init(activity: Activity) {
 
             prepareDpi(activity)
@@ -97,6 +102,9 @@ class Screen {
             prepareDeviceType(activity)
 
             printScreenInfo()
+
+            isInit = true
+
         }
 
         private fun printScreenInfo() {
@@ -463,7 +471,8 @@ class Screen {
 
         private fun checkInitialization() {
             if (!isInit) {
-                throw IllegalStateException("You need call Screen.init(activity) first!")
+                throw IllegalStateException("Call Screen.init(activity) before use.\n" +
+                        "To use a Screen method from a fragment, call this initialization from the activity's method onCreate before the fragment creation.")
             }
         }
 
