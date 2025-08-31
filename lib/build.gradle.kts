@@ -3,20 +3,9 @@ import java.util.Date
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    `maven-publish`
 }
-
-//// Версионирование библиотеки
-//extra["versionMajor"] = 1
-//extra["versionMinor"] = 5
-//extra["versionPatch"] = 0
-//version = "${extra["versionMajor"]}.${extra["versionMinor"]}.${extra["versionPatch"]}"
-//group = "ua.at.tsvetkov"
-//
-//// URL-ы для публикации, если нужны:
-//extra["gitUser"] = "lordtao"
-//extra["gitProject"] = "android-tao-core"
-//extra["siteUrl"] = "https://github.com/${extra["gitUser"]}/${extra["gitProject"]}"
-//extra["gitUrl"] = "https://github.com/${extra["gitUser"]}/${extra["gitProject"]}.git"
+val libName = "taocore"
 
 val skipCommitsCount = 0
 val versionMajor = 1
@@ -31,42 +20,41 @@ val versionPatch = providers
 
 val versionName = "${versionMajor}.${versionMinor}.${versionPatch - skipCommitsCount}"
 
+
 fun TaskContainer.registerCopyAarTask(variant: String) {
     val capVariant = variant.replaceFirstChar { it.uppercaseChar() }
     register<Delete>("deleteOld${capVariant}Aar") {
         group = "aar"
         description = "Удаляет ранее собранные AAR в ../aar для $variant"
         delete(fileTree("../aar") {
-            include("taocore-$variant-*.aar")
+            include("$libName-$variant*.aar")
         })
     }
 
     register<Copy>("copy${capVariant}Aar") {
         group = "aar"
-        description = "Copy AAR $variant to ../aar"
+        description = "Copy AAR $variant with version $versionName to ../aar"
         dependsOn("assemble${capVariant}")
         dependsOn("deleteOld${capVariant}Aar")
-        val aarFile = file("build/outputs/aar/taocore-$versionName-$variant.aar")
-        println("Registering copy${capVariant}Aar")
+        val aarFile = file("build/outputs/aar/$libName-$versionName-$variant.aar")
         doFirst {
             // Создать ../aar если не существует
             file("../aar").mkdirs()
             if (!aarFile.exists()) {
                 throw GradleException("AAR file does not exist: $aarFile")
             }
-            println("Copying $aarFile to ../aar/taocore-$variant.aar")
+            println("Copying $aarFile to ../aar/$libName-$variant.aar")
         }
         from(aarFile)
-        outputs.upToDateWhen { false }
         into("../aar")
-        if(variant == "release") {
-            rename { "taocore.aar" }
+        if (variant == "release") {
+            rename { "$libName.aar" }
         } else {
-            rename { "taocore-$variant.aar" }
+            rename { "$libName-$variant.aar" }
         }
         doLast {
             val versionFile = file("../aar/README.txt")
-            versionFile.writeText("Library: taocore\nVersion: $versionName\nCreated: ${Date()}")
+            versionFile.writeText("Library: $libName\nVersion: $versionName\nCreated: ${Date()}")
             println("Created version file: ${versionFile.absolutePath}")
         }
     }
@@ -99,6 +87,12 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+    publishing {
+        singleVariant("release") {
+            withSourcesJar()
+            withJavadocJar()
+        }
+    }
 }
 
 kotlin {
@@ -106,8 +100,7 @@ kotlin {
 }
 
 dependencies {
-    debugImplementation(mapOf("name" to "taolog-debug", "ext" to "aar"))
-    releaseImplementation(mapOf("name" to "taolog", "ext" to "aar"))
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.work.runtime.ktx)
     implementation(libs.androidx.annotation)
@@ -116,6 +109,7 @@ dependencies {
     implementation(libs.cardview)
     implementation(libs.navigation.fragment)
     implementation(libs.navigation.ui)
+    implementation(libs.tao.log)
 }
 
 afterEvaluate {
@@ -131,4 +125,52 @@ afterEvaluate {
     }
 }
 
+val repo = "android-tao-core" // название репозитория
+val repoDescription = "Core App utility: App Info (Fingerprint, SignatureKeyHash, etc.), Screen dimensions, SharedPreferences easy access, etc."
 
+val owner = "lordtao"
+val libGroupId = "ua.at.tsvetkov"
+val libArtifactId = libName
+val libVersionName = versionName
+
+val licenseName = "The MIT License"
+val licenseUrl = "https://opensource.org/licenses/MIT"
+
+afterEvaluate {
+    publishing {
+        publications {
+            create<MavenPublication>("release") {
+                groupId = libGroupId
+                artifactId = libArtifactId
+                version = libVersionName
+
+                from(components.getByName("release"))
+
+                pom {
+                    name.set(libArtifactId) // Или более описательное имя
+                    description.set(repoDescription)
+                    url.set("https://github.com/$owner/$repo") // URL of your project
+
+                    licenses {
+                        license {
+                            name.set(licenseName)
+                            url.set(licenseUrl)
+                        }
+                    }
+                    developers {
+                        developer {
+                            id.set(owner)
+                            name.set("Alexandr Tsvetkov")
+                            email.set("tsvetkov2010@gmail.com")
+                        }
+                    }
+                    scm {
+                        connection.set("scm:git:git://github.com/$owner/$repo.git")
+                        developerConnection.set("scm:git:ssh://github.com/$owner/$repo.git")
+                        url.set("https://github.com/$owner/$repo")
+                    }
+                }
+            }
+        }
+    }
+}

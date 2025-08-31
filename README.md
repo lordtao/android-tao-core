@@ -1,7 +1,9 @@
 taocore
 ================
 
-App utility: App Info (Fingerprint, SignatureKeyHash, etc.), Screen dimensions, Units converter (mm/cm/inch/pix/pt/twip), MD5, File utils.
+[![](https://jitpack.io/v/lordtao/android-tao-core.svg)](https://jitpack.io/#lordtao/android-tao-core)
+
+Core App utility: App Info (Fingerprint, SignatureKeyHash, etc.), Screen dimensions, SharedPreferences easy access, Units converter (mm/cm/inch/pix/pt/twip), MD5, etc.
 
 [Download the latest release](https://github.com/lordtao/android-tao-core/releases)
 
@@ -16,7 +18,7 @@ AppConfig.init(this);
 AppConfig.printInfo();
 ```
 
-![Image of App info example](log_app_info.png)
+![Image of App info example](media/log_app_info.png)
 
 Easy work with default Shared preferences:
 ```
@@ -54,28 +56,33 @@ Operations with file name - extracting, adding, modifying path parts and file ex
 
 Add android-tao-core to your project
 ----------------------------
-Android tao core lib is available on Bintray. Please ensure that you are using the latest versions by [ ![Download](https://api.bintray.com/packages/lordtao/maven/android-tao-core/images/download.svg) ](https://bintray.com/lordtao/maven/android-tao-core/_latestVersion)
 
-Gradle dependency for your Android app:
+Step 1. Add the JitPack repository to your build file
 
-add to general build.gradle
 ```
-allprojects {
-    repositories {
-        jcenter()
-        maven {
-            url  "http://dl.bintray.com/lordtao/maven"
+dependencyResolutionManagement {
+        repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+        repositories {
+            mavenCentral()
+            maven { url = uri("https://jitpack.io") }
         }
     }
-}
 ```
-add to your module build.gradle
+
+Step 2. Add the dependency
+
 ```
-    compile 'ua.at.tsvetkov:taocore:1.5.0'
+dependencies {
+            implementation("com.github.lordtao:android-tao-core:latestVersion")
+    }
 ```
 
 Changelog
 ---------
+
+#### v1.6.124 -- Refactoring
+* fixing
+* added extensions and bindings classes
 
 #### 1.6.119 -- Refactoring
 * fixing

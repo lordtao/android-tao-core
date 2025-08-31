@@ -5,17 +5,20 @@ targetSdk = "36"
 minSdk = "26"
 
 # Plugins
-kotlin = "2.2.0"
-agp = "8.11.1"
-androidx-core-ktx = "1.16.0"
-androidx-work-runtime-ktx = "2.10.2"
+kotlin = "2.2.10"
+agp = "8.12.2"
+
+# Libs
+androidx-core-ktx = "1.17.0"
+androidx-work-runtime-ktx = "2.10.3"
 androidx-annotation = "1.9.1"
-databindingRuntime = "8.9.2"
+databindingRuntime = "8.12.2"
 constraintlayout = "2.2.1"
 cardview = "1.0.0"
 material = "1.12.0"
-navigation = "2.9.1"
-lifecycle = "2.9.1"
+navigation = "2.9.3"
+lifecycle = "2.9.3"
+taolog = "2.2.99"
 
 [libraries]
 
@@ -36,8 +39,9 @@ lifecycle-livedata = { module = "androidx.lifecycle:lifecycle-livedata", version
 lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel", version.ref = "lifecycle" }
 cardview = { group = "androidx.cardview", name = "cardview", version.ref = "cardview" }
 
+tao-log = { group = "com.github.lordtao", name = "android-tao-log", version.ref = "taolog" }
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }

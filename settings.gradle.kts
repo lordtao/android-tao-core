@@ -22,12 +22,8 @@ dependencyResolutionManagement {
         mavenCentral()
         gradlePluginPortal()
         maven(url = "https://jitpack.io")
-        maven { url = uri("file:///path/to/artifacts/") }
-        flatDir {
-            dirs("../android-tao-log/aar")
-        }
     }
 }
 
-rootProject.name = "taocore"
+rootProject.name = "TAO Core"
 include(":lib", ":demo")
