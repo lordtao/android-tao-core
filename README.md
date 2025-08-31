@@ -1,4 +1,4 @@
-taocore
+TAO Core (Android)
 ================
 
 [![](https://jitpack.io/v/lordtao/android-tao-core.svg)](https://jitpack.io/#lordtao/android-tao-core)
@@ -69,7 +69,7 @@ dependencyResolutionManagement {
     }
 ```
 
-Step 2. Add the dependency
+Step 2. Add the dependency with latest version [![](https://jitpack.io/v/lordtao/android-tao-core.svg)](https://jitpack.io/#lordtao/android-tao-core)
 
 ```
 dependencies {
@@ -80,7 +80,7 @@ dependencies {
 Changelog
 ---------
 
-#### v1.6.124 -- Refactoring
+#### v1.6.126 -- Refactoring
 * fixing
 * added extensions and bindings classes
 
