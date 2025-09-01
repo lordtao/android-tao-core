@@ -39,6 +39,7 @@ lifecycle-livedata = { module = "androidx.lifecycle:lifecycle-livedata", version
 lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel", version.ref = "lifecycle" }
 cardview = { group = "androidx.cardview", name = "cardview", version.ref = "cardview" }
 
+# Libs
 tao-log = { group = "com.github.lordtao", name = "android-tao-log", version.ref = "taolog" }
 
 [plugins]

@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     `maven-publish`
 }
+
 val libName = "taocore"
 
 val skipCommitsCount = 0
@@ -19,7 +20,6 @@ val versionPatch = providers
     .toInt()
 
 val versionName = "${versionMajor}.${versionMinor}.${versionPatch - skipCommitsCount}"
-
 
 fun TaskContainer.registerCopyAarTask(variant: String) {
     val capVariant = variant.replaceFirstChar { it.uppercaseChar() }
@@ -81,7 +81,6 @@ android {
             proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.txt")
         }
     }
-
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
@@ -109,6 +108,7 @@ dependencies {
     implementation(libs.cardview)
     implementation(libs.navigation.fragment)
     implementation(libs.navigation.ui)
+
     implementation(libs.tao.log)
 }
 
