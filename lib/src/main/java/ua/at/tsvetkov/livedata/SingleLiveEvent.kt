@@ -1,14 +1,13 @@
-package ua.at.tsvetkov.mvi
+package ua.at.tsvetkov.livedata
 
-/**
- * Created by Alexandr Tsvetkov on 05.11.2025.
- */
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import java.util.concurrent.atomic.AtomicBoolean
 
 /**
+ * Created by Alexandr Tsvetkov on 05.11.2025.
+ *
  * This is LiveData, which emits an event only once and does not forward it to new subscribers.
  */
 class SingleLiveEvent<T> : MutableLiveData<T>() {

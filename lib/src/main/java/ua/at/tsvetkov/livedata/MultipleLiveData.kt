@@ -1,4 +1,4 @@
-package ua.at.tsvetkov.mvi
+package ua.at.tsvetkov.livedata
 
 import androidx.annotation.MainThread
 import androidx.lifecycle.LifecycleOwner
@@ -18,7 +18,7 @@ import kotlinx.coroutines.launch
  * MutableLiveData docs - "If you called this method (postValue)
  * multiple times before a main thread executed a posted task, only the last value would be dispatched."
  */
-open class MultipleValuesLiveData<T> : MutableLiveData<T>() {
+open class MultipleLiveData<T> : MutableLiveData<T>() {
 
     private val isPending = AtomicBoolean(false)
     private val values: Queue<T> = LinkedList()
