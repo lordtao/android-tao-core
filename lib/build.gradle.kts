@@ -62,7 +62,6 @@ android {
     compileSdk = libs.versions.compileSdk.get().toInt()
     defaultConfig {
         minSdk = libs.versions.minSdk.get().toInt()
-        setProperty("archivesBaseName", "taocore-$versionName")
     }
     buildTypes {
         getByName("debug") {
