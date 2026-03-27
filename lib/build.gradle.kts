@@ -1,4 +1,4 @@
-import java.util.Date
+﻿import java.util.Date
 
 plugins {
     alias(libs.plugins.android.library)
@@ -11,13 +11,7 @@ val libName = "taocore"
 val skipCommitsCount = 0
 val versionMajor = 1
 val versionMinor = 6
-val versionPatch = providers
-    .exec {
-        commandLine("git", "rev-list", "--count", "HEAD")
-    }.standardOutput.asText
-    .get()
-    .trim()
-    .toInt()
+val versionPatch = 2
 
 val versionName = "${versionMajor}.${versionMinor}.${versionPatch - skipCommitsCount}"
 
