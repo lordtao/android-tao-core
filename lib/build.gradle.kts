@@ -11,7 +11,7 @@ val libName = "taocore"
 val skipCommitsCount = 0
 val versionMajor = 1
 val versionMinor = 7
-val versionPatch = 4
+val versionPatch = 5
 
 val versionName = "${versionMajor}.${versionMinor}.${versionPatch - skipCommitsCount}"
 

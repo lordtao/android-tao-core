@@ -4,7 +4,7 @@ chcp 65001 > nul
 
 set "MAJOR=1"
 set "MINOR=7"
-set "PATCH=4"
+set "PATCH=5"
 set "VERSION=%MAJOR%.%MINOR%.%PATCH%"
 
 echo Текущая версия для тега: %VERSION%
